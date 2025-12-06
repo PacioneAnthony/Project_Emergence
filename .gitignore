@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environnements virtuels
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Modèles IA (Trop lourds pour GitHub standard)
+*.pt
+*.pth
+*.onnx
+
+# Mémoire et Logs de l'Agent
+*.pkl
+*.log
+*.jpg
+*.png
+
+# Fichiers VS Code (perso)
+.vscode/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
