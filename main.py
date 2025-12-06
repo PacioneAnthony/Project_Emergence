@@ -10,7 +10,7 @@ from core.biological_reward import RewardSystem
 from core.reflex_policy import ReflexActor
 from core.memory import ReplayBuffer
 from core.motor import MotorCortex
-from core.cortex import Cortex  # <--- LE NOUVEAU CERVEAU
+from core.cortex import Cortex
 
 # Variables partagées entre les deux cerveaux (Thread Safe)
 shared_context = {
@@ -39,7 +39,6 @@ def cortex_process(cortex_brain):
         strategy = cortex_brain.think(situation_text)
         
         # 3. Mettre à jour l'intention (La commande pour le Cervelet)
-        # On écrit directement dans la variable partagée
         shared_context["intention_vector"] = cortex_brain.get_intention()
         
         # Petite pause pour laisser respirer le GPU
@@ -67,7 +66,6 @@ def life_cycle():
 
     # 3. Organes Cognitifs
     brain = ReflexActor(STATE_DIM, ACTION_DIM)
-    # On essaie de charger, sinon on part à neuf
     try: brain.load_model("actor.pth")
     except: pass
     
@@ -75,7 +73,7 @@ def life_cycle():
     memory = ReplayBuffer(capacity=100_000, state_dim=STATE_DIM, action_dim=ACTION_DIM)
     
     # Le Cortex (LLM)
-    cortex = Cortex() # Charge Llama 3
+    cortex = Cortex() 
     
     print("--- NAISSANCE ---")
 
@@ -107,16 +105,35 @@ def life_cycle():
             else:
                 current_vision = latent_vision
                 last_latent = latent_vision
-                # Analyse sommaire pour le LLM (ex: Personne détectée ?)
-                if current_vision[0] > 0.5: vision_text = "HUMAIN"
+                
+                # Analyse pour le LLM
+                if current_vision[0] > 0.5: vision_text = "HUMAIN (Source Energie)"
                 elif np.sum(current_vision) > 0.1: vision_text = "OBJET"
                 else: vision_text = "VIDE"
             
-            # Simulation fatigue
-            body_state["battery_level"] -= 0.0001
-            if body_state["battery_level"] < 0: body_state["battery_level"] = 0
+            # --- MÉTABOLISME (Fatigue vs Recharge Sociale Consciente) ---
+            
+            is_human_visible = current_vision[0] > 0.5
+            
+            # On récupère la stratégie active du Cortex pour vérifier l'intention
+            current_strategy = cortex.active_strategy
 
-            # MISE À JOUR DU CONTEXTE PARTAGÉ (Pour que le LLM sache ce qui se passe)
+            # CONDITION STRICTE : L'humain doit être visible ET le Cortex doit être en mode "FOCUS"
+            if is_human_visible and current_strategy == "FOCUS":
+                # RECHARGE
+                recharge_rate = 0.002 
+                body_state["battery_level"] += recharge_rate
+                energy_status = "++ CHARGE (FOCUS) ++"
+            else:
+                # DÉCHARGE
+                decay_rate = 0.0001
+                body_state["battery_level"] -= decay_rate
+                energy_status = "-- DRAIN --"
+
+            # On borne la batterie
+            body_state["battery_level"] = max(0.0, min(1.0, body_state["battery_level"]))
+
+            # MISE À JOUR DU CONTEXTE PARTAGÉ
             shared_context["battery"] = body_state["battery_level"]
             shared_context["vision_status"] = vision_text
 
@@ -128,17 +145,16 @@ def life_cycle():
                 0,0,0,0,0
             ])
             
-            # On récupère l'intention courante du LLM (qui change lentement)
             current_intention = shared_context["intention_vector"]
-            
             state_vector = np.concatenate((current_vision, body_vector, current_intention))
             
             # 3. DÉCISION & ACTION
             action = brain.get_action(state_vector)
             real_angle = muscles.move(action[0])
             
-            # Coût mouvement
-            body_state["battery_level"] -= np.abs(action[0]) * 0.001
+            movement_cost = np.abs(action[0]) * 0.001
+            body_state["battery_level"] -= movement_cost
+            
             shared_context["last_action"] = f"Angle {real_angle}°"
             
             # 4. CURIOSITÉ & RÉCOMPENSE
@@ -153,10 +169,11 @@ def life_cycle():
             
             # AFFICHAGE
             if step % 10 == 0:
-                # On affiche la pensée du LLM en temps réel
-                thought = cortex.last_thought.split("->")[-1].strip() # Juste la stratégie
-                bat_bar = "█" * int(body_state['battery_level'] * 10)
-                print(f"\r[{step}] Vie:{bat_bar} | Vue:{vision_text} | Pensée:[{thought}] | Angle:{real_angle} | Rwd:{reward:.2f}", end="")
+                thought = cortex.last_thought.split("->")[-1].strip()
+                bat_pct = int(body_state['battery_level'] * 100)
+                bat_bar = "█" * (bat_pct // 10)
+                
+                print(f"\r[{step}] Vie:{bat_bar} ({bat_pct}%) | {energy_status} | Pensée:[{thought}] | Angle:{real_angle} | Rwd:{reward:.2f}", end="")
             
             step += 1
             time.sleep(0.01)
