@@ -24,7 +24,8 @@ def life_cycle():
     # Configuration des dimensions
     VISION_DIM = 64
     BODY_DIM = 8
-    STATE_DIM = VISION_DIM + BODY_DIM
+    INTENTION_DIM = 32
+    STATE_DIM = VISION_DIM + BODY_DIM + INTENTION_DIM
     ACTION_DIM = 2 # Moteur Gauche, Moteur Droit
 
     # Création des organes internes
@@ -49,6 +50,8 @@ def life_cycle():
     step = 0
     start_time = time.time()
     last_latent = np.zeros(VISION_DIM) # Mémoire visuelle court-terme
+    long_term_vision = np.zeros(VISION_DIM)
+    current_intention = np.zeros(INTENTION_DIM)
 
     try:
         while True:
@@ -80,7 +83,7 @@ def life_cycle():
                 0,0,0,0,0 # Padding pour arriver à 8
             ])
             
-            state_vector = np.concatenate((current_vision, body_vector))
+            state_vector = np.concatenate((current_vision, body_vector, current_intention))
             
             # --- 2. DÉCISION (CERVEAU) ---
             # Le réseau de neurones décide quoi faire

@@ -8,7 +8,11 @@ def night_cycle():
     print("--- DÉBUT DU SOMMEIL (CONSOLIDATION) ---")
     
     # 1. Configuration
-    STATE_DIM = 72
+    VISION_DIM = 64
+    BODY_DIM = 8
+    INTENTION_DIM = 32
+    
+    STATE_DIM = VISION_DIM + BODY_DIM + INTENTION_DIM # = 104
     ACTION_DIM = 2
     BATCH_SIZE = 64
     EPOCHS = 200 # Nombre de fois qu'il va "repenser" à sa journée
