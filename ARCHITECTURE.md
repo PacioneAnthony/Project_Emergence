@@ -9,7 +9,7 @@ Pour palier aux problèmes de latence USB et d'accès matériel sous WSL2, nous 
 ### Le Corps (Windows - `windows_body.py`)
 * **Rôle :** Driver matériel "dumb" (bête).
 * **Vision :** Capture OpenCV native (30 FPS stables). Compression JPG à la volée. Diffusion sur port `5555` (PUB).
-* **Moteur :** Écoute sur port `5556` (SUB). Reçoit des angles bruts et les transmet à l'Arduino via `pyserial`.
+* **Moteur :** Écoute sur port `5556` (SUB). Reçoit des angles bruts et les transmet à l'Arduino via `pyserial`. L'Arduino traduit ces angles en pas pour le moteur Stepper (transparent pour le cerveau).
 * **Avantage :** Stabilité totale des drivers Windows, pas de crash graphique WSL.
 
 ### Le Cerveau (Linux - `main.py`)
@@ -62,8 +62,8 @@ Pour permettre au LLM d'intervenir pendant l'éveil sans briser le temps réel, 
 * Il décide de l'action motrice précise à chaque milliseconde.
 * Il peut envoyer des "Signaux d'Interruption" au LLM si une surprise (Reward Curiosité > Seuil) survient.
 
-### Le Cortex (Slow Loop - 0.5 à 2 Hz)
-* C'est un LLM local (< 7B paramètres).
+### Le Cortex (Slow Loop - Llama 3.2)
+* C'est un LLM local.
 * **Entrées :** Résumé textuel ou sémantique de la situation (ex: "Batterie faible, objet rouge détecté").
 * **Sortie :** Ne contrôle PAS les moteurs directement. Il génère un **Vecteur d'Intention** (Embedding) ou modifie des variables globales (ex: `fear_level`, `curiosity_gain`).
 * Ce vecteur est injecté en temps réel dans l'input du Cervelet.

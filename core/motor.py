@@ -22,7 +22,8 @@ class MotorCortex:
 
     def move(self, action_value):
         """
-        Transforme l'action du réseau de neurones (-1.0 à 1.0) en angle Servo (10° à 170°).
+        Transforme l'action du réseau de neurones (-1.0 à 1.0) en angle Moteur (10° à 170°).
+        Note: L'Arduino traduit ces angles en pas (Stepper) de façon transparente.
         """
         # Mapping : -1 -> 10°, 0 -> 90°, 1 -> 170°
         angle = int(90 + (action_value * 80))
