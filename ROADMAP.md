@@ -1,36 +1,34 @@
 # 🗺️ Roadmap & Pistes d'Exploration
 
-État actuel : **Stade "Babillage Corporel" (Body Babbling)**.
-L'agent sait bouger, voir, et ressentir la fatigue et la curiosité visuelle simple.
+État actuel : **Architecture Hybride & Intelligence Bicamérale**.
+L'agent possède un corps (Windows/Stepper), un cerveau (Linux/RTX 5080), et une double intelligence (Reflexe + Llama 3.2).
 
-## 🎯 Court Terme (La Semaine)
+## 🎯 Priorités Immédiates
 
-- [ ] **Vision Active (Le Cou) :**
-    - Fixer physiquement la caméra sur le servo-moteur.
-    - Objectif : L'agent doit apprendre que "Bouger le moteur = Changer la vue = Récompense Curiosité".
-    - Cela fermera la boucle sensorimotrice.
+1.  **Intégration du Moteur dans la Boucle de Vie :**
+    *   Le Moteur Pas-à-Pas (Stepper) remplace le Servo.
+    *   **Action :** Tester `main.py` avec le nouveau moteur et ajuster la "patience" du cerveau si nécessaire (risque de décalage temporel si le cerveau est trop rapide pour le moteur).
 
-- [ ] **L'Agence (La Main) :**
-    - Ajouter une tige au servo pour qu'il puisse interagir avec un objet léger (balle, étiquette).
-    - Objectif : Découvrir qu'il peut modifier son environnement, pas juste l'observer.
+2.  **Montage Physique ("Le Cou") :**
+    *   **Objectif :** Fixer la webcam sur le moteur (ou le moteur sous la webcam).
+    *   **Pourquoi :** Indispensable pour fermer la boucle "Action -> Changement de Vue -> Curiosité". Sans ça, l'agent est aveugle aux conséquences de ses mouvements.
 
-- [ ] **Mémoire Visuelle Améliorée :**
-    - Remplacer le vecteur YOLO (catégories) par un vecteur d'embedding sémantique (CLIP ou SigLIP).
-    - Cela permettra de distinguer "ce chat" de "ce chien", et pas juste "animal".
+3.  **La "Télépathie" Vectorielle (Plan Géométrique) :**
+    *   Actuellement, le Cortex (LLM) envoie des vecteurs aléatoires fixes pour ses stratégies ("EXPLORE", "FOCUS"...).
+    *   **L'évolution :** Utiliser les Embeddings d'Ollama.
+    *   **Le but :** Que le LLM puisse nuancer ("Explorer vers la lumière", "Explorer avec peur") et que le Cervelet reçoive la "forme mathématique" exacte de cette pensée.
 
-## 🔮 Moyen Terme (Le Mois)
+4.  **Le Bras / L'Agence (Futur) :**
+    *   Une fois la vision active maîtrisée, ajouter une tige au moteur pour toucher ou pousser des objets.
+    *   Objectif : Découvrir l'impact physique sur le monde.
 
-- [ ] **Architecture Bicamérale (Système 1 / Système 2) :**
-    - **Système 1 (Rapide) :** La Policy Réflexe actuelle. Elle gère l'action immédiate.
-    - **Système 2 (Lent) :** Le LLM. Il tourne en tâche de fond pendant l'éveil.
-    - **Dialogue :** Le Système 1 envoie des alertes ("Je suis bloqué", "Douleur inconnue") au LLM. Le LLM répond par des injections vectorielles ("Contexte : Explore à droite", "Contexte : Calme-toi").
-
-- [ ] **Intégration LLM Local (Llama-3 ou Mistral) :**
-    - Faire tourner un petit LLM (quantisé 4-bit) sur la même machine.
-    - Créer un pont asynchrone pour que le ralentissement du LLM ne bloque pas les réflexes moteurs (latence < 20ms maintenue pour le corps).
+## 🔮 Moyen / Long Terme
 
 - [ ] **Mémoire Long Terme (Vectorielle) :**
     - Intégrer FAISS. Le LLM doit pouvoir dire "Tiens, cette situation me rappelle un souvenir stocké il y a 3 jours" et l'injecter dans le contexte du Cervelet.
+
+- [ ] **Apprentissage Continue (Online Learning) :**
+    - Tenter de stabiliser l'apprentissage pendant l'éveil (attention aux oublis catastrophiques).
 
 ## 🧪 Pistes Expérimentales
 
