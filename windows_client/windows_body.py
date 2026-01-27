@@ -2,6 +2,7 @@ import cv2
 import zmq
 import time
 import serial
+import serial.tools.list_ports
 import threading
 
 # --- CONFIGURATION ---
@@ -11,13 +12,20 @@ BAUD_RATE = 9600
 print("--- CORPS (WINDOWS) : INITIALISATION ---")
 
 # 1. Connexion Arduino
+arduino = None
 try:
     arduino = serial.Serial(ARDUINO_PORT, BAUD_RATE, timeout=1)
     time.sleep(2) # Attendre le reboot de l'arduino
     print(f"[V] Arduino connecté sur {ARDUINO_PORT}")
+except serial.SerialException:
+    print(f"[X] Impossible d'ouvrir le port {ARDUINO_PORT}.")
+    print("    Ports disponibles :")
+    ports = serial.tools.list_ports.comports()
+    for port in ports:
+        print(f"    - {port.device} ({port.description})")
+    print("    -> Modifiez ARDUINO_PORT dans ce fichier si nécessaire.")
 except Exception as e:
-    print(f"[X] ERREUR ARDUINO : {e}")
-    arduino = None
+    print(f"[X] ERREUR ARDUINO GÉNÉRALE : {e}")
 
 # 2. Réseau ZMQ
 context = zmq.Context()
@@ -40,14 +48,14 @@ def motor_listener():
             # On reçoit un angle (string bytes) ex: b'90'
             command = motor_socket.recv(flags=zmq.NOBLOCK)
             angle_str = command.decode('utf-8')
-            
+
             if arduino:
                 # On envoie à l'Arduino avec un saut de ligne
                 msg = f"{angle_str}\n"
                 arduino.write(msg.encode())
                 print(f"Moteur -> {angle_str}°")
         except zmq.Again:
-            time.sleep(0.01) # Rien reçu, on attend un peu
+            time.sleep(0.001) # Rien reçu, on attend un peu
         except Exception as e:
             print(f"Erreur Moteur: {e}")
 
@@ -69,7 +77,7 @@ try:
         # Compression et envoi
         encoded, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
         video_socket.send(buffer)
-        
+
         cv2.imshow("CORPS (Vue + Moteurs)", frame)
         if cv2.waitKey(1) == ord('q'): break
 

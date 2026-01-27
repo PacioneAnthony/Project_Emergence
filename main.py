@@ -51,7 +51,8 @@ def life_cycle():
         print(f"  [X] Vision : Erreur ({e})")
         return
 
-    muscles = MotorCortex(mock=True)
+    # On active le vrai moteur (connecté via ZeroMQ au client Windows)
+    muscles = MotorCortex(mock=False)
 
     # 2. Configuration Dimensions
     VISION_DIM = 128 # <--- C'EST MAINTENANT 128 (Sortie de l'adaptateur)
