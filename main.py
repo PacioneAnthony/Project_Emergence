@@ -21,18 +21,25 @@ shared_context = {
 
 def cortex_process(cortex_brain):
     print("  [V] Cortex (Llama 3) : Démarré en arrière-plan")
+
     while True:
         situation_text = (
             f"Batterie: {int(shared_context['battery']*100)}%. "
             f"Vue: {shared_context['vision_status']}. "
             f"Dernière action: {shared_context['last_action']}."
         )
+        
+        # 2. Réfléchir (Prend 1 à 2 secondes)
         strategy = cortex_brain.think(situation_text)
+        
+        # 3. Mettre à jour l'intention (La commande pour le Cervelet)
         shared_context["intention_vector"] = cortex_brain.get_intention()
+        
+        # Petite pause pour laisser respirer le GPU
         time.sleep(0.1)
 
 def life_cycle():
-    print("--- INITIALISATION DE L'ORGANISME (DEEP VISION) ---")
+    print("--- INITIALISATION DE L'ORGANISME BICAMÉRAL ---")
     
     # 1. Connexions Hardware
     try:
@@ -44,12 +51,12 @@ def life_cycle():
         print(f"  [X] Vision : Erreur ({e})")
         return
 
-    muscles = MotorCortex()
-    
+    muscles = MotorCortex(mock=True)
+
     # 2. Configuration Dimensions
     VISION_DIM = 128 # <--- C'EST MAINTENANT 128 (Sortie de l'adaptateur)
     BODY_DIM = 8
-    INTENTION_DIM = 32
+    INTENTION_DIM = 32 # L'espace pour le LLM
     STATE_DIM = VISION_DIM + BODY_DIM + INTENTION_DIM 
     ACTION_DIM = 2 
 
@@ -57,9 +64,11 @@ def life_cycle():
     brain = ReflexActor(STATE_DIM, ACTION_DIM)
     try: brain.load_model("actor.pth")
     except: pass
-    
+
     heart = RewardSystem({})
     memory = ReplayBuffer(capacity=100_000, state_dim=STATE_DIM, action_dim=ACTION_DIM)
+    
+    # Le Cortex (LLM)
     cortex = Cortex() 
     
     print("--- NAISSANCE ---")
@@ -67,43 +76,45 @@ def life_cycle():
     mind_thread = threading.Thread(target=cortex_process, args=(cortex,), daemon=True)
     mind_thread.start()
 
-    body_state = { "battery_level": 1.0, "collision_impact": 0.0, "gpu_temp": 0.4 }
+    # État initial du corps
+    body_state = {
+        "battery_level": 1.0,
+        "collision_impact": 0.0,
+        "gpu_temp": 0.4
+    }
     
     step = 0
     last_latent = np.zeros(VISION_DIM)
     long_term_vision = np.zeros(VISION_DIM)
-    
+
     try:
         while True:
-            # 1. PERCEPTION HYBRIDE
-            # vector = Pour le cerveau (128 floats)
-            # human_info = (bool, x_pos) Pour la batterie et le cortex
-            vector, human_info, frame = eye.see()
+            # --- BOUCLE RAPIDE (CERVELET - 60Hz) ---
             
-            is_human_visible, human_x = human_info
-
-            if vector is None:
+            # 1. PERCEPTION
+            latent_vision, frame = eye.get_latent_vector()
+            
+            if np.sum(latent_vision) == 0 and frame is None:
                 current_vision = last_latent
                 vision_text = "Rien (Noir)"
             else:
-                current_vision = vector
-                last_latent = vector
+                current_vision = latent_vision
+                last_latent = latent_vision
                 
-                # Traduction pour le Cortex (Language)
-                if is_human_visible:
-                    pos_str = "CENTRE"
-                    if human_x < 0.4: pos_str = "GAUCHE"
-                    elif human_x > 0.6: pos_str = "DROITE"
-                    vision_text = f"HUMAIN ({pos_str})"
-                elif np.std(current_vision) > 0.1: # Si le vecteur est complexe
-                    vision_text = "OBJET/FORME"
-                else:
-                    vision_text = "VIDE"
+                # Analyse pour le LLM
+                if current_vision[0] > 0.5: vision_text = "HUMAIN (Source Energie)"
+                elif np.sum(current_vision) > 0.1: vision_text = "OBJET"
+                else: vision_text = "VIDE"
             
-            # --- MÉTABOLISME ---
+            # --- MÉTABOLISME (Fatigue vs Recharge Sociale Consciente) ---
+            
+            is_human_visible = current_vision[0] > 0.5
+            
+            # On récupère la stratégie active du Cortex pour vérifier l'intention
             current_strategy = cortex.active_strategy
 
             if is_human_visible and current_strategy == "FOCUS":
+                # RECHARGE
                 recharge_rate = 0.002 
                 body_state["battery_level"] += recharge_rate
                 energy_status = "++ CHARGE ++"
@@ -124,27 +135,34 @@ def life_cycle():
                 0,0,0,0,0
             ])
             
-            state_vector = np.concatenate((current_vision, body_vector, shared_context["intention_vector"]))
+            current_intention = shared_context["intention_vector"]
+            state_vector = np.concatenate((current_vision, body_vector, current_intention))
             
-            # 3. ACTION
+            # 3. DÉCISION & ACTION
             action = brain.get_action(state_vector)
             real_angle = muscles.move(action[0])
             
-            body_state["battery_level"] -= np.abs(action[0]) * 0.001
+            movement_cost = np.abs(action[0]) * 0.001
+            body_state["battery_level"] -= movement_cost
+            
             shared_context["last_action"] = f"Angle {real_angle}°"
             
-            # 4. RÉCOMPENSE & MÉMOIRE
+            # 4. CURIOSITÉ & RÉCOMPENSE
             visual_change = np.linalg.norm(current_vision - long_term_vision)
             long_term_vision = (long_term_vision * 0.9) + (current_vision * 0.1)
-            
+
             reward, _ = heart.get_reward(body_state, world_model_error=visual_change, social_signal=0.0)
             
-            memory.add(state_vector, action, reward, state_vector, 0)
+            # 5. MÉMOIRE
+            done = 0
+            memory.add(state_vector, action, reward, state_vector, done)
             
+            # AFFICHAGE
             if step % 10 == 0:
                 thought = cortex.last_thought.split("->")[-1].strip()
                 bat_pct = int(body_state['battery_level'] * 100)
                 bat_bar = "█" * (bat_pct // 10)
+                
                 print(f"\r[{step}] Vie:{bat_bar} ({bat_pct}%) | {energy_status} | Pensée:[{thought}] | Angle:{real_angle} | Rwd:{reward:.2f}", end="")
             
             step += 1
