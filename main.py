@@ -5,7 +5,7 @@ import cv2
 import threading
 
 # Import des organes
-from sensory.vision_brain import DeepVision # <--- NOUVEL IMPORT
+from sensory.vision import VisionModule
 from core.biological_reward import RewardSystem
 from core.reflex_policy import ReflexActor
 from core.memory import ReplayBuffer
@@ -43,9 +43,10 @@ def life_cycle():
     
     # 1. Connexions Hardware
     try:
-        eye = DeepVision() # <--- INSTANCE DEEP VISION
+        eye = VisionModule() # <--- INSTANCE VISION MODULE
+        print("  [V] Nerf Optique connecté sur 172.31.192.1:5555")
         # On essaie de charger l'entrainement visuel précédent s'il existe
-        eye.load_adapter("vision_adapter.pth") 
+        # eye.load_adapter("vision_adapter.pth")  # Cette ligne est peut-être obsolète
         print("  [V] Vision : OK")
     except Exception as e:
         print(f"  [X] Vision : Erreur ({e})")
@@ -55,7 +56,7 @@ def life_cycle():
     muscles = MotorCortex(mock=False)
 
     # 2. Configuration Dimensions
-    VISION_DIM = 128 # <--- C'EST MAINTENANT 128 (Sortie de l'adaptateur)
+    VISION_DIM = 64 # Le vecteur de YOLO est de taille 64
     BODY_DIM = 8
     INTENTION_DIM = 32 # L'espace pour le LLM
     STATE_DIM = VISION_DIM + BODY_DIM + INTENTION_DIM 
@@ -93,7 +94,7 @@ def life_cycle():
             # --- BOUCLE RAPIDE (CERVELET - 60Hz) ---
             
             # 1. PERCEPTION
-            latent_vision, frame = eye.get_latent_vector()
+            latent_vision, frame, brightness = eye.get_latent_vector()
             
             if np.sum(latent_vision) == 0 and frame is None:
                 current_vision = last_latent
@@ -173,7 +174,7 @@ def life_cycle():
         print("\n\n--- SOMMEIL FORCÉ ---")
         memory.save("memoire_vie_1.pkl")
     finally:
-        # eye.release() # Pas nécessaire avec DeepVision zmq simple
+        eye.release() # On ferme proprement la connexion réseau
         pass
 
 if __name__ == "__main__":
