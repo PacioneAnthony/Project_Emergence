@@ -106,7 +106,7 @@ def life_cycle():
         "gpu_temp": 0.4,
         "last_servo_pos": 0.5 # Milieu (0.0 - 1.0)
     }
-
+    
     step = 0
 
     # Mémoire court-terme pour la curiosité
@@ -166,7 +166,7 @@ def life_cycle():
                 proprio_val, # <--- JE SAIS OÙ JE REGARDE
                 0,0,0,0
             ])
-
+            
             current_intention = shared_context["intention_vector"]
 
             # Concaténation Multimodale
@@ -190,7 +190,7 @@ def life_cycle():
             body_state["battery_level"] -= (np.abs(cmd_speed) * 0.001)
 
             shared_context["last_action"] = f"Angle {real_angle}°"
-
+            
             # 4. CURIOSITÉ & RÉCOMPENSE
             # On est curieux si la Vision OU l'Audio change
             vis_change = np.linalg.norm(latent_vision - long_term_vision)
@@ -206,7 +206,7 @@ def life_cycle():
             # 5. MÉMOIRE
             done = 0
             memory.add(state_vector, action, reward, state_vector, done)
-
+            
             # AFFICHAGE
             if step % 10 == 0:
                 thought = cortex.last_thought.split("->")[-1].strip()
@@ -222,7 +222,8 @@ def life_cycle():
         print("\n\n--- SOMMEIL FORCÉ ---")
         memory.save("memoire_vie_multimodale.pkl")
     finally:
-        eye.release()
+        eye.release() # On ferme proprement la connexion réseau
+        pass
 
 if __name__ == "__main__":
     life_cycle()
