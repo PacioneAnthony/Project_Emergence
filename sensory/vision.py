@@ -11,18 +11,18 @@ class VisionModule:
         """
         print(f"Chargement du modèle YOLOv8{model_size} sur GPU...")
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        self.model = YOLO(f'yolov8{model_size}.pt') 
-        
+        self.model = YOLO(f'yolov8{model_size}.pt')
+
         # --- CONFIGURATION RÉSEAU ---
         print("Initialisation du récepteur réseau...")
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.SUB)
         self.socket.setsockopt_string(zmq.SUBSCRIBE, '')
         self.socket.setsockopt(zmq.CONFLATE, 1) # On ne garde que la dernière image
-        
+
         # Astuce pour trouver l'IP de Windows depuis WSL
         # (L'IP du 'nameserver' dans resolv.conf est souvent celle de Windows)
-        windows_ip = "127.0.0.1" 
+        windows_ip = "127.0.0.1"
         try:
             import os
             # Cette commande récupère l'IP de la passerelle WSL (donc Windows)
@@ -32,49 +32,56 @@ class VisionModule:
                 windows_ip = host_ip
         except:
             pass
-            
+
         print(f"Tentative de connexion à l'Oeil sur {windows_ip}:5555 ...")
         self.socket.connect(f"tcp://{windows_ip}:5555")
-        
+
     def get_latent_vector(self):
         """
         Reçoit une image jpg du réseau, la décode, et lance YOLO.
+        Retourne: latent_vector, annotated_frame, brightness
         """
         try:
             # On attend une image (max 10ms d'attente pour ne pas bloquer)
             if self.socket.poll(10) == 0:
-                return np.zeros(64), None
-                
+                return np.zeros(64), None, 0.0
+
             # Réception du paquet
             jpg_buffer = self.socket.recv()
-            
+
             # Décodage de l'image (JPG -> Matrice de pixels)
             np_arr = np.frombuffer(jpg_buffer, dtype=np.uint8)
             frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-            
+
             if frame is None:
-                return np.zeros(64), None
+                return np.zeros(64), None, 0.0
+
+            # --- ANALYSE DE LUMINOSITÉ (Pour la "Douleur Sursaturée") ---
+            # Conversion en gris
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Moyenne normalisée (0.0 = Noir, 1.0 = Blanc)
+            brightness = np.mean(gray) / 255.0
 
             # --- INFÉRENCE YOLO (Sur la RTX 5080) ---
             results = self.model(frame, device=self.device, verbose=False, half=True)
             result = results[0]
-            
+
             # Création du vecteur
             boxes = result.boxes
             cls_ids = boxes.cls.cpu().numpy().astype(int)
             confidences = boxes.conf.cpu().numpy()
-            
+
             latent_vector = np.zeros(64, dtype=np.float32)
             for cls_id, conf in zip(cls_ids, confidences):
                 if cls_id < 64:
                     latent_vector[cls_id] = conf
-                    
+
             annotated_frame = result.plot()
-            return latent_vector, annotated_frame
-            
+            return latent_vector, annotated_frame, brightness
+
         except Exception as e:
             # Si erreur, on retourne rien (pour éviter le crash)
-            return np.zeros(64), None
+            return np.zeros(64), None, 0.0
 
     def release(self):
         self.socket.close()
