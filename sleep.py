@@ -2,6 +2,7 @@ import torch
 import os
 import glob
 from core.reflex_policy import ReflexActor, ReflexCritic
+from core.world_model import WorldModel
 from core.memory import ReplayBuffer
 from core.dreamer import Dreamer
 
@@ -26,6 +27,7 @@ def night_cycle():
     # 2. Chargement du corps (Réseaux de neurones)
     actor = ReflexActor(STATE_DIM, ACTION_DIM)
     critic = ReflexCritic(STATE_DIM, ACTION_DIM)
+    world_model = WorldModel(STATE_DIM, ACTION_DIM)
 
     # Chargement des adaptateurs sensoriels (partie "Deep")
     # Note : Le 'Dreamer' ne met pas encore à jour les couches convolutions (Whisper/Yolo sont gelés)
@@ -36,6 +38,7 @@ def night_cycle():
     try:
         actor.load_model("actor.pth")
         critic.load_model("critic.pth")
+        world_model.load_model("world_model.pth")
         print("[V] Cerveaux chargés.")
     except:
         print("[!] Nouveaux cerveaux (Reset ou 1ère fois).")
@@ -65,24 +68,26 @@ def night_cycle():
     print(f"Souvenirs chargés : {memory.size} expériences.")
 
     # 4. Le Rêve (Entraînement)
-    dreamer = Dreamer(actor, critic, lr=3e-4) # lr = learning rate
+    dreamer = Dreamer(actor, critic, world_model=world_model, lr=3e-4) # lr = learning rate
 
     print(f"Lancement de {EPOCHS} cycles de rêve paradoxal (REM)...")
 
-    initial_loss = dreamer.train_step(memory, BATCH_SIZE)
+    initial_loss, initial_wm_loss = dreamer.train_step(memory, BATCH_SIZE)
     final_loss = 0
+    final_wm_loss = 0
 
     for i in range(EPOCHS):
-        loss = dreamer.train_step(memory, BATCH_SIZE)
+        loss, wm_loss = dreamer.train_step(memory, BATCH_SIZE)
         final_loss = loss
+        final_wm_loss = wm_loss
         if i % 50 == 0:
-            print(f"  Cycle {i}/{EPOCHS} - Erreur Critique : {loss:.5f}")
+            print(f"  Cycle {i}/{EPOCHS} - Erreur Critique : {loss:.5f} | Erreur WM : {wm_loss:.5f}")
 
     print(f"--- RÉSULTAT ---")
-    print(f"Erreur initiale : {initial_loss:.5f}")
-    print(f"Erreur finale   : {final_loss:.5f}")
+    print(f"Erreur initiale : Critique={initial_loss:.5f}, WM={initial_wm_loss:.5f}")
+    print(f"Erreur finale   : Critique={final_loss:.5f}, WM={final_wm_loss:.5f}")
 
-    if final_loss < initial_loss:
+    if final_loss < initial_loss or final_wm_loss < initial_wm_loss:
         print("Gain : L'agent a structuré ses souvenirs !")
     else:
         print("Stagnation : Données trop bruitées ou apprentissage difficile.")
@@ -90,6 +95,7 @@ def night_cycle():
     # 5. Réveil (Sauvegarde des acquis)
     actor.save_model("actor.pth")
     critic.save_model("critic.pth")
+    world_model.save_model("world_model.pth")
 
     # On sauvegarde aussi les adaptateurs sensoriels si on les avait entraînés (ici placeholder)
     # eye.save_adapter("vision_adapter.pth")

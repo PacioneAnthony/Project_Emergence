@@ -9,7 +9,8 @@ Contrairement aux IA classiques (Chatbots, Agents scriptés), Emergence ne cherc
 L'agent est conçu comme un organisme bicaméral :
 1.  **Le Cervelet (Système 1) :** Un réseau de neurones rapide, responsable de la survie, de la motricité et des réflexes (< 20ms).
 2.  **Le Cortex (Système 2) :** Un LLM (Llama 3.2) qui observe, raisonne et "parle" au cervelet en temps réel pour orienter la stratégie globale ou résoudre des problèmes complexes.
-3.  **Intrinsèquement Motivé :** Il agit pour réduire sa "douleur" (batterie faible, chocs) et augmenter sa "joie" (découverte visuelle, surprise).
+3.  **Model-Based Reinforcement Learning (MBRL) :** Le système intègre un **WorldModel** (inspiré de l'architecture JEPA) qui lui permet d'apprendre la dynamique de son environnement. L'agent apprend à prédire ses futurs états latents (et non les pixels de la caméra) en fonction de ses actions, lui permettant de "simuler mentalement" les conséquences de ses mouvements.
+4.  **Intrinsèquement Motivé :** Il agit pour réduire sa "douleur" (batterie faible, chocs) et augmenter sa "joie" (découverte visuelle, surprise).
 
 ## ⚡ Architecture Hardware
 
@@ -46,7 +47,7 @@ python sleep.py
 
 ## 📂 Structure
 
-* `core/` : Le noyau cognitif (Cerveau réflexe, Système de récompense, Mémoire).
+* `core/` : Le noyau cognitif (Cerveau réflexe, WorldModel, Système de récompense, Mémoire).
 * `sensory/` : Traitement des sens (Vision YOLO, Audio).
 * `windows_client/` : Scripts ponts pour le matériel Windows.
 * `main.py` : Boucle de vie principale (Éveil).
