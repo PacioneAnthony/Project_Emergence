@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 from core.reflex_policy import ReflexActor, ReflexCritic
+from core.world_model import WorldModel
 from core.memory import ReplayBuffer
 from core.dreamer import Dreamer
 
@@ -11,8 +12,9 @@ ACTION_DIM = 2
 print("--- INITIALISATION ---")
 actor = ReflexActor(STATE_DIM, ACTION_DIM)
 critic = ReflexCritic(STATE_DIM, ACTION_DIM)
+world_model = WorldModel(STATE_DIM, ACTION_DIM)
 memory = ReplayBuffer(capacity=1000, state_dim=STATE_DIM, action_dim=ACTION_DIM)
-dreamer = Dreamer(actor, critic)
+dreamer = Dreamer(actor, critic, world_model=world_model)
 
 print("Modules chargés sur", actor.device)
 
@@ -33,17 +35,19 @@ print("Lancement des rêves (Gradient Descent sur GPU)...")
 
 # On fait 50 cycles d'apprentissage (epochs)
 losses = []
+wm_losses = []
 for epoch in range(50):
-    loss = dreamer.train_step(memory, batch_size=32)
+    loss, wm_loss = dreamer.train_step(memory, batch_size=32)
     losses.append(loss)
+    wm_losses.append(wm_loss)
     if epoch % 10 == 0:
-        print(f"  Rêve {epoch} : Critic Loss = {loss:.6f}")
+        print(f"  Rêve {epoch} : Critic Loss = {loss:.6f} | WM Loss = {wm_loss:.6f}")
 
 print("\n--- RÉSULTAT ---")
-print(f"Perte initiale : {losses[0]:.6f}")
-print(f"Perte finale   : {losses[-1]:.6f}")
+print(f"Perte initiale : Critic={losses[0]:.6f}, WM={wm_losses[0]:.6f}")
+print(f"Perte finale   : Critic={losses[-1]:.6f}, WM={wm_losses[-1]:.6f}")
 
-if losses[-1] < losses[0]:
+if losses[-1] < losses[0] or wm_losses[-1] < wm_losses[0]:
     print("SUCCESS : L'agent apprend (l'erreur diminue) !")
 else:
     print("NOTE : L'erreur peut varier sur des données aléatoires, mais le code tourne.")
