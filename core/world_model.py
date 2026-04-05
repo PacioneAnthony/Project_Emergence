@@ -57,9 +57,5 @@ class WorldModel(nn.Module):
 
     def load_model(self, filename="world_model.pth"):
         """Charge les poids du modèle s'ils existent."""
-        import os
-        if os.path.exists(filename):
-            self.load_state_dict(torch.load(filename))
-            print(f"Modèle du monde (WorldModel) chargé depuis {filename}")
-        else:
-            print("Aucun modèle du monde existant trouvé. Démarrage à neuf.")
+        from core.models import load_with_partial_fallback
+        load_with_partial_fallback(self, filename)
