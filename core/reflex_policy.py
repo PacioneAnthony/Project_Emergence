@@ -54,12 +54,8 @@ class ReflexActor(nn.Module):
         print(f"Cerveau (Acteur) sauvegardé dans {filename}")
 
     def load_model(self, filename="actor.pth"):
-        import os
-        if os.path.exists(filename):
-            self.load_state_dict(torch.load(filename))
-            print(f"Cerveau (Acteur) chargé depuis {filename}")
-        else:
-            print("Aucun cerveau existant trouvé. Démarrage à neuf.")
+        from core.models import load_with_partial_fallback
+        load_with_partial_fallback(self, filename)
         
 class ReflexCritic(nn.Module):
     def __init__(self, input_dim, action_dim, hidden_dim=256):
@@ -93,9 +89,5 @@ class ReflexCritic(nn.Module):
         print(f"Cerveau (Critique) sauvegardé dans {filename}")
 
     def load_model(self, filename="critic.pth"):
-        import os
-        if os.path.exists(filename):
-            self.load_state_dict(torch.load(filename))
-            print(f"Cerveau (Critique) chargé depuis {filename}")
-        else:
-            print("Aucun cerveau existant trouvé. Démarrage à neuf.")
+        from core.models import load_with_partial_fallback
+        load_with_partial_fallback(self, filename)
