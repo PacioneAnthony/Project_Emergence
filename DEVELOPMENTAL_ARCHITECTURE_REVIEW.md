@@ -1,497 +1,349 @@
-# DEVELOPMENTAL ARCHITECTURE REVIEW
-## Analyse Critique, Fondements Théoriques & Plan d'Implémentation Biomimétique
+# Revue contradictoire de la spécification développementale
 
-*Version 1.0 — Juin 2026*
-
----
-
-> **Principe directeur de ce document**
->
-> L'enthousiasme est l'ennemi du progrès réel. Ce document ne va pas valider l'architecture existante — il va la disséquer. Chaque idée biomimétique sera jugée non pas sur son élégance théorique, mais sur une question unique : est-ce que cela permet à un agent de **résoudre des problèmes qu'il n'a jamais rencontrés** ? Tout le reste est décoration.
+Statut : revue critique externe de `DEVELOPMENTAL_ARCHITECTURE.md`
+Date : 2026-06-11
+Sources : `DEVELOPMENTAL_ARCHITECTURE.md`, les documents de `docs/research/`, `README.md` et le prototype conservé dans `archive/legacy_agent/`.
+Mandat : ne pas confirmer les choix. Identifier les hypothèses faibles, les complexités prématurées et les expériences non concluantes.
 
 ---
 
-## PARTIE I — ÉTAT DES LIEUX : CE QUI EXISTE VRAIMENT
+## 1. Verdict exécutif
 
-### 1.1 Ce qui fonctionne réellement
+La spécification est nettement meilleure que ce que le dépôt a produit jusqu'ici : elle encode les leçons durement acquises (baselines obligatoires, splits par session, actions appliquées vs demandées, sondes tenues à part, promotion multi-protocoles). Le recentrage J0-first sur l'instrumentation est la décision la plus juste du document.
 
-L'architecture actuelle contient plusieurs décisions architecturales solides :
+Mais la spécification contient une contradiction interne majeure : **elle énonce des règles épistémiques qui, appliquées aux propres résultats du projet, disqualifient plusieurs de ses composants centraux**. La règle 7.4 (« un latent n'est utile que s'il bat le contexte brut sur une sonde tenue à part ») est déjà falsifiée pour le JEPA actuel par `docs/research/collision_risk_results.md` (AP 0.193 brut vs 0.167 latent, AUROC 0.794 vs 0.782, rappel 28.1% vs 23.3% — le latent perd sur *toutes* les métriques). Pourtant le JEPA reste au centre du diagramme d'architecture, sur le chemin critique vers la mémoire et la familiarité. De même, le LNN est positionné par défaut au cœur de l'intégration sensorimotrice alors que la tâche J1 (estimer/prédire l'état d'un servo 1-DDL) est un problème de filtrage d'état classique, et que l'historique du projet démontre que les modèles entraînés portent une variance inter-graines du même ordre que les effets mesurés (E1 : la référence 1.21% est un tirage exceptionnel ; les réplications donnent 3.30% ± 0.47%).
 
-- **La séparation cervelet/cortex** est correcte. Un système rapide non-bloqué par un système lent, communicant via un vecteur d'intention — c'est biologiquement et ingénieralement sain.
-- **Le World Model JEPA-inspired** dans `core/world_model.py` est la bonne direction : prédire dans l'espace latent plutôt que reconstruire les pixels.
-- **L'erreur de prédiction comme signal de curiosité** est une décision fondamentalement juste. C'est la même mécanique que le Cortex préfrontal utilise pour allouer l'attention.
-- **Le cycle éveil/sommeil** comme séparation entre acquisition d'expérience et consolidation offline est une métaphore biologique correcte, et ingénieralement robuste.
+Le second défaut structurel est l'ordonnancement linéaire des jalons alors que les besoins en données sont cumulatifs : J4 (familiarité) exigera des semaines de sessions sociales qui devraient commencer à être enregistrées dès J0. Le troisième est l'absence de quantification : aucun jalon ne précise le nombre de graines, de sessions ou les marges qui rendraient son critère de passage opposable — exactement l'erreur que E1 a corrigée a posteriori pour la navigation.
 
-### 1.2 Les bugs critiques — Ce qui est cassé en silence
-
-**BUG #1 — L'agent ne mémorise jamais de vraies transitions** (`main.py:216`)
-
-```python
-# LIGNE ACTUELLE (FAUX) :
-memory.add(current_embedding_state, action, reward, current_embedding_state, done)
-#                                                    ^^^^^^^^^^^^^^^^^^^^^^
-#                          next_state = current_state ← IDENTIQUE. Le buffer ne voit jamais de transition réelle.
-
-# LIGNE CORRECTE :
-memory.add(previous_embedding_state, action, reward, current_embedding_state, done)
-```
-
-Ce bug est silencieux mais fatal : le `ReplayBuffer` stocke des transitions où l'état actuel et l'état suivant sont identiques. Le `WorldModel` n'apprend jamais de dynamique. La curiosité ne peut jamais évoluer correctement. **Tout le cycle d'apprentissage pendant le sommeil est entraîné sur des données fausses.**
-
-**BUG #2 — L'agent est aveugle et sourd** (`core/models.py:53-78`)
-
-```python
-class VisionEncoder(nn.Module):
-    def forward(self, x):
-        # Retourne des ZÉROS. Toujours. L'agent ne voit rien.
-        return torch.zeros((batch_size, self.output_dim)).to(self.device)
-
-class AudioEncoder(nn.Module):
-    def forward(self, x):
-        # Retourne des ZÉROS. Toujours. L'agent n'entend rien.
-        return torch.zeros((batch_size, self.output_dim)).to(self.device)
-```
-
-Le `VisionModule` (YOLOv8) et `AudioEar` (Whisper) sont importés dans `main.py` mais leurs sorties ne sont **jamais injectées dans le pipeline d'encodage**. L'agent vit uniquement sur ses données proprioceptives + l'intention du cortex. C'est comme un humain privé de ses 4 sens principaux.
-
-**BUG #3 — Ligne dupliquée** (`main.py:96-97`)
-
-```python
-print(f"  [i] Dimension Vectorielle Totale : {STATE_DIM}")  # ligne 96
-print(f"  [i] Dimension Vectorielle Totale : {STATE_DIM}")  # ligne 97 — identique
-```
-
-Mineur mais symptomatique d'une base de code qui a besoin d'une passe de nettoyage.
-
-### 1.3 Les faiblesses architecturales (pas des bugs, des choix discutables)
-
-**L'intention du Cortex est une réduction d'information agressive**
-
-Le Cortex génère un embedding Llama (~4096 dims), le réduit à 32 par moyenne de chunks, l'injecte dans l'`IntentionEncoder` qui le projette à 64. Une projection entraînable de 4096→32 via chunked mean perd l'essentiel de la richesse sémantique. C'est un couloir d'étranglement non intentionnel.
-
-**Le World Model est trop simple pour être utile comme simulateur**
-
-Un MLP 2-couches `(state + action) → next_state` peut apprendre des corrélations locales mais pas de causalité. Il ne peut pas répondre à "que se passerait-il si je faisais X dans une configuration légèrement différente de tout ce que j'ai vécu ?" C'est précisément la question que pose l'intelligence générale.
-
-**La récompense de curiosité est scalaire et non-différenciée**
-
-`r_curiosity = np.clip(world_model_error, 0, 1.0)` — une seule valeur. Le cerveau différencie le type de surprise : surprise sensorielle, surprise temporelle, surprise causale. Cette granularité est la clé pour apprendre *comment* être curieux, pas juste *combien*.
+**Recommandation : B — simplifier avant implémentation**, avec rétrogradations explicites : LNN, JEPA, motivation à 7 termes et LMM deviennent des branches expérimentales conditionnées à des sondes pré-enregistrées, et non des composants de l'architecture par défaut. Détail en §12.
 
 ---
 
-## PARTIE II — INTELLIGENCE GÉNÉRALE : QUELLES PISTES SONT VRAIMENT IMPÉRATIVES ?
+## 2. Hypothèses acceptées
 
-### 2.1 Définition opérationnelle de l'intelligence cible
+Ces choix résistent à la critique et ne doivent pas être rouverts sans fait nouveau :
 
-> *"L'intelligence n'est pas la capacité à répondre juste à une solution connue, mais la capacité à trouver des solutions à un problème jamais rencontré."*
-
-Cette définition désigne précisément ce que le deep learning conventionnel ne fait **pas** : extrapoler hors de la distribution d'entraînement. Les LLMs interpolent entre des patterns vus. L'intelligence au sens de cette définition demande de composer des primitives connues de façon nouvelle pour construire une solution inédite.
-
-Traduction en ingénierie : pour résoudre un problème jamais rencontré, un agent a besoin de :
-
-1. **Un modèle causal du monde** — pas des corrélations, des mécanismes. "Si je fais A, B arrive, parce que A cause B via C."
-2. **La capacité de composer** — "Je n'ai jamais vu ça, mais c'est une combinaison de X et Y que je connais."
-3. **La simulation interne** — tester des solutions mentalement avant de les exécuter.
-4. **L'abstraction multi-échelle** — représenter le problème à plusieurs niveaux de granularité simultanément.
-5. **La mémoire générative** — extraire des patterns des expériences passées, pas juste les rejouer.
-
-### 2.2 Classement des pistes biomimétiques
-
-#### TIER 1 — IMPÉRATIVES (blocantes pour l'intelligence générale)
-
-**① Codage Prédictif Hiérarchique (Friston's Free Energy Principle)**
-
-*Pourquoi impératif :* C'est le seul cadre théorique unifié qui explique simultanément la perception, l'action, et l'apprentissage comme minimisation d'un signal unique — l'énergie libre (≈ erreur de prédiction). Le cerveau ne maximise pas une récompense — il minimise la surprise. Cette inversion est fondamentale.
-
-Implication directe pour Emergence : la curiosité (actuellement une récompense positive) doit devenir un signal de contrôle de l'attention, pas un bonus de récompense. L'agent ne cherche pas la surprise pour être récompensé — il réduit la surprise sur les variables qu'il peut contrôler et l'embrasse sur les variables qu'il ne peut pas contrôler encore.
-
-*Ce qui change concrètement :* Le World Model cesse d'être un oracle séparé et devient le moteur central de l'apprentissage. Chaque couche prédit la couche inférieure. Les erreurs de prédiction remontent. Les prédictions descendent. Plus de backprop global sur une loss externe — des signaux locaux d'erreur.
-
-**② Belief States / États de Croyance (NextLat)**
-
-*Pourquoi impératif :* Un agent qui ne mémorise que l'état actuel ne peut pas raisonner sur ce qu'il *croit* être vrai vs. ce qu'il *sait* être vrai. Résoudre des problèmes nouveaux exige d'inférer des états cachés du monde à partir d'observations partielles. Un belief state compressé de l'historique est la condition minimale pour ça.
-
-Biologiquement : les neurones pyramidaux des couches 2/3 du cortex encodent des "croyances" sur le monde — des distributions de probabilité sur les états cachés, mises à jour par les erreurs de prédiction des couches 4/5. Ce n'est pas une métaphore — c'est de la physique neuronale.
-
-*Ce qui change concrètement :* Le `ReplayBuffer` stocke non plus `(s_t, a_t, r_t, s_{t+1})` mais des séquences. Le `WorldModel` devient récurrent (GRU ou S4) et génère un belief state `b_t = encode(s_{1..t})` qui compresse l'historique causalement pertinent.
-
-**③ Abstraction Temporelle Hiérarchique (Options Framework + Biologie)**
-
-*Pourquoi impératif :* La capacité à "dézoomer" d'une situation nouvelle et à la reconnaître comme une instance d'une classe abstraite connue est la mécanique fondamentale de la résolution de problèmes nouveaux. Cela nécessite plusieurs niveaux temporels simultanés.
-
-Le cerveau opère sur au moins 6 échelles de temps simultanées : 50ms (réflexes), 500ms (perception unifiée), 5s (séquence d'action), 50s (épisode), 5min (stratégie), heures/jours (consolidation). Emergence n'en a que 2 (60Hz et 0.1Hz). Il en manque au moins 2 intermédiaires.
-
-*Ce qui change concrètement :* Ajouter un niveau "planificateur" à ~1Hz entre le Cervelet et le Cortex. Ce niveau prédit des séquences d'états latents (trajectoires imaginées) et en sélectionne une en fonction du reward prédit. C'est de la planification dans l'espace latent — exactement ce que Cosmos 3 fait à grande échelle.
-
-#### TIER 2 — IMPORTANTES (non-blocantes, mais accélèrent la percée)
-
-**④ Cognition Distribuée (Inspiration Céphalopode)**
-
-*Pourquoi importante :* La scalabilité de l'intelligence incarnée exige que les effecteurs aient une intelligence locale. Un cerveau central qui contrôle chaque moteur de chaque bras est un goulot d'étranglement biologique et informatique. La solution de l'octopode — cerveau central fixe les intentions, bras exécutent localement — est le blueprint correct pour la robotique multi-effecteurs.
-
-*Ce qui change concrètement :* Quand le bras robotique est ajouté (roadmap), ne pas l'attacher au `ReflexActor` central. Lui donner son propre `LocalActorArm` avec son propre espace latent proprioceptif (32 dims), recevant un vecteur d'intention partagé du Cortex.
-
-**⑤ Mémoire à Deux Niveaux (Épisodique + Sémantique)**
-
-*Pourquoi importante :* Le `ReplayBuffer` actuel est purement épisodique — des événements bruts. L'intelligence générale nécessite aussi de la mémoire **sémantique** : des abstractions extraites de multiples épisodes. "J'ai vu un objet rouge dans 47 situations différentes — voilà ce que 'rouge' signifie pour moi en termes de conséquences."
-
-*Ce qui change concrètement :* Pendant le sommeil (`sleep.py`), au-delà d'entraîner Actor/Critic/WorldModel, ajouter une phase de "distillation sémantique" : clustering des états latents similaires, extraction de prototypes, stockage dans FAISS comme mémoire longue durée.
-
-#### TIER 3 — EXPLORATOIRES (à étudier mais pas prioritaires)
-
-**⑥ Computation Dendritique**
-
-Biologiquement fascinant, mais le gain de capacité expressionnelle peut être approximé avec des architectures plus profondes ou des mécanismes d'attention. À explorer une fois les Tier 1 et 2 solidement en place. Ne pas implémenter maintenant — le ROI par rapport à la complexité d'implémentation est incertain.
-
-**⑦ Stigmergie / Environnement comme Mémoire Externe**
-
-Pertinente quand l'agent aura la capacité de marquer physiquement son environnement (bras robotique). Ajouter une "trace de curiosité spatiale" (où est-ce que je suis passé, qu'est-ce que j'y ai appris) est une extension naturelle de FAISS une fois la cartographie spatiale implémentée.
-
-#### TIER 4 — SPÉCULATIVES (n'implémentez pas encore)
-
-**⑧ Réseaux Gliaux**
-
-La biologie n'est pas encore assez clarifiée pour être traduite en ingénierie utile. L'équivalent fonctionnel (modulation lente des poids synaptiques) peut être obtenu via des méta-learning plus classiques.
-
-**⑨ Bioélectricité Lévinienne**
-
-La théorie de Michael Levin est révolutionnaire conceptuellement mais ne dispose pas encore de mécanisme implémentable. À revisiter dans 3-5 ans quand la littérature aura mûri.
-
-### 2.3 La thèse centrale
-
-La percée vers l'intelligence générale — au sens de "trouver des solutions à des problèmes jamais rencontrés" — repose sur **une seule idée mère** que toutes les pistes Tier 1 incarnent différemment :
-
-> **Un agent intelligent n'encode pas des réponses. Il encode un modèle causal du monde à plusieurs niveaux d'abstraction, et il utilise ce modèle pour simuler des situations nouvelles.**
-
-Le LLM du Cortex actuel est l'inverse de ça : il encode des patterns textuels statistiques et les restitue. C'est de l'interpolation, pas de la causalité. Le World Model MLP est également de l'interpolation. Pour passer au niveau supérieur, il faut que le modèle du monde soit **causal, récurrent, et hiérarchique** — et que le LLM devienne un générateur d'hypothèses sur ce modèle, pas un classifieur de stratégies.
+- **J0 d'abord.** Aucun apprentissage fiable n'était possible avec deux firmwares incompatibles, les encodeurs placeholders du prototype archivé et sans horodatage causal. La spécification a raison de faire de l'instrumentation le jalon bloquant.
+- **Abandon de la navigation comme objectif.** Le corpus expérimental (couplage direct : 7.73% puis 13.03% de collisions ; S4 rejeté sur 12 comparaisons sur 12) justifie le pivot.
+- **Le LLM jamais sur les moteurs, sorties structurées, ablation sans-LMM obligatoire.** Correct et non négociable.
+- **Voie acoustique distincte de la voie ASR.** La familiarité vocale par transcription seule serait une erreur de catégorie ; la séparation est la bonne décision.
+- **Encodeurs pré-entraînés gelés acceptés comme priors.** Le volume de données propre au robot ne permettra pas d'apprendre la vision depuis zéro ; la distinction explicite acquis initial / appris localement est saine.
+- **Sécurité non apprenable, plasticité contrôlée, rollback.** Conforme aux leçons du projet.
+- **Journalisation des trois niveaux de commande** (demandée, sécurisée, appliquée) et splits par session. Directement issus des erreurs passées ; à conserver.
+- **Le corps minimal cou-seul.** Un degré de liberté est suffisant pour étudier agentivité, habituation et calibration motrice, et insuffisant pour masquer les échecs derrière la complexité — c'est une vertu.
 
 ---
 
-## PARTIE III — PLAN D'IMPLÉMENTATION PRIORITAIRE
+## 3. Erreurs ou risques critiques
 
-> **Règle de priorisation :** Chaque phase doit laisser l'agent dans un état fonctionnel et testable. Pas de refactors qui cassent tout pendant 3 semaines.
+Chaque entrée suit le format : affirmation / pourquoi elle peut être fausse / test le moins coûteux / résultat confirmant / résultat conduisant à l'abandon.
 
-### Phase 0 — Réparer ce qui est cassé (Semaine 1, BLOQUANT)
+### C1 — « Le JEPA multimodal est le modèle du monde central »
 
-**Objectif :** Avoir un agent qui fonctionne réellement tel qu'il est décrit dans la documentation.
+- **Affirmation.** Le diagramme §6 place le JEPA sur le chemin critique : LNN → JEPA → mémoire/familiarité → motivation.
+- **Pourquoi c'est probablement faux.** Le seul test quantitatif disponible du latent JEPA comme représentation (critique de collision) montre qu'il *détruit* de l'information par rapport au contexte brut. D1 a montré qu'en boucle fermée le contenu dynamique du latent n'apportait rien (latent gelé à zéro : 7.75% vs latent dynamique : 7.73%). Rien ne garantit qu'un JEPA multimodal sur le nouveau corps fera mieux ; l'hypothèse par défaut devrait être l'inverse.
+- **Test le moins coûteux.** Reproduire le protocole de `docs/research/collision_risk_results.md` sur le nouveau corps dès que J1-J2 produisent des données : sonde gelée « conséquence d'action » et « récurrence » sur (a) contexte brut multimodal, (b) latent JEPA. C'est déjà la règle 7.4 de la spécification — il suffit de la rendre *bloquante* pour l'entrée du JEPA dans l'architecture.
+- **Confirmé si** le latent bat le contexte brut avec une marge supérieure à la variance inter-graines sur au moins deux sondes.
+- **Abandonné si** le contexte brut domine ou égale le latent sur les sondes de J2 et J4 : le JEPA reste alors une branche de recherche, et la mémoire/familiarité se construit sur embeddings gelés + contexte brut.
 
-**0.A — Corriger le bug de mémoire** (1h)
+### C2 — « Le LNN est l'intégrateur sensorimoteur de première génération »
 
-```python
-# main.py — Remplacer ligne 216 :
-# AVANT :
-memory.add(current_embedding_state, action, reward, current_embedding_state, done)
-# APRÈS :
-if previous_embedding_state is not None:
-    memory.add(previous_embedding_state, action, reward, current_embedding_state, done)
-```
+- **Affirmation.** §7.3 : le LNN estime le mouvement réel, filtre le bruit, maintient l'état, prédit à court terme, exécute les primitives.
+- **Pourquoi c'est probablement faux.** Ce sont six fonctions dont les trois premières sont résolues optimalement (au sens des hypothèses gaussiennes) par un filtre de Kalman ou complémentaire, avec incertitude calibrée *par construction* — précisément ce que J1 exige. Un LNN n'offre aucune garantie de calibration, ajoute la variance d'entraînement démontrée par E1, exige le GPU, et son seul avantage théorique (temps continu, échantillonnage irrégulier) est couvert par un GRU recevant Δt en entrée. L'historique du projet (RMSE offline non prédictive, 5/6 sélections E3 divergentes du minimum de RMSE) montre le coût réel de chaque modèle entraîné supplémentaire.
+- **Test le moins coûteux.** Sur les mêmes logs J1 : persistance, modèle linéaire (commande → Δgyro), Kalman/complémentaire, GRU petit, LNN petit. 3 graines pour les modèles entraînés. Budget : quelques heures de GPU, zéro matériel.
+- **Confirmé si** le LNN bat le Kalman ET le GRU au-delà de la dispersion inter-graines sur des sessions tenues à part.
+- **Abandonné si** le Kalman atteint le critère J1 seul : le LNN est différé jusqu'à ce qu'une tâche le justifie (exécution de primitives complexes, J8+).
 
-**0.B — Brancher la vision réelle dans le pipeline d'encodage** (2-4h)
+### C3 — Critères de jalons non quantifiés : la leçon E1 n'est pas propagée
 
-Le `VisionModule` YOLOv8 est déjà importé et instancié dans `main.py` (il était utilisé dans une version précédente). Il faut le réactiver et remplacer le `VisionEncoder` placeholder.
+- **Affirmation.** Chaque jalon a un « critère de passage » qualitatif (« meilleure que persistance », « bat chaque modalité seule »).
+- **Pourquoi c'est insuffisant.** E1 a prouvé que la variance inter-graines invalide les comparaisons mono-graine, et le projet a dû amender sa règle de promotion a posteriori. Les ticks de collision autocorrélés ont aussi montré que l'échantillon effectif est bien plus petit que le nombre de pas. Aucun critère J1-J7 ne précise graines, sessions, ni marges. Tels quels, les jalons seront « passés » par des tirages chanceux, exactement comme `dagger_002`.
+- **Test le moins coûteux.** Aucun : c'est une correction d'écriture. Chaque critère doit pré-enregistrer N graines (≥3 pour tout modèle entraîné), M sessions physiques distinctes (≥3), la métrique, la marge de non-infériorité et la baseline à battre.
+- **Confirmé / abandonné.** Sans objet — à appliquer avant tout entraînement.
 
-```python
-# Dans life_cycle(), après l'init des encodeurs :
-vision_module = VisionModule()  # YOLOv8 déjà prêt
+### C4 — La collecte de données sociales commence trop tard
 
-# Dans la boucle, remplacer emb_vision = vision_enc(None) par :
-vision_latent = vision_module.get_latent()  # vecteur 128-dim de YOLO
-emb_vision = vision_enc(torch.tensor(vision_latent)).cpu().numpy().flatten()
-# Et adapter VisionEncoder pour accepter le 128-dim YOLO output
-```
+- **Affirmation.** L'ordre J0→J4 implique que les données de familiarité ne deviennent pertinentes qu'au jalon J4.
+- **Pourquoi c'est faux.** J4 exige des récurrences *inter-sessions* sur des semaines (sessions et phrases nouvelles au test, conditions variées, voix inconnues). C'est la ressource la plus lente du projet — pas le GPU, pas le code : le temps calendaire de présence humaine. Si l'enregistrement passif ne commence qu'après J3, J4 stagne des semaines de plus.
+- **Test le moins coûteux.** Aucun test : décision de planification. Dès que le recorder J0 fonctionne, chaque session — y compris les sessions de debug J1-J2 — enregistre audio/vidéo avec consentement et métadonnées (qui est présent, sans étiquette d'identité dans les features).
+- **Risque si ignoré.** J4 devient le goulot calendaire du projet entier.
 
-**0.C — Fermer la boucle action → vision** (physique — dépend du montage)
+### C5 — Estimation d'angle : risque de circularité de la vérité terrain
 
-Le point 2 de la roadmap ("Le Cou") est la condition préalable à tout apprentissage sensoriomoteur réel. Sans ça, l'agent ne peut pas observer les conséquences de ses actions. Priorité physique numéro 1.
+- **Affirmation.** J1 : « prédiction de l'angle et de la vitesse meilleure que persistance », angle estimé par fusion commande/IMU avec incertitude calibrée.
+- **Pourquoi c'est fragile.** Si la « vérité terrain » de l'angle est elle-même la fusion commande+IMU, et que le prédicteur reçoit la commande en entrée, le critère peut être satisfait en apprenant le modèle de commande de l'estimateur — une tautologie. La calibration de l'incertitude est alors invérifiable. De plus, valider une estimation sans aucune mesure indépendante n'est pas possible, même en principe.
+- **Test le moins coûteux.** Deux options : (a) ~2-5 € : un encodeur magnétique AS5600 ou un potentiomètre couplé à l'axe, utilisé *uniquement comme vérité terrain de banc*, pas en production ; (b) 0 € : rapporteur imprimé fixé à la base + repère sur la tête + photos à des consignes connues, plus recalage périodique sur butées mécaniques. L'option (a) coûte moins qu'une journée de débat.
+- **Confirmé si** l'estimation fusionnée atteint une erreur RMS ≤ 2-3° avec incertitude couvrant ~90% des erreurs sur une session de 30 min incluant des mouvements variés.
+- **Abandonné si** l'erreur dépasse ~5-8° ou dérive sans borne : acheter le capteur d'angle et le déclarer dans `angle_source` (le contrat de données le prévoit déjà : `external_encoder`).
 
-**0.D — Nettoyer main.py** (30min)
+### C6 — Reformulation recommandée de J1 : prédire des grandeurs *mesurées*
 
-Supprimer la ligne dupliquée 97, ajouter des commentaires sur les vrais flux de données.
+- **Affirmation.** J1 cible l'angle, une grandeur estimée.
+- **Pourquoi c'est sous-optimal.** Le gyroscope Z et l'accéléromètre sont des mesures directes. « Prédire gyro_z(t+h) et accel(t+h) connaissant l'historique de commandes et de mesures » est un critère sans circularité, falsifiable contre persistance et modèle linéaire, et capture exactement la contingence sensorimotrice visée. L'angle absolu devient un livrable séparé d'*estimation* (avec sa propre validation C5), pas la cible de *prédiction*.
+- **Test.** Gratuit : c'est une reformulation du critère avant l'entraînement.
 
----
+### C7 — Familiarité avec une seule personne : le contraste n'existe pas
 
-### Phase 1 — Belief States : Donner une Mémoire au World Model (Semaines 2-5)
+- **Affirmation.** J4 : « la fusion audio-vidéo bat chaque modalité seule et reste calibrée face à une voix inconnue ».
+- **Pourquoi c'est probablement infaisable tel quel.** L'environnement réel contient essentiellement une personne. Avec un seul positif, « familier vs inconnu » dégénère en « présence vs absence » — qu'un détecteur de mouvement + énergie audio résout sans apprentissage. Les « voix inconnues » devront venir de haut-parleurs (signature acoustique propre : le système peut apprendre « enceinte vs humain vivant » au lieu de « inconnu vs familier ») ou de jeux de données publics (décalage de domaine). Le risque de conclure à tort est maximal sur ce jalon.
+- **Test le moins coûteux.** Avant tout modèle : embeddings locuteur pré-entraînés (type ECAPA) sur les enregistrements du robot ; mesurer si la similarité intra-locuteur inter-sessions dépasse la similarité avec des négatifs publics ET des négatifs rejoués par enceinte. Inviter au moins une seconde personne réelle sur ≥3 sessions.
+- **Confirmé si** la séparation existe dans l'espace gelé avec les deux types de négatifs et au moins deux personnes réelles.
+- **Abandonné (rétrogradé) si** seuls des négatifs synthétiques sont disponibles : J4 est requalifié honnêtement en « ré-identification inter-sessions + calibration contre négatifs synthétiques », sans revendication de discrimination de personnes.
 
-**Objectif :** Le `WorldModel` encode non plus l'état instantané mais l'historique compressé causalement pertinent. Inspiration directe : NextLat (arXiv 2511.05963).
+### C8 — Le microphone de webcam peut détruire l'identité vocale en amont
 
-**Pourquoi maintenant :** C'est la fondation sur laquelle tout le reste s'appuie. Un World Model récurrent est nécessaire avant d'implémenter le codage prédictif hiérarchique.
+- **Affirmation.** §4.1 : « le microphone intégré à la webcam peut suffire pour les premiers essais ».
+- **Pourquoi c'est risqué.** AGC, suppression de bruit et compression des pilotes webcam normalisent précisément les indices (énergie relative, spectre fin, dynamique) dont dépend l'identité de locuteur. Si la chaîne d'acquisition écrase ces indices, J3 et J4 échoueront pour une raison matérielle indétectable dans les métriques de modèle.
+- **Test le moins coûteux.** Une heure : enregistrer la même personne, mêmes phrases, à 3 distances et 2 volumes ; calculer les similarités d'embeddings locuteur ; comparer avec un téléphone ou un micro USB de référence.
+- **Confirmé si** la similarité intra-locuteur reste stable à travers distances/volumes et nettement au-dessus de l'inter-locuteur.
+- **Abandonné si** l'AGC écrase la structure : achat d'un micro USB (~20 €) avant J3 — pas après l'échec de J4.
 
-**Implémentation :**
+### C9 — Fuites temporelles : les risques réels ne sont pas ceux listés
 
-Créer `core/belief_world_model.py` — un `RecurrentWorldModel` qui remplace progressivement le `WorldModel` actuel :
+- **Affirmation.** §8 et §15.3 couvrent la causalité (horodatages séparés, frontières d'épisodes jamais utilisées en ligne, splits par session).
+- **Ce qui manque.** Les fuites les plus probables dans un pipeline asynchrone multimachine sont : (a) **normalisation calculée sur la session entière** (moyenne/écart-type incluant le futur) appliquée aux fenêtres d'entraînement ; (b) **interpolation/rééchantillonnage centré** utilisant des échantillons postérieurs à t ; (c) **horloges non alignées** entre Arduino (`micros()`), Windows (capture webcam — les pilotes assignent souvent l'heure d'arrivée, pas d'exposition) et WSL (inférence), créant des décalages qui font entrer du « futur physique » dans des fenêtres « passées » ; (d) **latence audio inconnue** des buffers circulaires des pilotes.
+- **Test le moins coûteux.** Test du clap : un événement physique unique visible et audible (clap devant la caméra, LED + bip commandés par l'Arduino) ; mesurer le désalignement inter-modal reconstruit par le bus. À intégrer comme livrable J0.
+- **Confirmé si** le désalignement résiduel est borné, mesuré, et journalisé par session (< ~20 ms après correction, soit un pas de boucle).
+- **Abandonné si** le jitter inter-horloges est non stationnaire et > 1 pas de boucle : il faut alors un protocole de synchronisation actif (ping périodique RTT/2, offset journalisé) avant tout apprentissage multimodal.
 
-```python
-class RecurrentWorldModel(nn.Module):
-    """
-    World Model avec mémoire récurrente (Belief State).
-    Inspiré de NextLat : encode l'historique en un belief state b_t
-    tel que b_t soit la compression minimale de (s_1..s_t) nécessaire
-    pour prédire s_{t+1}.
-    
-    Architecture :
-    - GRU encode l'historique → belief state b_t (64-dim)
-    - Transition Model prédit b_{t+1} depuis b_t + action
-    - Decoder reconstruit l'état latent depuis b_t (pour mesurer la curiosité)
-    """
-    def __init__(self, state_dim=256, action_dim=2, belief_dim=64, hidden_dim=256):
-        super().__init__()
-        self.belief_dim = belief_dim
-        
-        # Encodeur récurrent : compresse l'historique
-        self.belief_encoder = nn.GRUCell(state_dim, belief_dim)
-        
-        # Modèle de transition : prédit le prochain belief
-        self.transition = nn.Sequential(
-            nn.Linear(belief_dim + action_dim, hidden_dim),
-            nn.GELU(),
-            nn.Linear(hidden_dim, belief_dim)
-        )
-        
-        # Décodeur : pour la mesure de surprise
-        self.decoder = nn.Linear(belief_dim, state_dim)
-    
-    def forward(self, state, action, belief=None):
-        if belief is None:
-            belief = torch.zeros(state.shape[0], self.belief_dim).to(state.device)
-        
-        # Mise à jour du belief state
-        new_belief = self.belief_encoder(state, belief)
-        
-        # Prédiction du prochain belief
-        x = torch.cat([new_belief, action], dim=1)
-        predicted_next_belief = self.transition(x)
-        
-        # Décodage pour mesurer l'erreur
-        predicted_next_state = self.decoder(predicted_next_belief)
-        
-        return predicted_next_belief, predicted_next_state
-```
+### C10 — Motivation par progrès d'apprentissage : l'estimateur est plus bruité que le signal
 
-Le `ReplayBuffer` devra stocker des séquences de longueur N (ex. 16 steps) plutôt que des transitions isolées.
+- **Affirmation.** §7.6 : la priorité combine 7 termes, dont le progrès de prédiction par « famille de situations ».
+- **Pourquoi c'est fragile.** (a) Le progrès est la *dérivée* d'une courbe d'erreur bruitée : sur les fenêtres courtes d'une session de 30 min, l'estimateur de pente sera dominé par la variance — le même problème que les ticks autocorrélés d'E1, en pire. (b) La « famille de situations » est soit codée à la main (acceptable au début), soit apprise (circulaire : la partition dépend du modèle dont on mesure le progrès). (c) Sept termes pondérés sont inidentifiables avec les volumes de données disponibles : aucune ablation ne pourra attribuer un comportement à un coefficient. (d) Avec un seul DDL dans une pièce statique, l'espace des contingences apprenables peut saturer en quelques heures ; après quoi progrès ≈ 0 partout et le comportement dégénère vers le repos — issue que la formule prédit mais que la spécification ne discute pas.
+- **Test le moins coûteux.** Hors robot, en replay : injecter dans les logs un canal artificiel parfaitement apprenable (sinus dépendant de la commande) et un canal de bruit pur ; vérifier que l'estimateur de progrès les classe correctement, et mesurer en combien de temps. Puis comparer l'ordonnanceur LP complet à deux baselines : choix aléatoire de primitive, et round-robin avec décroissance d'habituation (compteur, zéro apprentissage).
+- **Confirmé si** LP classe les deux canaux correctement en < ~10 min de données et bat les deux baselines sur des signatures comportementales pré-enregistrées (allocation de temps, évitement du canal bruit).
+- **Abandonné si** round-robin + habituation est indistinguable : adopter l'ordonnanceur simple et réduire la formule à 2-3 termes (progrès, habituation, risque).
 
-**Métriques de succès :**
-- La loss du WorldModel converge en moins d'époques qu'avant (le contexte historique aide la prédiction)
-- Le signal de curiosité est plus stable et différencié (moins de spikes sur du bruit)
+### C11 — « Détecteur d'événements » et segmentation épisodique : composant central non défini
+
+- **Affirmation.** Le diagramme §6 contient un « Détecteur d'événements » et la mémoire dépend de « frontières d'événements ».
+- **Pourquoi c'est un risque.** Aucun mécanisme, aucun jalon, aucun critère ne le définit, alors que la mémoire épisodique (J6), la familiarité (J4) et la motivation (J5) en dépendent tous. Un composant non spécifié dont trois jalons dépendent est une dette de conception majeure.
+- **Correction minimale.** Première génération : seuils déclaratifs (début/fin de mouvement servo, VAD audio, delta visuel), versionnés, sans apprentissage. La segmentation apprise est différée.
+
+### C12 — La prévention de l'oubli mesure la dérive mais ne la résout pas
+
+- **Affirmation.** §9.3 : replay, jeu de validation gelé, mesure de dérive des embeddings, checkpoints conservés.
+- **Pourquoi c'est incomplet.** (a) Les prototypes de familiarité sont des vecteurs dans l'espace d'un encodeur versionné ; à chaque promotion d'encodeur, tous les prototypes deviennent invalides. Mesurer la dérive ne dit pas quoi faire. La seule solution robuste : conserver les données brutes et ré-encoder les prototypes à chaque promotion — ce qui impose une politique de rétention brute (volume : de l'ordre de 1-2 Go/session de 30 min en vidéo compressée + audio ; chiffrable, mais à budgéter dès J0). (b) Le « jeu de souvenirs gelé » vieillit : la pièce change, les capteurs sont recalibrés ; au bout de quelques mois il mesure la dérive du monde, pas l'oubli du modèle. Il faut une politique de versionnement et de dépréciation des jeux gelés. (c) §12 interdit toute métrique globale unique, mais le rollback automatique (§9.2) exige une règle déterministe — contradiction à résoudre : promotion = conjonction de tests par capacité avec marges de non-infériorité pré-enregistrées ; un seul échec = pas de promotion.
 
 ---
 
-### Phase 2 — Codage Prédictif Multi-Échelle (Semaines 4-10, en parallèle partiel avec Phase 1)
+## 4. Composants prématurés ou inutiles
 
-**Objectif :** Transformer la récompense de curiosité scalaire en un signal multi-dimensionnel d'erreur de prédiction à plusieurs niveaux temporels.
-
-**Pourquoi maintenant :** Dès que le RecurrentWorldModel fonctionne, il peut être étendu en hiérarchie.
-
-**Architecture cible :**
-
-```
-Niveau 3 (0.1 Hz) — Cortex LLM     : "Quelle est ma situation générale ?"
-        ↕ erreur de prédiction stratégique
-Niveau 2 (~1 Hz)  — Planificateur   : "Quelle séquence d'états est prédite ?"
-        ↕ erreur de prédiction tactique  
-Niveau 1 (60 Hz)  — Cervelet        : "Quel prochain état immédiat est prédit ?"
-```
-
-Le niveau 2 est **le niveau manquant**. C'est un `PlannerModule` qui :
-- Reçoit le belief state du RecurrentWorldModel
-- Rollout K=5 pas dans l'avenir (en imagination)
-- Sélectionne la séquence d'actions qui minimise l'énergie libre à l'horizon K
-- Génère un `plan_intention_vector` (32-dim) injecté dans le Cervelet *en plus* de l'intention du Cortex
-
-```python
-# core/planner.py (nouveau module)
-class PlannerModule(nn.Module):
-    """
-    Niveau intermédiaire (~1Hz) entre Cervelet et Cortex.
-    Fait de la planification à court terme dans l'espace des belief states.
-    """
-    def __init__(self, belief_dim=64, action_dim=2, horizon=5, plan_dim=32):
-        super().__init__()
-        self.horizon = horizon
-        
-        # Génère des candidats d'action
-        self.action_sampler = nn.Linear(belief_dim, action_dim * 8)  # 8 candidats
-        
-        # Évalue les trajectoires imaginées
-        self.trajectory_evaluator = nn.Sequential(
-            nn.Linear(belief_dim * horizon, 128),
-            nn.GELU(),
-            nn.Linear(128, 1)  # Score de la trajectoire
-        )
-        
-        # Encode le plan sélectionné en vecteur d'intention
-        self.plan_encoder = nn.Linear(belief_dim, plan_dim)
-```
-
-**Ce qui change pour le Cortex LLM :** Au lieu de choisir une stratégie parmi 6 mots, le Cortex reçoit en entrée l'erreur de prédiction du Planificateur (pas seulement du texte) et génère une intention vectorielle ajustée. Il devient un **méta-régulateur** des erreurs de prédiction, pas un classifieur de situation.
-
-**Métriques de succès :**
-- L'agent montre des comportements de "prédiction frustrée" — il hésite devant un obstacle nouveau plutôt que de l'ignorer
-- Le signal de curiosité se différencie par type (sensoriel vs temporel vs causal)
+| Composant | Statut recommandé | Justification |
+|---|---|---|
+| LNN comme intégrateur J1 | **Prématuré** — branche expérimentale gated par C2 | Tâche de filtrage classique ; variance d'entraînement démontrée (E1) ; aucun besoin du temps continu non couvert par GRU+Δt |
+| JEPA multimodal central | **Prématuré** — gated par la règle 7.4 rendue bloquante | Falsifié sur la seule sonde existante (collision risk) ; D1 montre un latent dynamiquement inutile en boucle fermée |
+| Interpolation géodésique, métrique riemannienne, flot de Ricci (`docs/research/jepa_lnn_robot_math.md` §5, §11) | **Inutile à horizon visible** | Aucune expérience du projet n'a jamais atteint le niveau où ces régularisations seraient le facteur limitant ; complexité pure |
+| Motivation à 7 termes | **Prématuré** — réduire à 2-3 termes | Coefficients inidentifiables ; baseline round-robin+habituation non encore battue (C10) |
+| LMM/LLM « professeur » (J7) | **Différable sans coût** | Aucun jalon antérieur n'en dépend ; la seule utilité immédiate défendable est le journal de session lisible (outillage développeur, pas cognition) |
+| Segmentation d'événements apprise | **Prématurée** | Seuils déclaratifs d'abord (C11) |
+| Espace latent multimodal unifié | **Correctement suspendu** par §3 — maintenir la suspension | La question ouverte 16.2 (espaces par modalité + prédiction croisée) est la voie basse-complexité ; commencer là |
+| Piézo | **Correctement exclu** | Rien à ajouter ; le marquage `mechanically_coupled` dans le contrat est la bonne pratique |
+| Whisper | **Acceptable dès J3** | Asynchrone, gelé, hors boucle rapide ; risque faible. Seule réserve : C8 sur le micro en amont |
 
 ---
 
-### Phase 3 — Mémoire Longue Durée avec Abstraction Sémantique (Semaines 8-16)
+## 5. Architecture minimale recommandée
 
-**Objectif :** Pendant le sommeil, ne pas seulement entraîner les réseaux — extraire des abstractions réutilisables et les stocker dans une mémoire longue durée interrogeable.
+Le critère de conception : chaque boîte doit être soit déterministe, soit accompagnée de sa baseline triviale dans le même livrable.
 
-**Architecture :**
-
-```
-Sommeil :
-  1. Replay des épisodes → entraînement Actor/Critic/WorldModel (déjà fait)
-  2. Clustering des belief states → identification de "situations types"
-  3. Stockage FAISS des prototypes + leurs Q-values associées
-  4. Fine-tuning d'un petit réseau de reconnaissance "cette situation ressemble à..."
-
-Éveil :
-  1. À chaque step, le Planificateur interroge FAISS : "situations similaires ?"
-  2. Si similarité > seuil : injecter la valeur attendue comme prior dans le Critique
-  3. Cela permet de ne PAS tout réapprendre dans une situation légèrement nouvelle
-```
-
-```python
-# core/semantic_memory.py (nouveau module)
-import faiss
-import numpy as np
-
-class SemanticMemory:
-    """
-    Mémoire à long terme : stocke des prototypes de situations avec
-    leurs valeurs Q associées. Permet l'analogie : "J'ai déjà vu quelque
-    chose de similaire, voilà ce que ça valait."
-    """
-    def __init__(self, belief_dim=64, max_size=10_000):
-        self.index = faiss.IndexFlatL2(belief_dim)
-        self.q_values = []
-        self.contexts = []
-        self.max_size = max_size
-    
-    def store(self, belief_state: np.ndarray, q_value: float, context: str = ""):
-        """Stocke un prototype de situation avec sa valeur."""
-        if self.index.ntotal >= self.max_size:
-            return  # TODO: politique d'éviction (LRU)
-        
-        self.index.add(belief_state.reshape(1, -1).astype(np.float32))
-        self.q_values.append(q_value)
-        self.contexts.append(context)
-    
-    def retrieve(self, belief_state: np.ndarray, k: int = 3):
-        """Retrouve les k situations les plus similaires et leurs valeurs."""
-        if self.index.ntotal == 0:
-            return None, None
-        
-        distances, indices = self.index.search(
-            belief_state.reshape(1, -1).astype(np.float32), k
-        )
-        
-        retrieved_q = [self.q_values[i] for i in indices[0] if i < len(self.q_values)]
-        return distances[0], retrieved_q
-    
-    def get_memory_prior(self, belief_state: np.ndarray, similarity_threshold: float = 2.0):
-        """
-        Retourne un prior de valeur basé sur la mémoire, ou None si
-        aucune situation suffisamment similaire n'a été trouvée.
-        """
-        distances, q_values = self.retrieve(belief_state)
-        if distances is None:
-            return None
-        
-        # Si la situation la plus proche est assez similaire
-        if distances[0] < similarity_threshold:
-            # Moyenne pondérée par similarité inverse
-            weights = 1.0 / (distances + 1e-6)
-            weighted_q = np.average(q_values, weights=weights)
-            return float(weighted_q)
-        
-        return None  # Situation vraiment nouvelle → pas de prior
+```text
+Matériel + synchronisation d'horloges mesurée (J0, test du clap)
+    |
+Bus d'événements horodatés, recorder append-only, replay déterministe
+    |
+    |-- Proprioception : filtre complémentaire/Kalman (commande + gyro + ZUPT
+    |     + recalage butées), incertitude calibrée, validé contre capteur de banc (C5)
+    |-- Vision : encodeur pré-entraîné gelé (5-10 Hz) + flux optique
+    |-- Audio : log-mel + embedding locuteur gelé + VAD ; Whisper asynchrone
+    |
+Prédicteurs sensorimoteurs : persistance -> linéaire -> GRU
+    (LNN seulement si C2 le justifie)
+    |
+Familiarité : prototypes non paramétriques (kNN à décroissance temporelle)
+    sur embeddings gelés — zéro entraînement en première génération
+    |
+Ordonnanceur d'expériences : catalogue de primitives sûres
+    + habituation par compteur (LP seulement si C10 le justifie)
+    |
+Mémoire : épisodes parquet + index ; rétention brute budgétée ;
+    re-encodage des prototypes à chaque promotion d'encodeur
+    |
+Sécurité codée en dur (inchangée par rapport à la spécification §11.1)
 ```
 
-**L'insight clé :** Le `memory_prior` retourné par `SemanticMemory` peut être injecté comme offset dans le Critique. Si le Critique dit Q=0.3 et la mémoire sémantique dit "situation similaire valait Q=0.7", le signal composite guide l'agent vers la solution connue *avant même* de l'avoir réexploré. C'est de la généralisation par analogie.
+Branches expérimentales (jamais sur le chemin critique tant que leur sonde n'est pas gagnée) : JEPA multimodal (sonde C1), LNN (sonde C2), motivation LP (sonde C10), LMM (ablation J7).
+
+Cette architecture atteint les capacités 1 à 6 de la définition du succès (§2 de la spécification) sans un seul réseau entraîné de bout en bout au-delà d'un GRU. Si elle y parvient, le projet aura appris quelque chose d'important : les mécanismes développementaux élémentaires ne requièrent pas l'appareillage lourd. Si elle échoue à un point précis, ce point devient la justification *mesurée* du composant complexe correspondant — ce qui est exactement la manière dont un composant devrait gagner sa place.
 
 ---
 
-### Phase 4 — Architecture Distribuée Céphalopode (Semaines 12-20, dépend du hardware)
+## 6. Révision détaillée des jalons J0 à J8
 
-**Objectif :** Quand le bras robotique est ajouté, ne pas centraliser son contrôle dans le `ReflexActor` existant.
+### J0 — Instrumentation fiable : **conserver, durcir**
 
-**Architecture :**
+Ajouts requis :
 
+- protocole série **binaire** versionné (le format texte actuel `P:x|D:y` à 115200 bauds laisse peu de marge : IMU 100-200 Hz + ultrason + piézo en ASCII saturent le lien ; budget de bande passante à chiffrer dans le livrable) ;
+- **test du clap** pour la calibration de synchronisation audio/vidéo/IMU (C9) et protocole d'offset d'horloges Windows/WSL/Arduino journalisé par session ;
+- politique de **rétention des données brutes** (volume/session, durée, suppression) — condition de C12 ;
+- démarrage de la **collecte sociale passive** (C4) dès que le recorder tourne ;
+- décision documentée sur le **capteur d'angle de banc** (C5) — l'acheter coûte moins cher que d'en débattre.
+
+Critère de passage : inchangé (session 30 min rejouable, ordre causal, pas de trou silencieux), plus : désalignement inter-modal mesuré < 1 pas de boucle.
+
+### J1 — Schéma corporel du cou : **scinder en J1a / J1b**
+
+- **J1a (estimation)** : angle + vitesse par fusion commande/IMU, incertitude calibrée, validés contre la vérité terrain de banc (C5). Livrable : `ServoState` avec `angle_uncertainty_deg` honnête.
+- **J1b (prédiction)** : prédire des grandeurs *mesurées* — gyro_z et accéléromètre futurs à 100 ms / 500 ms — conditionnées aux commandes (C6). Échelle de baselines obligatoire : persistance → linéaire → Kalman → GRU → (LNN si justifié). Critère quantifié : battre la persistance ET le modèle linéaire sur ≥3 sessions tenues à part, ≥3 graines pour tout modèle entraîné, marge > dispersion inter-graines.
+- La « détection de commande sans effet » est conservée telle quelle : c'est un excellent critère, mesurable par silence gyroscopique après commande.
+
+### J2 — Contingences visuelles actives : **conserver, ajouter la baseline géométrique**
+
+Le critère (choisir le futur visuel correspondant à l'action ; actions permutées dégradent le score) est bon mais peut être satisfait par la géométrie seule : une rotation de caméra produit un flux optique quasi déterministe. Baseline obligatoire : prédicteur flux-optique/homographie sans apprentissage (ou régression linéaire commande → décalage). Le modèle appris doit battre cette baseline, sinon J2 valide la trigonométrie, pas un modèle du monde.
+
+### Nouveau J2.5 — Attribution auto-produit vs externe : **jalon manquant**
+
+La capacité 2 de la définition du succès (« distinguer les changements auto-produits des événements externes ») est l'affirmation développementale centrale du projet — et elle n'a pas de jalon. Elle n'apparaît que comme métrique (§12.2). Proposition : prédire le flux sensoriel sous modèle propre (J1b + J2) ; le résidu pendant le mouvement propre doit rester bas ; un changement externe provoqué (complice qui agite un objet, bruit déclenché) doit produire un résidu élevé *y compris pendant un mouvement propre simultané*. Critère : AUROC de détection d'événement externe > seuil pré-enregistré, dans les deux conditions (tête immobile / tête en mouvement).
+
+### J3 — Audition duale : **conserver, conditionner au test micro**
+
+Le critère (regroupement par source > regroupement par phrase) est le bon. Préalables : C8 (test AGC du micro, une heure) et précision du protocole : combien de sessions, combien de locuteurs, négatifs rejoués par enceinte identifiés comme tels.
+
+### J4 — Familiarité multimodale : **requalifier honnêtement**
+
+En l'état, le critère est probablement intestable (C7). Requalification : « ré-identification inter-sessions calibrée », avec exigence minimale de ≥2 personnes réelles sur ≥10 sessions et négatifs des deux types (enceinte + datasets). La baseline à battre est double : (a) kNN sur embeddings gelés sans aucun apprentissage local ; (b) détecteur de présence trivial (énergie audio + différence d'images). Si (a) suffit, c'est une excellente nouvelle — la familiarité de première génération est gratuite — et l'apprentissage local doit prouver un gain au-delà.
+
+Le contrôle « le système ne mémorise pas le fond de la pièce » (§10.3) doit devenir un test exécutable : session avec une personne différente au même endroit/horaire ; si le prototype « familier » s'active autant, c'est un détecteur de décor.
+
+### J5 — Curiosité : **conserver l'objectif, réduire le mécanisme**
+
+Critère actuel qualitatif. Le rendre falsifiable via C10 : canal apprenable + canal bruit injectés, signatures comportementales pré-enregistrées, baselines aléatoire et round-robin+habituation. Le mécanisme par défaut est l'ordonnanceur simple ; LP n'entre que s'il bat l'ordonnanceur simple.
+
+### J6 — Mémoire et sommeil : **scinder : l'infrastructure remonte, la consolidation reste**
+
+L'infrastructure de promotion (checkpoints versionnés, jeux gelés, non-régression, rollback) est nécessaire dès le *premier* réentraînement de J1b — pas au jalon 6. La déplacer dans J0/J1. La consolidation à proprement parler (rééchantillonnage, adaptation des encodeurs) reste en J6, avec la résolution de la contradiction rollback/métrique unique (C12c).
+
+### J7 — LMM/LLM : **différer ; garder le journal**
+
+Aucune dépendance amont. L'ablation prévue est la bonne règle, mais la baseline doit inclure « suggestion aléatoire depuis le même catalogue sûr » — un LLM qui bat « rien » mais perd contre « aléatoire » est un coût net. Le seul livrable immédiat justifié : génération de rapports de session lisibles (outillage).
+
+### J8 — Extension du corps : **conserver**
+
+La règle « chaque actionneur repasse J0/J1 » est exactement la bonne. Ajouter : tout nouvel actionneur est acheté *avec* son retour de position (encodeur ou potentiomètre) — la leçon C5 ne doit pas être réapprise.
+
+### Dépendances corrigées
+
+```text
+J0 ──┬── J1a ── J1b ──┬── J2 ── J2.5 ──┐
+     │                │                 ├── J5 ── J6(consolidation) ── J7? ── J8
+     ├── J3 ──────────┴── J4 ──────────┘
+     └── collecte sociale passive (continue dès J0)
+J6(infrastructure de promotion) : dès J1b
 ```
-Cortex LLM (0.1 Hz)
-     ↓ intention_vector_global (32-dim)
-     ├→ PlannerModule (1 Hz) → plan_vector (32-dim)
-     │        ↓
-     ├→ LocalActorNeck (60 Hz) — contrôle du cou/caméra
-     │   input: [emb_somato_neck (32) + emb_vision (64) + plan_vector (32)] = 128-dim
-     │   output: angle[-1, 1]
-     │
-     └→ LocalActorArm (60 Hz) — contrôle du bras (futur)
-         input: [emb_somato_arm (32) + emb_tactile (32) + plan_vector (32)] = 96-dim
-         output: [x, y, grip][-1, 1]
-```
 
-Chaque `LocalActor` est un MLP léger (~64 unités, 2 couches) — minimaliste par design. L'intelligence émerge de la coordination via `plan_vector`, pas de la complexité individuelle. C'est exactement le principe du cerveau décentralisé de l'octopode.
-
-**Ce que ça débloque :** L'agent peut apprendre à coordonner deux effecteurs indépendants (tête + bras) en poursuivant un objectif commun, sans que le Cortex LLM ait à micro-manager chaque moteur. C'est une instance de **généralisation compositionnelle** : si le bras apprend à saisir des objets rouges et que la tête apprend à suivre le mouvement, ils peuvent coordonner sur un objet rouge en mouvement sans jamais avoir été entraînés ensemble sur ce cas exact.
+J3 ne dépend pas de J1/J2 : paralléliser.
 
 ---
 
-## PARTIE IV — LA SPIRALE CRITIQUE : CE QUI PEUT MAL TOURNER
+## 7. Baselines obligatoires
 
-### 4.1 Risques architecturaux
+Aucun composant appris n'est évalué sans la sienne. Liste opposable :
 
-**Le piège de la complexité croissante**
-
-Chaque phase ajoute des modules. À la Phase 3, l'agent aura : `ReflexActor`, `RecurrentWorldModel`, `PlannerModule`, `SemanticMemory`, `Cortex`, plus les encodeurs sensoriels. Les interactions entre ces modules peuvent créer des boucles de feedback difficiles à déboguer. Règle : **chaque module a une interface minimale et testable en isolation**.
-
-**Le piège du surrogate signal**
-
-L'erreur de prédiction du WorldModel comme curiosité est un proxy. Un agent très doué à réduire son erreur de prédiction peut devenir "craintif" — il arrête d'explorer les zones où son erreur reste haute parce que prévoir = impossible. Ce phénomène (noisy TV problem) est documenté en RL. La solution est d'ajouter un signal de **compétence** : l'agent doit différencier "je ne peux pas prédire parce que c'est fondamentalement aléatoire" et "je ne peux pas prédire parce que je n'ai pas assez appris ici".
-
-**Le piège de la catastrophe oubliée**
-
-L'apprentissage offline dans `sleep.py` n'a aucune protection contre le catastrophic forgetting. Entraîner sur les 100k dernières transitions efface ce qui a été appris il y a 100k+1 transitions. L'ajout de `SemanticMemory` (Phase 3) atténue ça partiellement — mais le replay expérienciel doit être biaisé vers les prototypes importants, pas uniforme.
-
-**Le LLM comme goulot d'étranglement conceptuel**
-
-Le Cortex Llama 3.2 catégorise en 6 stratégies fixes. C'est rigide. La migration vers un générateur d'intentions vectorielles continues (vectorial telepathy complète) est dans la roadmap mais n'est pas encore implémentée. La Phase 1 dépend implicitement de ce canal — si le Cortex envoie toujours des vecteurs pseudo-aléatoires fixes par stratégie, le signal d'intention reste pauvre.
-
-### 4.2 Les questions que ce projet ne répond pas (encore)
-
-- **Comment émerge la représentation symbolique ?** Les vecteurs latents sont des espaces continus. Mais la pensée abstraite (résolution de problèmes) semble nécessiter des représentations discrètes compositionnelles. Le saut entre latent continu et symbolique discret est le problème ouvert le plus difficile de l'IA.
-
-- **Le LLM est-il le bon Cortex ?** LeCun a raison sur ce point : un LLM est entraîné à prédire des tokens, pas à modéliser de la causalité physique. Pour un agent incarné, un modèle du monde pré-entraîné sur des données physiques (Cosmos 3 Nano) serait un meilleur Cortex qu'un LLM textuel.
-
-- **Est-ce que la conscience est nécessaire pour l'intelligence générale ?** La question est probablement mal posée, mais elle touche quelque chose de réel : est-ce qu'un agent peut résoudre des problèmes vraiment nouveaux sans une forme d'auto-modélisation (savoir ce qu'il sait vs. ce qu'il ne sait pas) ? La réponse semble être non, et c'est ce que les belief states commencent à implémenter.
-
-### 4.3 Le critère de succès de chaque phase
-
-| Phase | Critère observable | Durée |
-|-------|-------------------|-------|
-| **0** | L'erreur du WorldModel décroît au lieu d'osciller. L'agent réagit visuellement. | 1 semaine |
-| **1** | La curiosité est plus stable. L'agent montre des comportements répétitifs distincts dans des zones familières vs. nouvelles. | 3-4 semaines |
-| **2** | L'agent hésite face à un obstacle nouveau (le Planificateur génère un conflit de prédiction visible). Le Cortex reçoit un signal richer. | 6-8 semaines |
-| **3** | Après 3 nuits de sommeil, l'agent performe mieux dans une situation similaire à une situation ancienne sans l'avoir ré-explorée complètement. | 8-12 semaines |
-| **4** | (Hardware dépendant) L'agent coordonne tête + bras sur un objet en mouvement sans avoir été entraîné explicitement sur la coordination. | Variable |
+1. **Persistance** et **modèle linéaire** — toute prédiction sensorimotrice (J1b, J2).
+2. **Filtre de Kalman / complémentaire** — estimation d'état (J1a) et prédiction courte (J1b).
+3. **GRU/TCN à budget de paramètres égal** — face à tout LNN, 3 graines minimum chacun.
+4. **Flux optique / homographie sans apprentissage** — J2.
+5. **Embeddings pré-entraînés gelés + kNN** — J3, J4 : la familiarité « gratuite » à battre.
+6. **Détecteur de présence trivial** (énergie audio + différence d'images) — J4.
+7. **Ordonnanceur aléatoire** et **round-robin + habituation par compteur** — J5.
+8. **Contexte brut multimodal** — face à tout latent JEPA, sur chaque sonde (règle 7.4, rendue bloquante ; protocole déjà éprouvé par `docs/research/collision_risk_results.md`).
+9. **Sans-LMM** et **suggestion aléatoire du catalogue** — J7.
+10. **Seuil ultrason brut** — tout critique de risque (déjà établi : AUROC 0.402, facile à battre, mais à conserver comme plancher).
 
 ---
 
-## PARTIE V — SYNTHÈSE : LA THÈSE OPÉRATIONNELLE
+## 8. Expériences falsifiables prioritaires
 
-Pour qu'un système artificiel acquière la capacité de **trouver des solutions à des problèmes jamais rencontrés**, trois propriétés sont nécessaires et suffisantes (hypothèse testable) :
+Classées par rapport information/coût décroissant. F1-F4 tiennent dans une semaine et désamorcent les quatre plus gros risques.
 
-1. **Un modèle causal récurrent du monde** — pas des corrélations, des mécanismes compressés dans un belief state qui encode l'histoire causalement pertinente. *(Phases 1 & 2)*
-
-2. **La simulation interne multi-échelle** — la capacité de "jouer" mentalement des situations dans l'espace latent à plusieurs résolutions temporelles, d'évaluer des trajectoires imaginées avant de les exécuter. *(Phase 2)*
-
-3. **La généralisation par analogie via mémoire sémantique** — accéder à des prototypes de situations passées pour construire un prior sur des situations nouvelles-mais-similaires. *(Phase 3)*
-
-Le reste — la richesse sensorielle, la communication avec les humains, la motricité fine, la conscience de soi — amplifie ces trois propriétés mais ne les remplace pas.
-
-Le projet Emergence a la structure juste. Les fondations biologiques (Cervelet/Cortex, sommeil, homéostasie) sont les bonnes. Ce qui manque, c'est la **profondeur temporelle** : l'agent vit dans un présent perpétuel. Lui donner un passé compressé (belief states) et un futur simulé (planner) est le saut qualitatif le plus proche et le plus impactant.
+| id | hypothèse testée | coût | confirme si | abandonne si |
+|---|---|---|---|---|
+| F1 | Le micro webcam préserve l'identité vocale (C8) | 1 h | similarité intra-locuteur stable inter-distances | structure écrasée → micro USB avant J3 |
+| F2 | L'angle est estimable par commande+IMU (C5) | 1 j + 5 € | RMS ≤ 2-3°, incertitude couvrante | > 5-8° ou dérive → encodeur permanent |
+| F3 | La synchronisation inter-horloges est bornée (C9) | 0.5 j | désalignement < 1 pas de boucle, stationnaire | jitter non stationnaire → protocole de sync actif avant tout multimodal |
+| F4 | Le LNN apporte un gain sur GRU/Kalman en J1b (C2) | 2-3 j GPU | gain > dispersion inter-graines, ≥3 graines | sinon LNN différé à J8+ |
+| F5 | L'estimateur de progrès distingue apprenable/bruit (C10) | 1-2 j, en replay | classement correct < 10 min de données | LP remplacé par habituation simple |
+| F6 | Le latent JEPA bat le contexte brut sur une sonde du nouveau corps (C1) | 2-3 j une fois J2 atteint | latent > brut sur ≥2 sondes, marge > variance | JEPA reste hors architecture |
+| F7 | La familiarité capture la personne, pas le décor (C7) | 1 session avec complice | prototype discrimine personnes au même endroit/horaire | requalification en détecteur de présence ; revoir J4 |
+| F8 | Une seconde personne réelle est régulièrement disponible (C7) | 0 (logistique) | ≥2 personnes, ≥10 sessions planifiables | J4 requalifié dès maintenant, pas après échec |
 
 ---
 
-*Ce document est un instrument de navigation, pas un contrat. Il doit être révisé après chaque phase complétée.*
+## 9. Critères d'arrêt et de promotion
 
-*Dernière mise à jour : Juin 2026*
+### Règles de promotion (durcies depuis §7.4 de `docs/research/jepa_lnn_coupling_strategy.md`)
+
+1. Tout critère de jalon est **pré-enregistré** avant le premier entraînement : métrique, baseline, N graines (≥3 pour modèles entraînés), M sessions (≥3, tenues à part), marge de non-infériorité.
+2. Promotion = **conjonction** de tests par capacité (pas de métrique globale, conformément à §12) ; un échec = pas de promotion ; rollback automatique sur cette règle déterministe — ce qui résout la contradiction C12c.
+3. Tout composant appris doit battre sa baseline de §7 **au-delà de la dispersion inter-graines**. Un chevauchement min-max face à la baseline = non promu (règle E1, généralisée).
+4. La sélection de checkpoint utilise la métrique de la capacité cible, jamais une perte d'entraînement offline (règle E3 : 5/6 sélections divergentes du minimum de RMSE).
+
+### Règles d'arrêt (stop-loss par branche)
+
+- **LNN** : deux tentatives conformes au protocole F4 sans gain → gelé jusqu'à J8.
+- **JEPA** : F6 perdu sur le nouveau corps → le JEPA n'entre pas dans l'architecture ; une nouvelle tentative exige un changement structurel documenté (pas « plus d'epochs » — règle déjà actée en §6 du document de couplage).
+- **Motivation LP** : F5 perdu ou baseline round-robin indistinguable sur les signatures J5 → ordonnanceur simple adopté définitivement pour la première génération.
+- **J4 plein** : F8 non satisfait sous 4 semaines → requalification officielle du jalon (ré-identification), mise à jour de la spécification.
+- **LMM** : perd contre la suggestion aléatoire → retiré de la boucle expérimentale, conservé comme générateur de journal.
+- Règle générale : un module qui échoue deux fois face à sa baseline triviale est rétrogradé en branche expérimentale et **sort du chemin critique** ; il ne peut y revenir que par une sonde gagnée, pas par décision d'architecture.
+
+---
+
+## 10. Questions non résolues
+
+1. **Combien de personnes distinctes sont réellement accessibles**, à quelle fréquence ? La réponse conditionne J4 plus que tout choix de modèle (F8).
+2. **Le MF90 survivra-t-il à des semaines de service ?** Micro-servo à pignons sous charge de capteurs, sollicité en oscillations : usure, jeu croissant (qui invalide lentement la calibration C5), échauffement. Prévoir le suivi du jeu mécanique dans la télémétrie et un servo de rechange.
+3. **Budget de stockage brut** : la rétention nécessaire à C12 (ré-encodage des prototypes) est-elle tenable sur des mois ? Chiffrer en Go/semaine au livrable J0.
+4. **Qu'est-ce qu'un « événement »** ? La segmentation déclarative (C11) est un palliatif ; la question ouverte 16-style demeure : quel critère de frontière est stable inter-sessions ?
+5. **Partition des « familles de situations »** pour le progrès d'apprentissage : codée à la main d'après quoi ? Le catalogue de primitives est un candidat naturel (une famille = une primitive × un contexte grossier), mais cela reste à valider.
+6. **L'IMU est-elle solidaire de la tête ?** La spécification (§4.3) pose la question sans y répondre. Toute la chaîne C5/C6 suppose que oui. À trancher physiquement avant J0.
+7. **Précision de synchronisation atteignable** entre Windows, WSL2 et Arduino sans matériel dédié — F3 y répondra, mais si la réponse est mauvaise, le contrat multimodal entier doit prévoir des fenêtres d'incertitude temporelle explicites.
+8. **Espaces latents par modalité + prédiction croisée vs espace unifié** (question 16.2 de la spécification) : la revue recommande de commencer par les espaces séparés, mais c'est un a priori de simplicité, pas un résultat.
+
+---
+
+## 11. Plan concret des trois prochaines étapes
+
+### Étape 1 — J0 durci (1-2 semaines)
+
+Protocole série binaire unique versionné ; budget de bande passante mesuré ; bus horodaté complet (servo, ultrason, IMU, vidéo, audio) ; recorder append-only + replay déterministe ; test du clap et offsets d'horloges journalisés (F3) ; politique de rétention brute ; collecte sociale passive activée ; trancher la position de l'IMU (question 10.6). Livrable : session de 30 min rejouable + rapport de latence/désalignement.
+
+### Étape 2 — Levée des inconnues matérielles (1 week-end, en parallèle de l'étape 1)
+
+F1 (test AGC du micro webcam — 1 h), F2 (vérité terrain d'angle : AS5600 ou rapporteur de banc — 1 j), décision F8 (disponibilité d'une seconde personne — 0 j, logistique). Trois décisions d'achat/requalification à moins de 30 € au total, qui désamorcent les risques C5, C7 et C8 avant qu'ils ne coûtent des semaines.
+
+### Étape 3 — J1 scindé avec échelle de baselines (2-3 semaines)
+
+J1a : fusion Kalman commande+IMU, incertitude calibrée, validation contre la vérité terrain F2. J1b : prédiction de gyro_z/accel futurs, échelle persistance → linéaire → Kalman → GRU → (LNN si F4 le justifie), critères pré-enregistrés (3 graines, 3 sessions, marges), sélection de checkpoint par la métrique cible. Livrable : décision documentée LNN/GRU/Kalman — la première brique du schéma corporel, posée sur des fondations opposables.
+
+---
+
+## 12. Recommandation finale
+
+**Option B : simplifier avant implémentation.**
+
+Justification du choix contre les alternatives :
+
+- **Pas A** (adopter telle quelle) : la spécification place encore JEPA et LNN sur le chemin critique alors que ses propres règles épistémiques, appliquées aux propres données du projet, les en excluent pour l'instant ; ses critères de jalons ne sont pas quantifiés ; J4 est probablement intestable tel qu'écrit ; J2.5 manque.
+- **Pas C** (réviser profondément) : l'ossature est bonne — J0-first, contrat de données, sécurité, règles expérimentales, sommeil/éveil. Les corrections sont des rétrogradations et des durcissements, pas une refonte.
+- **Pas D** (abandonner des hypothèses fondatrices) : aucune hypothèse fondatrice n'est falsifiée. L'approche développementale (contingences, habituation, familiarité, mémoire épisodique) reste un programme de recherche cohérent et le corps minimal est un bon instrument pour le tester. Ce qui est falsifié, c'est l'utilité *actuelle* de deux outils particuliers (latent JEPA comme représentation, injection directe dans le LNN) — et la spécification les a déjà partiellement encaissés.
+
+Conditions attachées à B, sans lesquelles la recommandation devient C :
+
+1. LNN, JEPA, motivation LP et LMM sont rétrogradés en branches expérimentales, hors chemin critique, chacune gated par sa sonde (F4, F6, F5, ablation J7).
+2. Tous les critères J1-J7 sont réécrits avec graines, sessions et marges pré-enregistrées avant le premier entraînement.
+3. J1 est scindé (estimation/prédiction), J2.5 est ajouté, J4 est requalifié si F8 échoue, l'infrastructure de promotion remonte à J1.
+4. Les trois tests matériels F1-F3 sont exécutés avant tout investissement logiciel dans J3-J4.
+
+Le principe directeur de cette revue est celui que la spécification énonce elle-même en §15.2 sans en tirer toutes les conséquences : toute architecture complexe est comparée à une baseline simple — *et perd sa place quand elle ne gagne pas*. L'analogie biologique (cervelet, cortex, sommeil) a une valeur heuristique réelle, mais aucun module ne doit rester dans le diagramme parce qu'il ressemble à un organe. Le banc actuel — un cou, quatre capteurs, une pièce, une personne — est petit ; c'est précisément ce qui le rend capable de produire des réponses nettes, à condition de ne pas l'écraser sous une cathédrale de modules avant qu'il ait parlé.
