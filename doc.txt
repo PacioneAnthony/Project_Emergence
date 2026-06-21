@@ -1,2 +1,0 @@
-BUSID  VID:PID    DEVICE
-10-4   046d:094c  Brio 100

@@ -1,56 +1,50 @@
-# 🌱 Projet Emergence
+# Projet Emergence
 
-**Emergence** est une tentative de création d'un organisme artificiel autonome, inspiré par la robotique développementale et la biologie.
+Emergence explore une architecture développementale pour un organisme artificiel incarné. Le chemin actif commence par une instrumentation physique fiable avant tout apprentissage complexe.
 
-Contrairement aux IA classiques (Chatbots, Agents scriptés), Emergence ne cherche pas à résoudre une tâche précise. Son but est de **survivre, explorer et se développer** en maintenant son homéostasie (énergie, intégrité ..) et en maximisant sa curiosité.
+## Reprise Du Projet
 
-## 🧠 Philosophie
+Commencer par [PILOTAGE.md](PILOTAGE.md), puis lire [SESSION_HANDOFF.md](SESSION_HANDOFF.md). Les demandes matérielles adressées à Anthony sont centralisées dans [ANTHONY_INBOX.md](ANTHONY_INBOX.md).
 
-L'agent est conçu comme un organisme bicaméral :
-1.  **Le Cervelet (Système 1) :** Un réseau de neurones rapide, responsable de la survie, de la motricité et des réflexes (< 20ms).
-2.  **Le Cortex (Système 2) :** Un LLM (Llama 3.2) qui observe, raisonne et "parle" au cervelet en temps réel pour orienter la stratégie globale ou résoudre des problèmes complexes.
-3.  **Model-Based Reinforcement Learning (MBRL) :** Le système intègre un **WorldModel** (inspiré de l'architecture JEPA) qui lui permet d'apprendre la dynamique de son environnement. L'agent apprend à prédire ses futurs états latents (et non les pixels de la caméra) en fonction de ses actions, lui permettant de "simuler mentalement" les conséquences de ses mouvements.
-4.  **Intrinsèquement Motivé :** Il agit pour réduire sa "douleur" (batterie faible, chocs) et augmenter sa "joie" (découverte visuelle, surprise).
+La vision technique est définie dans [DEVELOPMENTAL_ARCHITECTURE.md](DEVELOPMENTAL_ARCHITECTURE.md). Les décisions et responsabilités sont consignées dans [DECISIONS.md](DECISIONS.md) et [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md).
 
-## ⚡ Architecture Hardware
+## Jalon Actif
 
-Le projet tourne sur une infrastructure hybride locale haute performance :
-* **Cerveau (Linux/WSL2) :** Héberge l'intelligence, la mémoire et l'entraînement. Utilise PyTorch sur une **NVIDIA RTX 5080**.
-* **Corps (Windows) :** Gère les périphériques physiques (Webcam, Arduino/Moteur Pas-à-Pas) pour contourner les limitations de virtualisation.
-* **Système Nerveux :** Communication ultra-rapide via **ZeroMQ** entre les deux environnements.
+J0 valide le protocole EMG1, l'enregistrement multimodal, le replay, la synchronisation et la sécurité du servo :
 
-## 🚀 Installation & Démarrage
+- protocole et critères : [J0_PROTOCOL.md](J0_PROTOCOL.md) ;
+- procédure physique : [J0_RUNBOOK.md](J0_RUNBOOK.md) ;
+- conception du nouveau banc : [BENCH_DESIGN.md](BENCH_DESIGN.md).
 
-### Pré-requis
-* Windows 11 avec WSL2 (Ubuntu).
-* Python 3.10+.
-* Une Webcam et un Arduino avec Moteur Pas-à-Pas (pour la motricité).
-* GPU NVIDIA (Série 40/50 recommandée).
+Le montage v0.1 ne doit plus recevoir de commande moteur. Le firmware patch 2 compilé laisse le servo détaché au démarrage et en failsafe.
 
-### 1. Côté Corps (Windows)
-Lancer le script qui gère les yeux et les muscles :
+## Installation J0
+
 ```powershell
-python windows_client/windows_body.py
+python -m venv env_windows
+.\env_windows\Scripts\python.exe -m pip install -r requirements\dev.txt
 ```
 
-### 2. Côté Cerveau (Linux)
-Lancer le cycle de vie de l'agent :
-```bash
-python main.py
+Vérifications sans matériel :
+
+```powershell
+.\env_windows\Scripts\python.exe -m pytest -q
+python -m j0.cli demo-record --duration 2 --output data/j0-demo
+.\env_windows\Scripts\python.exe -m j0.cli devices
 ```
 
-### 3. Le Sommeil (Apprentissage)
-Une fois que l'agent a accumulé de l'expérience, lancez la consolidation :
-```bash
-python sleep.py
-```
+La capture physique passe uniquement par `windows_client/j0_capture.py` et les commandes documentées dans le runbook.
 
-## 📂 Structure
+## Arborescence
 
-* `core/` : Le noyau cognitif (Cerveau réflexe, WorldModel, Système de récompense, Mémoire).
-* `sensory/` : Traitement des sens (Vision YOLO, Audio).
-* `windows_client/` : Scripts ponts pour le matériel Windows.
-* `main.py` : Boucle de vie principale (Éveil).
-* `sleep.py` : Boucle d'entraînement (Sommeil).
+- `j0/` : acquisition, protocole, recorder, replay et rapports J0 ;
+- `peripheral/brain_stem/` : firmware Arduino Mega EMG1 unique ;
+- `windows_client/` : flash et point d'entrée de capture Windows ;
+- `tests/` : suite de tests active ;
+- `requirements/` : dépendances par sous-système ;
+- `common/`, `sim2d/`, `learning/` : branche de recherche reproductible ;
+- `scripts/research/` : runners des expériences historiques ;
+- `docs/research/` : résultats JEPA/LNN et simulation ayant motivé D-002 ;
+- `archive/legacy_agent/` : ancien prototype cognitif, conservé hors chemin actif.
 
-Projet en phase Alpha - Développement actif.
+Les répertoires `data/`, `models/`, les mémoires, médias générés et environnements Python restent locaux et sont exclus par `.gitignore`.
