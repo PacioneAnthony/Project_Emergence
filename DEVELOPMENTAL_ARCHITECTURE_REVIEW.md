@@ -347,3 +347,244 @@ Conditions attachées à B, sans lesquelles la recommandation devient C :
 4. Les trois tests matériels F1-F3 sont exécutés avant tout investissement logiciel dans J3-J4.
 
 Le principe directeur de cette revue est celui que la spécification énonce elle-même en §15.2 sans en tirer toutes les conséquences : toute architecture complexe est comparée à une baseline simple — *et perd sa place quand elle ne gagne pas*. L'analogie biologique (cervelet, cortex, sommeil) a une valeur heuristique réelle, mais aucun module ne doit rester dans le diagramme parce qu'il ressemble à un organe. Le banc actuel — un cou, quatre capteurs, une pièce, une personne — est petit ; c'est précisément ce qui le rend capable de produire des réponses nettes, à condition de ne pas l'écraser sous une cathédrale de modules avant qu'il ait parlé.
+
+---
+
+## 13. Addendum biomimétique — Ce que la neurologie du vivant impose et ce qu'elle ne justifie pas encore
+
+*Revue complémentaire — Juin 2026*  
+*Mandat : répondre à la question « quelles pistes biomimétiques seront impérativement nécessaires pour une intelligence générale, et lesquelles restent spéculatives ? », en appliquant les mêmes règles épistémiques que §12.*
+
+---
+
+### 13.1 Ce que la revue §1–12 implémente déjà sans le nommer
+
+Avant d'ajouter quoi que ce soit, nommer ce qui existe. Plusieurs principes biologiques fondamentaux sont déjà présents dans l'ossature recommandée, sans être explicités :
+
+| Principe biologique | Mécanisme naturel | Équivalent dans la revue |
+|---|---|---|
+| **Développement séquentiel** | Maturation neurologique : réflexes → motricité → perception → social | L'ordre J0→J1→J2→J2.5→J3→J4→J5→J6 |
+| **Habitation neurale** | Décrément des réponses des neurones à stimulus répété | Ordonnanceur round-robin + compteur de décroissance (J5) |
+| **Consolidation offline** | Replay hippocampique pendant le sommeil lent (SWS) | Cycle sommeil/éveil, checkpoints versionnés (J6) |
+| **Mémoire épisodique → sémantique** | HPC encode les épisodes, néocortex extrait les régularités lentement | Épisodes parquet + prototypes de familiarité |
+| **Plasticité contrôlée (Bcl-2, LTP/LTD bornés)** | Synapses ne se modifient pas librement pendant une tâche active | §9.1 : poids non modifiés pendant l'éveil |
+| **Fiabilité avant vitesse** | Le développement priorise la précision sensorielle avant la vitesse motrice | J0 (instrumentation) bloquant pour J1 (moteur) |
+
+Ces principes sont corrects et ne doivent pas être rouverts. L'addendum se limite à ce qui manque.
+
+---
+
+### 13.2 La question posée — Intelligence générale : définition opérationnelle
+
+> *« L'intelligence n'est pas la capacité à répondre juste à une solution connue, mais la capacité à trouver des solutions à un problème jamais rencontré. »*
+
+Traduit en critère testable sur ce banc : un agent est généralement intelligent si, placé dans une configuration sensorielle inédite (pièce réarrangée, nouvelle voix, obstacle imprévu), il produit une réponse *fonctionnellement adaptée* — non par mémorisation d'un stimulus similaire, mais par recomposition de mécanismes acquis.
+
+Ce critère est différent de la performance à J4 (ré-identification) ou J5 (habituation). Il correspond à J2.5 généralisé : savoir ce qui vient de soi vs. ce qui vient du monde, et agir en conséquence dans une configuration non vue.
+
+---
+
+### 13.3 Trois principes biomimétiques impératifs — Classement opposable
+
+Le classement suit la même logique que §3 : format **affirmation / pourquoi impératif / test le moins coûteux / confirmé si / abandonné si**.
+
+#### B1 — Copie d'efférence / décharge corollaire (→ J2.5, J1b)
+
+**Ce que c'est.** Quand un animal initie un mouvement, une copie de la commande motrice est envoyée simultanément aux aires sensorielles pour prédire les conséquences sensorielles attendues. Le résidu entre cette prédiction et l'observation réelle est appelé **réafférence** : c'est le signal « externe ». Sans ce mécanisme, un animal ne peut pas distinguer si le monde a bougé ou si c'est lui. Chez les téléostéens, ce circuit est littéralement codé dans le cervelet ; chez l'humain, c'est le modèle interne du cervelet de Wolpert (MOSAIC, 1998) et la décharge corollaire du cortex moteur.
+
+**Pourquoi impératif.** J2.5 (jalon manquant ajouté par §6) exige précisément cette capacité : « le résidu pendant un mouvement propre doit rester bas ; un changement externe doit produire un résidu élevé *y compris pendant un mouvement propre simultané* ». Ce critère est inatteignable sans un module de prédiction des conséquences sensorimotrices. Le Kalman estimateur de J1a est une condition nécessaire mais pas suffisante : il estime l'état courant, il ne prédit pas l'état futur *conditionné à une commande donnée*.
+
+**Pourquoi pas les autres approches biologiques d'abord.** La computation dendritique, les réseaux gliaux, la bioélectricité léviniène — aucune ne répond à la question « est-ce moi ou le monde ? » que J2.5 pose. La copie d'efférence est le seul mécanisme qui le résout, et c'est le plus ancien de l'évolution (présent chez les poissons osseux, ~400 Ma).
+
+**Test le moins coûteux.** Sur replay J1b : entraîner un prédicteur linéaire `commande → Δgyro_z prédit(t+100ms)`. Pendant les sessions de test : le résidu `|Δgyro_z observé − prédit|` doit être faible lors des mouvements propres (erreur ≤ modèle de persistance) et élevé lors d'un perturbateur externe (complice qui tape sur le banc). AUROC de détection d'événement externe cible > 0.85, sur au moins 3 sessions.
+
+**Confirmé si** le résidu distingue mouvement propre et perturbation externe avec AUROC > 0.85 pour le modèle linéaire (baseline copie d'efférence). La présence d'un GRU ou d'un LNN n'est alors justifiée que s'il améliore ce critère au-delà de la dispersion inter-graines.
+
+**Abandonné (réformé) si** le Kalman seul atteint le critère B1 sans modèle de prédiction conditionnel explicite : dans ce cas, la copie d'efférence est implicitement couverte par l'estimateur, et le module séparé est superflu — mais J2.5 reste un jalon.
+
+**Implémentation minimale dans le dépôt.** Un seul fichier, dérivé du Kalman J1a :
+
+```python
+# learning/efference_copy.py
+class EfferenceCopy:
+    """
+    Prédit les conséquences proprioceptives d'une commande servo.
+    Baseline linéaire : commande -> delta_gyro_z prédit.
+    Conforme à la règle §15.6 : la commande appliquée, pas demandée.
+    """
+    def __init__(self):
+        self.gain = 0.0   # appris par régression linéaire sur J1b
+        self.bias = 0.0
+
+    def predict(self, applied_command_delta_deg: float) -> float:
+        return self.gain * applied_command_delta_deg + self.bias
+
+    def residual(self, predicted: float, observed: float) -> float:
+        return abs(observed - predicted)
+
+    def fit(self, commands: np.ndarray, gyro_deltas: np.ndarray):
+        # Régression OLS, aucun GPU requis
+        A = np.column_stack([commands, np.ones_like(commands)])
+        result = np.linalg.lstsq(A, gyro_deltas, rcond=None)
+        self.gain, self.bias = result[0]
+```
+
+Aucun réseau de neurones, aucune dépendance GPU, compatible avec la contrainte §5.1 de causalité (commande appliquée, pas demandée).
+
+---
+
+#### B2 — Inférence active comme cadre de curiosité (→ J5, alternative à la formule à 7 termes)
+
+**Ce que c'est.** L'inférence active (Friston, 2010) formalise le comportement d'un agent comme minimisation de l'*énergie libre espérée future*, qui se décompose en deux termes : (a) **valeur épistémique** = réduction attendue d'incertitude sur des variables non encore observées (= curiosité vers ce qu'on ne sait pas encore) ; (b) **valeur pragmatique** = atteindre des états préférés (= survie, homéostasie). La clé est que la curiosité n'est pas définie par la surprise actuelle mais par la *réduction d'incertitude attendue si on agissait*. Un canal bruité (télévision) a une surprise haute mais une valeur épistémique nulle car aucune action ne réduirait son incertitude.
+
+**Pourquoi impératif.** La revue §3 (C10) identifie exactement ce problème : « la même chose que les ticks autocorrélés d'E1, en pire ». La formule à 7 termes tente d'approximer ce que l'inférence active formalise avec 2 termes. Elle évite aussi le piège de la « télévision bruyante » que la revue mentionne explicitement.
+
+**Pourquoi maintenant et pas plus tard.** J5 est le jalon de la curiosité. Si la baseline round-robin+habituation y suffit, tant mieux. Mais le risque C10 (estimateur de progrès plus bruité que le signal) est réel sur un seul DDL dans une pièce statique. L'inférence active fournit le cadre le moins complexe qui réponde *théoriquement* au problème avant qu'il apparaisse empiriquement.
+
+**Version opérationnelle minimale.** Remplacer la formule à 7 termes par :
+
+```text
+intérêt(primitive, contexte) =
+    gain_contrôlabilité(primitive, contexte)     # B ← mesurable par permutation d'actions
+  × progrès_prédiction_récent(primitive)         # simplification de C10 : fenêtre glissante
+  - habituation(primitive)                       # compteur de décroissance, déjà prévu
+  - risque_matériel(contexte)                    # seuil fixe, §11.1
+```
+
+`gain_contrôlabilité` = différence entre l'erreur de prédiction *avec* l'action et l'erreur *avec une action permutée aléatoire* sur les 10 dernières exécutions. Zéro si le bruit domine, positif si l'action fait une différence mesurable.
+
+**Test le moins coûteux.** F5 de la revue, avec une extension : injecter un canal de bruit pur *et* un canal apprenable *et* un canal maîtrisé (sinus connu). L'ordonnanceur doit : saturer rapidement le canal maîtrisé (habituation), ignorer le bruit (contrôlabilité nulle), persister sur l'apprenable. Baseline : round-robin+habituation seul. Confirmé si la formule réduite (2 termes actifs + habituation + risque) bat le round-robin sur ces trois signatures en < 20 min de replay. Abandonné si round-robin est indistinguable : adopter round-robin définitivement pour la première génération, la formule réduite en branche expérimentale.
+
+**Ce qui reste spéculatif de l'inférence active.** La version complète de Friston suppose un générateur de modèle bayésien hiérarchique — incompatible avec la recommandation B. Seul le principe de *contrôlabilité comme filtre de curiosité* est extrait ici. Le reste (POMDP, distributions conjuguées, minimisation de l'énergie libre en temps continu) est différé à J5+ si et seulement si la version minimale prouve un gain.
+
+---
+
+#### B3 — Décomposition ventrale/dorsale de la vision (→ J2, J4)
+
+**Ce que c'est.** Le système visuel biologique sépare systématiquement deux voies :
+- **Voie dorsale** (« où / comment ») : mouvement, flux optique, relations spatiales, guidage moteur. Rapide, peu invariante à l'identité.
+- **Voie ventrale** (« quoi ») : forme, couleur, texture, identité de l'objet ou de la personne. Plus lente, invariante aux transformations.
+
+Ces deux voies ont des buts différents, des fréquences différentes, et alimentent des jalons différents.
+
+**Pourquoi impératif.** La revue recommande « encodeur pré-entraîné gelé + flux optique » pour la vision, ce qui est juste, mais sans distincter à quoi chaque voie sert. Si les deux flux sont mélangés dans un vecteur unique, J2 (contingences visuelles — *comment* ma rotation change la scène) est contaminé par J4 (familiarité — *qui* est là). Les deux tâches ont des propriétés opposées : J2 bénéficie de la vitesse et de la sensibilité au mouvement, J4 bénéficie de l'invariance et de la stabilité sur des jours.
+
+**Version opérationnelle minimale.** Deux encodeurs gelés, deux canaux séparés dans le bus d'événements :
+
+| Canal | Encodeur recommandé | Fréquence | Alimente |
+|---|---|---|---|
+| **Dorsal** | Flux optique (Farnebäck, déterministe, 0 GPU) | 10–30 Hz | J2, J2.5 (résidu d'efférence visuel) |
+| **Ventral** | DINOv2-Small ViT (gelé, patch features ou CLS token) | 5–10 Hz | J3 (association audio-vidéo), J4 (familiarité) |
+
+Le flux optique est une baseline déterministe (aucun entraînement). DINOv2 est un encodeur gelé — conforme à §7.2 (« encodeurs pré-entraînés gelés acceptés comme priors »). Aucun réseau à entraîner pour implémenter B3.
+
+**Règle d'or.** Les deux canaux ne sont *jamais* concaténés avant J4. La question ouverte 16.2 de la spécification (« espaces par modalité + prédiction croisée vs espace unifié ») est résolue par défaut par la séparation — l'espace unifié n'est introduit que si une sonde spécifique le justifie (voir règle §13.5).
+
+**Test le moins coûteux.** J2 baseline géométrique (déjà requise par §6 de la revue) : un prédicteur de flux optique pur (homographie commande → décalage image) vs. un modèle qui utilise le flux optique calculé. Le modèle appris doit battre la géométrie ; le canal DINOv2 ne doit pas améliorer J2 (sinon il encode du mouvement résiduel, ce qui invalide la séparation).
+
+**Abandonné si** DINOv2 améliore significativement J2 : la séparation fonctionnelle n'est pas réalisée par ces encodeurs sur ce matériel, et il faut trouver un encodeur dorsal plus pur ou accepter l'espace mixte.
+
+---
+
+### 13.4 Classement complet des pistes biomimétiques
+
+Format : **Impérative / Conditionnelle / Spéculative / Hors périmètre actuel**.
+
+| Piste | Statut | Jalon | Condition d'entrée |
+|---|---|---|---|
+| Copie d'efférence (B1) | **Impérative** | J1b / J2.5 | Aucune — implémentation linéaire gratuite |
+| Inférence active minimale (B2) | **Impérative** | J5 | F5 : confirme le gain sur round-robin |
+| Décomposition ventrale/dorsale (B3) | **Impérative** | J2 / J4 | Aucune — encodeurs gelés déterministes |
+| GRU comme belief state (B4) | **Conditionnelle** | J1b | F4 : bat Kalman + linéaire au-delà dispersion |
+| Prototypes à décroissance exponentielle (B5) | **Conditionnelle** | J4 | Bat kNN gelé sur J4 avec ≥2 personnes, ≥10 sessions |
+| JEPA multimodal (branche expérimentale) | **Conditionnelle** | Post-J2 | F6 : bat contexte brut sur ≥2 sondes |
+| LNN (branche expérimentale) | **Conditionnelle** | Post-J1b | F4 : bat GRU ET Kalman |
+| Computation dendritique | **Spéculative** | J8+ | Seulement si GRU plafonné et J8 l'exige |
+| Inférence active complète (POMDP/FEP) | **Spéculative** | Post-J5 | Si version minimale B2 prouve un gain et atteint ses limites |
+| Réseaux gliaux | **Hors périmètre** | — | Mécanisme non traduisible en ingénierie |
+| Cognition céphalopode | **Hors périmètre** | J8 (second effecteur) | Pertinent si bras ajouté ; rediscuter à J8 |
+| Bioélectricité (Levin) | **Hors périmètre** | — | Aucune implémentation disponible |
+
+---
+
+### 13.5 Plan d'intégration dans les jalons existants
+
+Aucun jalon n'est modifié. B1–B3 s'intègrent comme livrables supplémentaires dans les jalons existants.
+
+#### J1b — Ajouter l'expérience de copie d'efférence (B1)
+
+Livrable additionnel : entraîner `EfferenceCopy` (régression linéaire, voir §13.3) sur les données J1b, mesurer le résidu, pré-enregistrer le critère AUROC J2.5 avant toute autre utilisation des données.
+
+L'infrastructure est gratuite : les logs J1b contiennent déjà commandes appliquées et gyro_z ; une régression OLS suffit.
+
+#### J2 — Ajouter les deux canaux visuels séparés (B3)
+
+Livrables additionnels dans le bus d'événements :
+- `OpticalFlowSample` (Farnebäck sur frames consécutives, magnitude + direction moyennée par région)
+- `VisualAppearanceSample` (DINOv2-Small CLS token, 5 Hz)
+
+Ces deux types de messages sont distincts, horodatés séparément, et ne sont jamais concaténés à ce stade.
+
+Baseline J2 obligatoire (déjà requise par §6) : prédicteur homographie seul. Confirmé si le modèle utilisant `OpticalFlowSample` le bat. Le `VisualAppearanceSample` ne doit *pas* améliorer J2.
+
+#### J2.5 — Le jalon manquant gagne un critère précis grâce à B1
+
+Reformulation du critère J2.5 (§6 de la revue) avec la copie d'efférence explicite :
+
+*Critère pré-enregistré :* sur ≥3 sessions (tête immobile + tête en mouvement propre + complice introduisant un perturbateur), le résidu `EfferenceCopy.residual()` distingue mouvement propre et événement externe avec **AUROC ≥ 0.80** dans les deux conditions. Baseline : seuil fixe sur l'énergie gyroscopique brute.
+
+Ce critère est falsifiable, ne nécessite pas de réseau entraîné, et peut être validé en replay.
+
+#### J4 — Introduire les prototypes à décroissance exponentielle (B5, conditionnelle)
+
+Seulement si le kNN gelé de §5 (architecture minimale recommandée) ne satisfait pas le critère J4. Si la baseline kNN gelé passe J4, B5 entre en branche expérimentale et mesure un gain marginal, pas une nécessité.
+
+Formule d'update online (O(1) par étape) :
+```python
+prototype = (1 - alpha) * prototype + alpha * new_embedding
+# alpha = 0.01 : ~100 observations pour 63% de mise à jour
+# Pas de GPU requis ; tourne en temps réel sur CPU
+```
+
+#### J5 — Remplacer la formule à 7 termes par la version B2
+
+Ordre d'essai :
+1. Round-robin + habituation par compteur (baseline §7.7)
+2. + contrôlabilité estimée (2 termes actifs + habituation + risque, version B2)
+3. LN si et seulement si F5 justifie un terme de plus
+
+---
+
+### 13.6 Ce que cette revue ne recommande pas — et pourquoi
+
+**Mémoire sémantique FAISS au-delà de J4.** La revue §3 (C12) identifie correctement que les prototypes dépendent de l'espace de l'encodeur versionné. Ajouter FAISS avant que l'encodeur DINOv2 ne soit validé (J4) crée exactement le problème C12 : une invalidation silencieuse à chaque promotion d'encodeur. FAISS entre seulement après que les prototypes d'encodeur gelé ont démontré leur utilité et que la politique de rétention brute est opérationnelle.
+
+**Belief states récurrents avant J1b.** La revue §3 (C2) montre que le LNN n'a pas encore battu les alternatives simples. Un GRU récurrent (B4) ne doit pas non plus être introduit avant que son utilité soit démontrée sur les données J1b réelles. La copie d'efférence linéaire (B1) fournit une capacité de belief state partielle gratuite.
+
+**Inférence active complète.** La version Friston complète assume un modèle génératif bayésien — incompatible avec la recommandation B. La version B2 extrait le seul terme utile (contrôlabilité) sans l'appareillage mathématique complet.
+
+---
+
+### 13.7 Réponse synthétique à la question initiale
+
+> *Quelles pistes biomimétiques seront impérativement implémentées dans les futurs modèles qui permettront l'émergence d'une vraie intelligence générale ?*
+
+Réponse opérationnelle, filtrée par les règles de ce projet :
+
+**Trois principes sont nécessaires et présentement implémentables :**
+
+1. **La copie d'efférence** — distinguer ce qu'on cause de ce qui arrive. Sans elle, J2.5 est indéfinissable, et toute représentation du monde mélange l'agent et l'environnement. C'est le mécanisme le plus ancien de l'évolution et le plus ignoré par le deep learning actuel. Il s'implémente avec une régression linéaire.
+
+2. **La contrôlabilité comme filtre de curiosité** — chercher l'apprenable, pas le surprenant. Sans ce filtre, la curiosité optimise le bruit. C'est le principe que l'inférence active formalise et que la revue §3 (C10) identifie comme risque sans en nommer le remède.
+
+3. **La séparation ventrale/dorsale de la perception** — distinguer ce qui bouge de ce qui identifie. Sans elle, les jalons J2 (contingences) et J4 (familiarité) se contaminent mutuellement. Deux encodeurs gelés suffisent.
+
+**Ce qui ne sera impératif que plus tard, conditionné à une sonde gagnée :**
+- Belief states récurrents (GRU/LNN) — si le Kalman + efférence sature avant J5
+- JEPA multimodal — si les encodeurs gelés plafonnent pour la familiarité
+- Mémoire sémantique FAISS — si les prototypes par encodeur gelé saturent à J6
+
+**Ce qui restera spéculatif dans la durée du projet :**
+- Computation dendritique, réseaux gliaux, bioélectricité — aucun mécanisme traduisible. Ces pistes ont une valeur heuristique réelle pour *comprendre* pourquoi certaines propriétés émergent, pas pour les ingénier dans l'immédiat.
+
+La biologie est utile à ce projet comme *source de contraintes* (développement séquentiel, habituation, sommeil) et de *mécanismes précis* (copie d'efférence, contrôlabilité). Elle n'est pas utile comme *liste de modules à implémenter* — exactement le piège que la revue §12 désigne sous le nom de « cathédrale de modules ».
