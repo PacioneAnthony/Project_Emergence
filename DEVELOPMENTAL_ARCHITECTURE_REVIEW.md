@@ -397,9 +397,9 @@ Le classement suit la même logique que §3 : format **affirmation / pourquoi im
 
 **Pourquoi pas les autres approches biologiques d'abord.** La computation dendritique, les réseaux gliaux, la bioélectricité léviniène — aucune ne répond à la question « est-ce moi ou le monde ? » que J2.5 pose. La copie d'efférence est le seul mécanisme qui le résout, et c'est le plus ancien de l'évolution (présent chez les poissons osseux, ~400 Ma).
 
-**Test le moins coûteux.** Sur replay J1b : entraîner un prédicteur linéaire `commande → Δgyro_z prédit(t+100ms)`. Pendant les sessions de test : le résidu `|Δgyro_z observé − prédit|` doit être faible lors des mouvements propres (erreur ≤ modèle de persistance) et élevé lors d'un perturbateur externe (complice qui tape sur le banc). AUROC de détection d'événement externe cible > 0.85, sur au moins 3 sessions.
+**Test le moins coûteux.** Sur replay J1b : entraîner un prédicteur linéaire `commande → Δgyro_z prédit(t+100ms)`. Pendant les sessions de test : le résidu `|Δgyro_z observé − prédit|` doit être faible lors des mouvements propres (erreur ≤ modèle de persistance) et élevé lors d'un perturbateur externe (complice qui tape sur le banc). AUROC de détection d'événement externe cible ≥ 0.80, sur au moins 3 sessions (gate de graduation J2.5, §13.5).
 
-**Confirmé si** le résidu distingue mouvement propre et perturbation externe avec AUROC > 0.85 pour le modèle linéaire (baseline copie d'efférence). La présence d'un GRU ou d'un LNN n'est alors justifiée que s'il améliore ce critère au-delà de la dispersion inter-graines.
+**Confirmé si** le résidu distingue mouvement propre et perturbation externe avec AUROC ≥ 0.80 pour le modèle linéaire (baseline copie d'efférence). La présence d'un GRU ou d'un LNN n'est alors justifiée que s'il améliore ce critère au-delà de la dispersion inter-graines.
 
 **Abandonné (réformé) si** le Kalman seul atteint le critère B1 sans modèle de prédiction conditionnel explicite : dans ce cas, la copie d'efférence est implicitement couverte par l'estimateur, et le module séparé est superflu — mais J2.5 reste un jalon.
 
