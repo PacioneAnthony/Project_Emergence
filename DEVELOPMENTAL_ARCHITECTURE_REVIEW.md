@@ -277,6 +277,7 @@ Classées par rapport information/coût décroissant. F1-F4 tiennent dans une se
 | F6 | Le latent JEPA bat le contexte brut sur une sonde du nouveau corps (C1) | 2-3 j une fois J2 atteint | latent > brut sur ≥2 sondes, marge > variance | JEPA reste hors architecture |
 | F7 | La familiarité capture la personne, pas le décor (C7) | 1 session avec complice | prototype discrimine personnes au même endroit/horaire | requalification en détecteur de présence ; revoir J4 |
 | F8 | Une seconde personne réelle est régulièrement disponible (C7) | 0 (logistique) | ≥2 personnes, ≥10 sessions planifiables | J4 requalifié dès maintenant, pas après échec |
+| F9 | La contrôlabilité B2 s'effondre sous latence injectée — signature fonctionnelle d'agentivité (J2.5) | 0.5 j sur banc v1.0, s'appuie sur J2.5 | effondrement **monotone** du score B2 quand la latence commande→capteur croît | pas d'effondrement (B2 ≠ agentivité) ou effondrement immédiat (modèle dégénéré) → réviser B1/B2 avant J3 |
 
 ---
 
@@ -529,11 +530,15 @@ Baseline J2 obligatoire (déjà requise par §6) : prédicteur homographie seul.
 
 #### J2.5 — Le jalon manquant gagne un critère précis grâce à B1
 
-Reformulation du critère J2.5 (§6 de la revue) avec la copie d'efférence explicite :
+Reformulation du critère J2.5 (§6 de la revue) avec la copie d'efférence explicite. **Deux critères pré-enregistrés, conjoints (règle de conjonction, §9).**
 
-*Critère pré-enregistré :* sur ≥3 sessions (tête immobile + tête en mouvement propre + complice introduisant un perturbateur), le résidu `EfferenceCopy.residual()` distingue mouvement propre et événement externe avec **AUROC ≥ 0.80** dans les deux conditions. Baseline : seuil fixe sur l'énergie gyroscopique brute.
+*Critère 1 — détection soi/non-soi.* Sur ≥3 sessions (tête immobile + tête en mouvement propre + complice introduisant un perturbateur), le résidu `EfferenceCopy.residual()` distingue mouvement propre et événement externe avec **AUROC ≥ 0.80** dans les deux conditions. Baseline : seuil fixe sur l'énergie gyroscopique brute. Validable en replay.
 
-Ce critère est falsifiable, ne nécessite pas de réseau entraîné, et peut être validé en replay.
+*Critère 2 — signature fonctionnelle d'agentivité (sonde F9).* Le critère 1 mesure que le résidu *sépare* les classes ; il ne garantit pas que B1/B2 capturent réellement l'agentivité plutôt qu'un artefact corrélé. On l'ancre donc par perturbation : en injectant une latence croissante dans la boucle commande → conséquence sensorielle, le score de contrôlabilité B2 doit s'effondrer de façon **monotone**. L'effondrement monotone est la signature attendue ; une absence d'effondrement (B2 indifférent à la latence) ou un effondrement immédiat (modèle dégénéré) invalide la prétention que B2 mesure l'agentivité et impose une révision de B1/B2 *avant* de construire J3 par-dessus. Requiert le moteur actif → banc v1.0.
+
+**Pourquoi ce second critère entre ici, et non dans une phase terminale.** Le projet ne vise que des signatures *fonctionnelles*, jamais la qualité vécue (position §13.2 : on accepte la barrière de Nagel et on la met entre parenthèses). La signature fonctionnelle de l'agentivité — « le sentiment d'être la cause » — s'opérationnalise par l'effondrement de la contrôlabilité sous découplage sensorimoteur, exactement comme, chez l'humain, le sentiment d'agentivité se rompt au-delà de ~150 ms de latence du retour sensoriel (Haggard, 2017). Placé à J2.5, ce test fournit un *retour de conception* : il valide B1/B2 avant qu'elles ne portent J3+. Placé en fin de parcours, il n'aurait aucune valeur corrective — ce qui justifie son intégration à un jalon existant plutôt qu'en étape dédiée.
+
+**Garde-fou anti-projection.** La prédiction comportementale de F9 est pré-enregistrée avant tout regard sur les données. La mesure côté humain (point de rupture de l'agentivité de l'expérimentateur sous la même latence) reste une **ancre de cohérence informelle, N=1, hors chemin critique** — jamais un critère de promotion. Aucune affirmation sur la conscience ou les qualia du système n'est dérivée de F9 : seule la signature fonctionnelle est mesurée.
 
 #### J4 — Introduire les prototypes à décroissance exponentielle (B5, conditionnelle)
 
