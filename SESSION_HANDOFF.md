@@ -150,4 +150,12 @@ Pendant que la modélisation du banc v1.0 reste en cours côté Anthony, une pis
 - dépendance ajoutée: `requirements/research.txt` (mujoco); les tests `tests/test_sim3d.py` se désactivent sans MuJoCo;
 - constat annexe: `env_windows` ne contient pas pytest sur la machine actuelle alors que le README documente `env_windows ... -m pytest`; la suite complète (91 tests) passe dans `.venv`.
 
-Ceci ne modifie ni J0, ni le firmware, ni le chemin critique développemental. Phases suivantes proposées (non lancées): B - jumeau numérique de la tête v1.0 avec rendu caméra; C - vectorisation massive.
+Ceci ne modifie ni J0, ni le firmware, ni le chemin critique développemental. Phases suivantes proposées: C - vectorisation massive (non lancée).
+
+Phase B livrée le 2026-07-16: jumeau numérique de la tête du banc v1.0 (`sim3d/bench_model.py`, `sim3d/bench_env.py`, `sim3d/bench_mechanics.py`, `scripts/research/bench_head_sim.py`):
+
+- géométrie de `BENCH_DESIGN.md` (caméra sur l'axe à z=100, HC-SR04 à z=130, AS5600, tête ~250 g), servo MG90S 10-170° à ~600°/s, dans une pièce meublée re-tirée par graine;
+- qualification J0 (90-80-100-90) notée par le même code que `j0.mechanics`: ratios `[1.00, 0.99, 0.99]` en corps rigide = plancher idéal du design v1.0 (v0.1 réel: 5.22-13.45); outil comparatif, pas critère de réception;
+- corpus visuel caméra + index CSV pour un futur JEPA visuel (`bench_head_sim corpus`);
+- constat transférable au banc réel: la plage gyro MPU par défaut ±250 dps sature pendant les panoramiques ~600°/s; prévoir ±1000 dps dans le firmware ou limiter la vitesse de consigne (la qualification J0 à pas de ±10-20° n'est pas affectée);
+- suite de tests: 98 verts dans `.venv` (`tests/test_bench_sim.py` inclus, skip propre sans MuJoCo).

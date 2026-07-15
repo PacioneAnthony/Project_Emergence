@@ -313,4 +313,28 @@ Le contrôleur 2D transfère donc en boucle fermée dans le monde MuJoCo sans r�
 
 Performance mesurée: environ 13 000 pas de contrôle par seconde et par instance (10 sous-pas physiques de 2 ms par pas de 20 ms), soit largement de quoi vectoriser des dizaines à centaines d'instances CPU en Phase C.
 
-Phases suivantes prévues: B - jumeau numérique de la tête du banc v1.0 avec rendu caméra (corpus JEPA visuel, pré-validation du critère mécanique ratio gyro <= 3.0); C - vectorisation massive (multiprocessing CPU, puis MJX/WSL si RL ou entraînement par population).
+Phases suivantes prévues: C - vectorisation massive (multiprocessing CPU, puis MJX/WSL si RL ou entraînement par population).
+
+## Jumeau numérique de la tête du banc v1.0 - Phase B
+
+Livré le 2026-07-16. Le jumeau (`sim3d/bench_model.py`, `sim3d/bench_env.py`) reproduit la géométrie de `BENCH_DESIGN.md`: axe du cou vertical, piste à z=60 mm, centre optique caméra sur l'axe à z=100 mm, HC-SR04 à z=130 mm, plateforme aimant à z=150 mm, portique AS5600, tête ~250 g de rayon de giration ~54 mm, servo classe MG90S limité à 10-170° et ~600°/s. La tête tourne dans une pièce meublée d'objets et de panneaux muraux re-tirés par graine, pour que la caméra ait un contenu visuel réaliste (rotation pure = homographie, conformément au choix de conception du banc).
+
+Capteurs simulés au format du firmware EMG1: IMU 100 Hz en LSB bruts (plages MPU configurables; la plage gyro par défaut ±250 dps **sature pendant les panoramiques rapides**, voir plus bas), AS5600 quantifié 12 bits, ultrason bruité, caméra `fovy` 30° rendue hors écran.
+
+Qualification mécanique, séquence du runbook J0 (90-80-100-90) notée par le **même code fenêtres/ratios que `j0.mechanics`**:
+
+```bash
+.venv/Scripts/python.exe -m scripts.research.bench_head_sim qualification --seed 3
+```
+
+Résultat de référence: ratios gyro de stabilisation `[1.00, 0.99, 0.99]` (limite 3.0) dans `data/processed/experiments/bench_sim_qualification/mechanics.json`. Lecture: en hypothèse corps rigide - la promesse du design v1.0 où la structure porte et le servo ne transmet que le couple - la fenêtre de stabilisation ne contient plus que le bruit capteur, contre 5.22-13.45 mesurés sur le v0.1 réel. Le jumeau fournit donc le plancher idéal; il ne modélise pas les vibrations structurelles du PLA et reste un outil comparatif, pas un critère de réception.
+
+Corpus visuel pour un futur JEPA visuel (frames caméra + index CSV consigne/AS5600/gyro/distance):
+
+```bash
+.venv/Scripts/python.exe -m scripts.research.bench_head_sim corpus --episodes 4 --seconds 30 --size 128 --seed 100 --output data/raw/bench_corpus_001
+```
+
+Balayage continu visualisable: `python -m scripts.research.bench_head_sim scan --render --realtime`.
+
+Constat utile pour le banc réel: à ~600°/s de balayage servo, le gyro MPU en plage par défaut ±250 dps sature (LSB à ±32768 dans les logs du jumeau). Pour observer les panoramiques complets sur le banc physique, configurer la plage gyro à ±1000 dps dans le firmware ou limiter la vitesse des consignes; la séquence de qualification J0 (pas de ±10-20°) n'est pas affectée car la métrique note les fenêtres post-mouvement.
