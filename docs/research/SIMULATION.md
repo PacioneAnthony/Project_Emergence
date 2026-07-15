@@ -356,4 +356,6 @@ Corpus visuel pour un futur JEPA visuel (frames caméra + index CSV consigne/AS5
 
 Balayage continu visualisable: `python -m scripts.research.bench_head_sim scan --render --realtime`.
 
+Première exploitation d'apprentissage: la sonde pré-enregistrée de contingence sensorimotrice visuelle (`docs/research/visual_bench_probe.md`), corpus via `sim3d/bench_corpus.py`, entraînement via `learning/train_visual_jepa.py`, campagne via `scripts/research/run_visual_night.py`.
+
 Constat utile pour le banc réel: à ~600°/s de balayage servo, le gyro MPU en plage par défaut ±250 dps sature (LSB à ±32768 dans les logs du jumeau). Pour observer les panoramiques complets sur le banc physique, configurer la plage gyro à ±1000 dps dans le firmware ou limiter la vitesse des consignes; la séquence de qualification J0 (pas de ±10-20°) n'est pas affectée car la métrique note les fenêtres post-mouvement.
