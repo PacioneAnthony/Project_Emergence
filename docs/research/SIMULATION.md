@@ -313,7 +313,26 @@ Le contrôleur 2D transfère donc en boucle fermée dans le monde MuJoCo sans r�
 
 Performance mesurée: environ 13 000 pas de contrôle par seconde et par instance (10 sous-pas physiques de 2 ms par pas de 20 ms), soit largement de quoi vectoriser des dizaines à centaines d'instances CPU en Phase C.
 
-Phases suivantes prévues: C - vectorisation massive (multiprocessing CPU, puis MJX/WSL si RL ou entraînement par population).
+## Campagnes parallèles multi-processus - Phase C
+
+Livrée le 2026-07-16. `sim3d/parallel.py` exécute des campagnes d'épisodes sur plusieurs processus CPU: chaque worker possède son environnement, exécute des épisodes complets, écrit un shard CSV, et le parent fusionne les shards (numérotation d'épisodes globale) puis agrège les métriques au schéma de `rollout_lnn`. Un épisode ne dépendant que de `reset(seed)`, **le résultat est identique bit à bit à une exécution série des mêmes graines sur le même device** (testé dans `tests/test_parallel_rollout.py`).
+
+```bash
+# 48 épisodes de bootstrap avec la politique d'évitement, 12 workers
+python -m scripts.research.rollout_parallel --policy avoid --episodes 48 --steps 6000 --seed 202 --workers 12 --output data/raw/sim3d_bootstrap_parallel_001.csv
+
+# Évaluation d'un checkpoint LNN sur 30 épisodes nominaux
+python -m scripts.research.rollout_parallel --policy lnn --checkpoint models/lnn_zoh_scan05_medium_dagger_002.pth --episodes 30 --steps 6000 --seed 1001 --no-domain-randomization
+```
+
+Mesures de référence sur la machine 16 coeurs: 48 x 6000 pas (96 minutes simulées) en `6.6 s` murales avec 12 workers, soit `~44 000` pas/s agrégés (~870x temps réel). Les campagnes LNN sont bornées par l'inférence PyTorch par pas (`--device cpu` par worker, ~4 600 pas/s agrégés sur 5 workers).
+
+Deux avertissements de reproductibilité:
+
+- le device d'inférence fait partie du protocole: `dagger_002` sur les graines nominales 1001-1005 donne `361` ticks en CUDA et `416` ticks en CPU (série comme parallèle) - la non-associativité flottante diverge de façon chaotique sur 6000 pas de boucle fermée; comparer uniquement des runs de même device;
+- la politique `random` est re-semée par épisode (`base_seed + épisode`), alors que le script série historique la semait une fois pour toute la campagne.
+
+Le vec-env pas-à-pas type RL n'est volontairement pas implémenté: sans apprenant dans la boucle il n'ajoute que de l'IPC par pas; sa vraie incarnation GPU est MJX (WSL), réservée à une future phase RL/population.
 
 ## Jumeau numérique de la tête du banc v1.0 - Phase B
 

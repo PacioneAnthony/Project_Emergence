@@ -150,7 +150,9 @@ Pendant que la modélisation du banc v1.0 reste en cours côté Anthony, une pis
 - dépendance ajoutée: `requirements/research.txt` (mujoco); les tests `tests/test_sim3d.py` se désactivent sans MuJoCo;
 - constat annexe: `env_windows` ne contient pas pytest sur la machine actuelle alors que le README documente `env_windows ... -m pytest`; la suite complète (91 tests) passe dans `.venv`.
 
-Ceci ne modifie ni J0, ni le firmware, ni le chemin critique développemental. Phases suivantes proposées: C - vectorisation massive (non lancée).
+Ceci ne modifie ni J0, ni le firmware, ni le chemin critique développemental.
+
+Phase C livrée le 2026-07-16: campagnes d'épisodes multi-processus (`sim3d/parallel.py`, `scripts/research/rollout_parallel.py`). Résultats identiques bit à bit au série sur mêmes graines et même device (testé); 48 x 6000 pas en 6,6 s murales avec 12 workers (~44 000 pas/s, ~870x temps réel). Avertissement de reproductibilité consigné: le device d'inférence LNN fait partie du protocole (dagger_002 nominal: 361 ticks en CUDA contre 416 en CPU). Le vec-env pas-à-pas RL est volontairement différé vers MJX/WSL.
 
 Phase B livrée le 2026-07-16: jumeau numérique de la tête du banc v1.0 (`sim3d/bench_model.py`, `sim3d/bench_env.py`, `sim3d/bench_mechanics.py`, `scripts/research/bench_head_sim.py`):
 
