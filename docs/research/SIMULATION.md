@@ -261,3 +261,56 @@ Chaque run écrit un résumé et des logs dans `data/processed/experiments/<tag>
 Avec `--refine-decoder`, le runner ajoute une phase auxiliaire après l'entraînement JEPA: encoder et prédicteur sont gelés, puis seul `obs_decoder` est ajusté sur les latents prédits. Le checkpoint évalué devient alors `models/sensor_jepa_<tag>_decoder_refined.pth`.
 
 Sous Windows, PyTorch peut ne pas être installé; le simulateur ne dépend que de NumPy et Matplotlib. L'entraînement peut rester dans l'environnement WSL/GPU.
+
+## Simulation 3D MuJoCo (sim3d) - Phase A
+
+Ajoutée le 2026-07-15 (D-006) comme piste parallèle pendant la conception du banc v1.0. Le paquet `sim3d/` est un backend MuJoCo qui expose exactement le contrat de `sim2d`: observation `[distance_ultrason, angle_servo, gyro_z]`, action `[v_cmd, omega_cmd, servo_target]`, mêmes `SafetyLayer`, bloqueur ZOH, limiteur de vitesse servo, clamps d'accélération, bruits capteurs, latence, domain randomization, reward et schéma CSV. La génération du monde réutilise `sim2d.world.World.generate`: une graine donnée produit la même arène en 2D et en 3D, extrudée en murs et cylindres.
+
+Installation (environnement `.venv`):
+
+```bash
+.venv/Scripts/python.exe -m pip install -r requirements/research.txt
+```
+
+Génération de logs, mêmes options que le simulateur 2D:
+
+```bash
+python -m scripts.research.simulate3d --episodes 5 --steps 6000 --output data/raw/sim3d_log.csv
+```
+
+Visualisation interactive (viewer MuJoCo natif, caméra libre, `--realtime` pour un rythme temps réel):
+
+```bash
+python -m scripts.research.simulate3d --episodes 1 --steps 1500 --render --realtime
+```
+
+Image finale hors écran: `--save-final-frame data/raw/sim3d_frame.png`.
+
+Rollout d'un checkpoint LNN existant dans le monde 3D via le backend optionnel de `rollout_lnn`:
+
+```bash
+python -m learning.rollout_lnn --backend sim3d --checkpoint models/lnn_zoh_scan05_medium_dagger_002.pth --episodes 5 --steps 6000 --seed 1001 --no-domain-randomization --device cuda
+```
+
+### Validation Phase A
+
+Protocoles standard (5 épisodes x 6000 pas), checkpoint actif `lnn_zoh_scan05_medium_dagger_002.pth` entraîné uniquement en 2D:
+
+| Protocole | Ticks collision | Événements |
+|---|---|---|
+| sim2d nominal graine 1001 (re-mesure) | `1.21%` | 61 |
+| sim3d nominal graine 1001 | `1.20%` | 126 |
+| sim3d randomisé graine 2201 | `0.98%` | 102 |
+
+Le contrôleur 2D transfère donc en boucle fermée dans le monde MuJoCo sans réentraînement (métriques dans `data/processed/experiments/lnn_dagger_002_sim3d_rollout_001/` et voisins).
+
+Écarts assumés par rapport à sim2d:
+
+- en collision, le solveur de contact fait glisser le robot le long de l'obstacle au lieu de le figer; le taux de ticks est comparable mais les événements distincts sont environ deux fois plus nombreux (contacts intermittents);
+- le gyroscope lit la vitesse angulaire réelle du corps rigide, pas la commande intégrée;
+- le rangefinder est monté au bord du robot puis recalé au centre (`sensor_radial_offset`), pour rester comparable aux mesures 2D partant du centre;
+- `--cone-rays N` approxime le cône ±15° du HC-SR04 par N rayons (minimum des lectures); `1` par défaut pour la parité stricte avec le rayon unique 2D.
+
+Performance mesurée: environ 13 000 pas de contrôle par seconde et par instance (10 sous-pas physiques de 2 ms par pas de 20 ms), soit largement de quoi vectoriser des dizaines à centaines d'instances CPU en Phase C.
+
+Phases suivantes prévues: B - jumeau numérique de la tête du banc v1.0 avec rendu caméra (corpus JEPA visuel, pré-validation du critère mécanique ratio gyro <= 3.0); C - vectorisation massive (multiprocessing CPU, puis MJX/WSL si RL ou entraînement par population).

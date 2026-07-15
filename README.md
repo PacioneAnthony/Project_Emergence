@@ -42,7 +42,7 @@ La capture physique passe uniquement par `windows_client/j0_capture.py` et les c
 - `windows_client/` : flash et point d'entrée de capture Windows ;
 - `tests/` : suite de tests active ;
 - `requirements/` : dépendances par sous-système ;
-- `common/`, `sim2d/`, `learning/` : branche de recherche reproductible ;
+- `common/`, `sim2d/`, `sim3d/`, `learning/` : branche de recherche reproductible (`sim3d` = backend MuJoCo, même contrat que `sim2d`) ;
 - `scripts/research/` : runners des expériences historiques ;
 - `docs/research/` : résultats JEPA/LNN et simulation ayant motivé D-002 ;
 - `archive/legacy_agent/` : ancien prototype cognitif, conservé hors chemin actif.

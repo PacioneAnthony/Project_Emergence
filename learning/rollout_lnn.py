@@ -35,6 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--metrics-output", type=Path, default=Path("data/processed/lnn_rollout_metrics.json"))
     parser.add_argument("--no-domain-randomization", action="store_true")
     parser.add_argument("--collision-ends-episode", action="store_true")
+    parser.add_argument("--backend", choices=("sim2d", "sim3d"), default="sim2d")
     parser.add_argument("--render", action="store_true")
     parser.add_argument("--render-every", type=int, default=2)
     parser.add_argument("--save-final-frame", type=Path, default=None)
@@ -94,9 +95,18 @@ def main() -> None:
         config.robot.pwm_period = args.pwm_period
     config.reward.collision_ends_episode = args.collision_ends_episode
 
-    env = RobotSimEnv(config)
+    if args.backend == "sim3d":
+        from sim3d.environment import RobotSim3DEnv
+
+        env = RobotSim3DEnv(config)
+    else:
+        env = RobotSimEnv(config)
     policy = LNNPolicy(args.checkpoint, args.device)
-    renderer = MatplotlibRenderer() if args.render or args.save_final_frame else None
+    renderer = (
+        MatplotlibRenderer()
+        if (args.render or args.save_final_frame) and args.backend == "sim2d"
+        else None
+    )
     stats = new_rollout_stats(args.episodes)
 
     with CSVLogger(args.output) as logger:
@@ -119,6 +129,8 @@ def main() -> None:
 
                 if args.render and renderer is not None and step % max(1, args.render_every) == 0:
                     renderer.render(env, pause=0.001)
+                elif args.render and args.backend == "sim3d":
+                    env.sync_viewer()
 
                 obs = next_obs
                 if done:
@@ -135,6 +147,11 @@ def main() -> None:
 
     if renderer is not None and args.save_final_frame:
         renderer.render(env, save_path=args.save_final_frame)
+    elif args.backend == "sim3d" and args.save_final_frame:
+        args.save_final_frame.parent.mkdir(parents=True, exist_ok=True)
+        env.save_frame(str(args.save_final_frame))
+    if args.backend == "sim3d":
+        env.close()
 
     metrics = finalize_metrics(stats, args, config)
     args.metrics_output.parent.mkdir(parents=True, exist_ok=True)
@@ -201,6 +218,7 @@ def finalize_metrics(stats: dict[str, Any], args: argparse.Namespace, config: Si
     return {
         "checkpoint": str(args.checkpoint),
         "log": str(args.output),
+        "backend": str(getattr(args, "backend", "sim2d")),
         "episodes": int(stats["episodes"]),
         "steps_per_episode_limit": int(args.steps),
         "total_steps": int(stats["total_steps"]),

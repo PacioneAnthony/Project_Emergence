@@ -1,0 +1,6 @@
+# Branche recherche reproductible (sim2d, sim3d, learning).
+# PyTorch (GPU) est installé séparément selon la machine; voir docs/research/SIMULATION.md.
+numpy
+matplotlib
+mujoco>=3.10
+pytest>=8.0

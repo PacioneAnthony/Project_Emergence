@@ -139,3 +139,15 @@ ou de validation d'achat. Mets à jour les documents de reprise avant de termine
 ## Processus en cours
 
 Aucun calcul ou serveur nécessaire à cette transition n'est en cours.
+
+## Addendum 2026-07-15 - Branche simulation 3D (session Claude Code avec Anthony)
+
+Pendant que la modélisation du banc v1.0 reste en cours côté Anthony, une piste parallèle de simulation a été livrée (voir D-006):
+
+- `sim3d/` est un backend MuJoCo au contrat strictement identique à `sim2d` (mêmes mondes par graine, mêmes bruits, même schéma CSV);
+- `python -m scripts.research.simulate3d --render` ouvre un viewer 3D interactif; `learning/rollout_lnn.py` accepte `--backend sim3d`;
+- validation: `dagger_002` entraîné en 2D fait `1,20%` de ticks de collision en 3D nominal contre `1,21%` re-mesuré en 2D; détails dans `docs/research/SIMULATION.md`, section sim3d;
+- dépendance ajoutée: `requirements/research.txt` (mujoco); les tests `tests/test_sim3d.py` se désactivent sans MuJoCo;
+- constat annexe: `env_windows` ne contient pas pytest sur la machine actuelle alors que le README documente `env_windows ... -m pytest`; la suite complète (91 tests) passe dans `.venv`.
+
+Ceci ne modifie ni J0, ni le firmware, ni le chemin critique développemental. Phases suivantes proposées (non lancées): B - jumeau numérique de la tête v1.0 avec rendu caméra; C - vectorisation massive.
