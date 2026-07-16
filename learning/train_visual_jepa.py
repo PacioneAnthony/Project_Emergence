@@ -47,6 +47,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--early-stopping-patience", type=int, default=15, help="Validations without improvement (0 disables).")
     parser.add_argument("--seed", type=int, default=4301)
     parser.add_argument("--no-action", action="store_true", help="Control variant: zeroed action input.")
+    parser.add_argument("--select", choices=("ratio", "final"), default="ratio", help="Checkpoint selection: best val ratio or final epoch.")
+    parser.add_argument("--eval-motion-threshold-deg", type=float, default=5.0, help="Pairs with |delta as5600| above this are 'moving' at eval.")
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--output", type=Path, default=Path("models/visual_jepa_001.pth"))
     parser.add_argument("--metrics-output", type=Path, default=Path("data/processed/experiments/visual_jepa_001/metrics.json"))
@@ -74,7 +76,7 @@ def downsample_frames(frames: np.ndarray, target: int) -> np.ndarray:
 
 def load_corpus(corpus_dir: Path, image_size: int) -> dict[str, np.ndarray | list]:
     manifest = json.loads((corpus_dir / "manifest.json").read_text(encoding="utf-8"))
-    cache_path = corpus_dir / f"cache_train_{image_size}.npz"
+    cache_path = corpus_dir / f"cache_train_{image_size}_{manifest['episodes']}ep.npz"
     if cache_path.exists():
         cached = np.load(cache_path)
         return {key: cached[key] for key in ("frames", "requested_deg", "as5600_deg", "distance_m", "episode")}
@@ -121,12 +123,20 @@ class ProbeHeads(torch.nn.Module if torch is not None else object):
         self.distance = torch.nn.Linear(latent_dim, 1)
 
 
-def evaluate(model, probes, data, pairs, action_norm, device, batch_size: int) -> dict[str, float]:
+def evaluate(
+    model,
+    probes,
+    data,
+    pairs,
+    action_norm,
+    device,
+    batch_size: int,
+    motion_threshold_deg: float = 5.0,
+) -> dict[str, float]:
     model.eval()
     probes.eval()
-    pred_sq = 0.0
-    copy_sq = 0.0
-    count = 0
+    moving_mask = np.abs(data["as5600_deg"][pairs + 1] - data["as5600_deg"][pairs]) > motion_threshold_deg
+    sums = {"all": [0.0, 0.0, 0], "moving": [0.0, 0.0, 0], "static": [0.0, 0.0, 0]}
     angle_err_deg = []
     distance_true = []
     distance_pred = []
@@ -142,9 +152,15 @@ def evaluate(model, probes, data, pairs, action_norm, device, batch_size: int) -
             latent_next = model.encode(frames_next)
             prediction = model.predict_next(latent_t, action)
 
-            pred_sq += torch.sum((prediction - latent_next) ** 2).item()
-            copy_sq += torch.sum((latent_t - latent_next) ** 2).item()
-            count += index.shape[0] * latent_t.shape[1]
+            pred_per_sample = torch.sum((prediction - latent_next) ** 2, dim=1)
+            copy_per_sample = torch.sum((latent_t - latent_next) ** 2, dim=1)
+            batch_moving = torch.from_numpy(moving_mask[start : start + batch_size]).to(device)
+            for name, mask in (("all", None), ("moving", batch_moving), ("static", ~batch_moving)):
+                selected_pred = pred_per_sample if mask is None else pred_per_sample[mask]
+                selected_copy = copy_per_sample if mask is None else copy_per_sample[mask]
+                sums[name][0] += float(selected_pred.sum().item())
+                sums[name][1] += float(selected_copy.sum().item())
+                sums[name][2] += int(selected_pred.shape[0]) * latent_t.shape[1]
 
             angle_out = probes.angle(latent_next)
             angle_pred = torch.atan2(angle_out[:, 0], angle_out[:, 1])
@@ -155,8 +171,14 @@ def evaluate(model, probes, data, pairs, action_norm, device, batch_size: int) -
             distance_pred.extend(probes.distance(latent_next).squeeze(-1).cpu().numpy().tolist())
             distance_true.extend(data["distance_m"][index + 1].tolist())
 
-    pred_mse = pred_sq / max(1, count)
-    copy_mse = copy_sq / max(1, count)
+    def ratio_of(name: str) -> float:
+        pred_sum, copy_sum, count = sums[name]
+        if count == 0 or copy_sum <= 0:
+            return float("nan")
+        return float(pred_sum / copy_sum)
+
+    pred_mse = sums["all"][0] / max(1, sums["all"][2])
+    copy_mse = sums["all"][1] / max(1, sums["all"][2])
     distance_true_arr = np.asarray(distance_true)
     distance_pred_arr = np.asarray(distance_pred)
     ss_res = float(np.sum((distance_true_arr - distance_pred_arr) ** 2))
@@ -165,6 +187,9 @@ def evaluate(model, probes, data, pairs, action_norm, device, batch_size: int) -
         "pred_mse": float(pred_mse),
         "copy_mse": float(copy_mse),
         "pred_to_copy_ratio": float(pred_mse / copy_mse) if copy_mse > 0 else float("inf"),
+        "pred_to_copy_ratio_moving": ratio_of("moving"),
+        "pred_to_copy_ratio_static": ratio_of("static"),
+        "moving_pair_fraction": float(np.mean(moving_mask)) if len(pairs) else float("nan"),
         "angle_probe_mae_deg": float(np.mean(angle_err_deg)) if angle_err_deg else float("nan"),
         "distance_probe_r2": float(1.0 - ss_res / ss_tot) if ss_tot > 0 else float("nan"),
     }
@@ -244,7 +269,10 @@ def main() -> None:
             epoch_loss += float(loss.item())
 
         if (epoch + 1) % args.eval_every == 0 or epoch == args.epochs - 1:
-            metrics = evaluate(model, probes, data, val_pairs, action_norm, device, args.batch_size)
+            metrics = evaluate(
+                model, probes, data, val_pairs, action_norm, device, args.batch_size,
+                motion_threshold_deg=args.eval_motion_threshold_deg,
+            )
             metrics["epoch"] = epoch + 1
             metrics["train_loss"] = epoch_loss / steps_per_epoch
             history.append(metrics)
@@ -268,16 +296,18 @@ def main() -> None:
                     break
 
     elapsed = time.perf_counter() - started
+    final_state = {
+        "model_state_dict": {k: v.detach().cpu().clone() for k, v in model.state_dict().items()},
+        "probes_state_dict": {k: v.detach().cpu().clone() for k, v in probes.state_dict().items()},
+        "metrics": history[-1] if history else {},
+    }
     if best_state is None:
-        best_state = {
-            "model_state_dict": {k: v.detach().cpu().clone() for k, v in model.state_dict().items()},
-            "probes_state_dict": {k: v.detach().cpu().clone() for k, v in probes.state_dict().items()},
-            "metrics": history[-1] if history else {},
-        }
+        best_state = final_state
+    selected_state = final_state if args.select == "final" else best_state
 
     checkpoint = {
-        "model_state_dict": best_state["model_state_dict"],
-        "probes_state_dict": best_state["probes_state_dict"],
+        "model_state_dict": selected_state["model_state_dict"],
+        "probes_state_dict": selected_state["probes_state_dict"],
         "latent_dim": args.latent_dim,
         "hidden_dim": args.hidden_dim,
         "encoder_width": args.encoder_width,
@@ -302,7 +332,10 @@ def main() -> None:
         "epochs_run": int(history[-1]["epoch"]) if history else 0,
         "wall_seconds": float(elapsed),
         "parameters": int(sum(p.numel() for p in model.parameters())),
+        "select": str(args.select),
         "best": best_state["metrics"],
+        "final": final_state["metrics"],
+        "selected_metrics": selected_state["metrics"],
         "history": history,
         "checkpoint": str(args.output),
     }

@@ -35,6 +35,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="cuda")
     parser.add_argument("--summary-dir", type=Path, default=Path("data/processed/experiments/visual_night_001"))
+    parser.add_argument("--prefix", type=str, default="", help="Tag prefix for this campaign's runs (e.g. v2_).")
+    parser.add_argument("--select", choices=("ratio", "final"), default="ratio", help="Checkpoint selection passed to the trainer.")
     parser.add_argument("--summary-only", action="store_true")
     parser.add_argument("--smoke", action="store_true", help="Tiny end-to-end check of the whole night pipeline.")
     return parser
@@ -93,6 +95,7 @@ def launch_training(args: argparse.Namespace, variant: str, seed: int) -> None:
         "--metrics-output",
         str(metrics_path(tag)),
     ]
+    command.extend(["--select", args.select])
     if variant == "no_action":
         command.append("--no-action")
     print(f"[night] training {tag} ...", flush=True)
@@ -101,23 +104,29 @@ def launch_training(args: argparse.Namespace, variant: str, seed: int) -> None:
 
 def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
     rows = []
-    per_variant: dict[str, dict[str, list[float]]] = {v: {"ratio": [], "angle": [], "r2": []} for v in VARIANTS}
+    per_variant: dict[str, dict[str, list[float]]] = {
+        v: {"ratio": [], "moving": [], "angle": [], "r2": []} for v in VARIANTS
+    }
     for variant in VARIANTS:
         for seed in seeds:
             path = metrics_path(run_tag(variant, seed, args.tag_prefix))
             if not is_complete(path):
-                rows.append(f"| {variant} | {seed} | incomplet | | | |")
+                rows.append(f"| {variant} | {seed} | incomplet | | | | |")
                 continue
             data = json.loads(path.read_text(encoding="utf-8"))
-            best = data.get("best", {})
+            best = data.get("selected_metrics") or data.get("best", {})
             ratio = float(best.get("pred_to_copy_ratio", math.nan))
+            moving = float(best.get("pred_to_copy_ratio_moving", math.nan))
             angle = float(best.get("angle_probe_mae_deg", math.nan))
             r2 = float(best.get("distance_probe_r2", math.nan))
             per_variant[variant]["ratio"].append(ratio)
+            if not math.isnan(moving):
+                per_variant[variant]["moving"].append(moving)
             per_variant[variant]["angle"].append(angle)
             per_variant[variant]["r2"].append(r2)
+            moving_text = "n/a" if math.isnan(moving) else f"{moving:.4f}"
             rows.append(
-                f"| {variant} | {seed} | {ratio:.4f} | {angle:.2f} | {r2:.3f} | {data.get('epochs_run', '?')} |"
+                f"| {variant} | {seed} | {ratio:.4f} | {moving_text} | {angle:.2f} | {r2:.3f} | {data.get('epochs_run', '?')} |"
             )
 
     def stat(values: list[float]) -> str:
@@ -129,11 +138,18 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
 
     action = per_variant["action"]
     control = per_variant["no_action"]
-    h1 = "indéterminé"
-    if action["ratio"] and control["ratio"]:
-        disjoint = max(action["ratio"]) < min(control["ratio"])
-        better_mean = statistics.mean(action["ratio"]) < statistics.mean(control["ratio"])
-        h1 = "VALIDÉE" if (better_mean and disjoint) else ("moyenne favorable, intervalles non disjoints" if better_mean else "REJETÉE")
+
+    def verdict(action_values: list[float], control_values: list[float]) -> str:
+        if not action_values or not control_values:
+            return "indéterminé"
+        disjoint = max(action_values) < min(control_values)
+        better_mean = statistics.mean(action_values) < statistics.mean(control_values)
+        if better_mean and disjoint:
+            return "VALIDÉE"
+        return "moyenne favorable, intervalles non disjoints" if better_mean else "REJETÉE"
+
+    h1 = verdict(action["ratio"], control["ratio"])
+    h1_moving = verdict(action["moving"], control["moving"])
     h2 = "indéterminé"
     if action["angle"]:
         h2 = "VALIDÉE" if statistics.mean(action["angle"]) < 5.0 else "REJETÉE"
@@ -146,16 +162,19 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
         "",
         f"Protocole: `docs/research/visual_bench_probe.md`. Corpus: `{args.corpus}`.",
         "",
-        "| variante | graine | ratio pred/copie (val) | MAE angle (deg) | R2 distance | epochs |",
-        "|---|---|---|---|---|---|",
+        "| variante | graine | ratio pred/copie (val) | ratio mouvement | MAE angle (deg) | R2 distance | epochs |",
+        "|---|---|---|---|---|---|---|",
         *rows,
         "",
         f"- ratio `action`: {stat(action['ratio'])}",
         f"- ratio `no_action`: {stat(control['ratio'])}",
+        f"- ratio mouvement `action`: {stat(action['moving'])}",
+        f"- ratio mouvement `no_action`: {stat(control['moving'])}",
         f"- MAE angle `action`: {stat(action['angle'])}",
         f"- R2 distance `action`: {stat(action['r2'])}",
         "",
         f"**H1 (la commande motrice améliore la prédiction): {h1}**",
+        f"**H1-mouvement (idem, paires |delta angle| > 5 deg): {h1_moving}**",
         f"**H2 (pose lisible dans le latent, MAE < 5 deg): {h2}**",
         f"**H3 (distance lisible, R2 > 0.5): {h3}**",
         "",
@@ -166,7 +185,7 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
 def main() -> None:
     args = build_parser().parse_args()
     seeds = SEEDS
-    args.tag_prefix = ""
+    args.tag_prefix = args.prefix
     if args.smoke:
         args.corpus = Path("data/raw/bench_visual_corpus_smoke")
         args.corpus_episodes = 6

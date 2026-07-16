@@ -49,6 +49,22 @@ bat la copie), insensible à l'échelle du latent.
 - Un échec de H1 avec réussite de H2 resterait informatif: latent posé mais
   prédicteur mal conditionné (cf. l'échec du couplage JEPA-LNN direct en 2D).
 
-## Résultats
+## Résultats campagne v1 (2026-07-16, 29.6 min)
 
-Renseignés après la campagne dans `data/processed/experiments/visual_night_001/summary.md`.
+Résumé dans `data/processed/experiments/visual_night_001/summary.md`:
+
+- H1: moyenne favorable à `action` (`0.9286` contre `0.9329`) mais intervalles non disjoints - **non validée**;
+- H2 et H3 rejetées **sur le checkpoint sélectionné**, mais l'historique montre la MAE d'angle en amélioration continue (34.6° vers 14.5° à l'epoch 96, toujours décroissante à l'arrêt) et le R2 distance vers 0.39.
+
+Diagnostic: le critère de sélection/arrêt (ratio pred/copie global) favorise les latents quasi-statiques du début d'entraînement et coupe pendant que la représentation s'améliore encore. De plus, ~ la moitié des paires sont quasi statiques (l'action n'y a rien à prédire), ce qui dilue H1.
+
+## Amendement v2 (pré-enregistré le 2026-07-16 avant exécution, après v1)
+
+Changements et justifications:
+
+1. **Budget fixe 400 epochs, pas d'early stopping, checkpoint = état final** (`--select final`): supprime le conflit sélection/représentation identifié en v1.
+2. **Évaluation stratifiée**: ratio pred/copie séparé sur paires en mouvement (`|delta AS5600| > 5°`) et statiques. **H1-v2**: sur les paires en mouvement, `action` bat `no_action` en moyenne avec intervalles min-max disjoints (3 graines).
+3. **Corpus étendu à 240 pièces** (mêmes 120 premières réutilisées, graine de base inchangée); le split de validation par épisodes se déplace en conséquence.
+4. H2 (MAE < 5°) et H3 (R2 > 0.5) inchangées, évaluées sur le checkpoint final.
+
+Le modèle, ses hyperparamètres et la baseline copie restent strictement identiques à v1. Résultats v2: `data/processed/experiments/visual_night_002/summary.md`.
