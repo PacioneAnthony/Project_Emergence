@@ -68,3 +68,13 @@ Changements et justifications:
 4. H2 (MAE < 5°) et H3 (R2 > 0.5) inchangées, évaluées sur le checkpoint final.
 
 Le modèle, ses hyperparamètres et la baseline copie restent strictement identiques à v1. Résultats v2: `data/processed/experiments/visual_night_002/summary.md`.
+
+## Résultats campagne v2 (2026-07-17, 246 min, 6 runs de 400 epochs)
+
+- **H1 globale: rejetée.** Ratio global > 1 pour toutes les variantes: sur un corpus dominé par des paires quasi statiques, la copie du latent reste imbattable en moyenne.
+- **H1-mouvement: moyenne favorable, non validée au critère strict.** Sur les paires en mouvement, `action` donne `0.9070 +/- 0.0152 [0.8949, 0.9241]` contre `0.9315 +/- 0.0090 [0.9223, 0.9404]` pour `no_action`. Direction cohérente sur les 3 graines, mais un chevauchement résiduel (0.9241 > 0.9223) empêche la validation pré-enregistrée. Effet suggestif, pas concluant à n=3.
+- **Observation exploratoire (non pré-enregistrée, la plus nette de la campagne):** le conditionnement par l'action améliore fortement la lisibilité de la pose dans le latent: MAE d'angle `14.56 +/- 1.00 [13.44, 15.37]` avec action contre `23.01 +/- 0.48 [22.50, 23.45]` sans action - intervalles totalement disjoints. L'information motrice structure la représentation visuelle même quand elle n'améliore que marginalement la prédiction.
+- **H2 rejetée** (MAE 14.6 deg >> 5 deg): la pose est présente mais imprécise dans un latent de 128 entraîné 400 epochs.
+- **H3 rejetée** (R2 distance ~0.16): la profondeur n'est presque pas linéairement décodable.
+
+Lecture d'ensemble: la contingence sensorimotrice minimale est apprenable en simulation, son signal le plus robuste étant représentationnel (sonde d'angle) plutôt que prédictif. Suites candidates (à arbitrer, aucune lancée): plus de graines pour trancher H1-mouvement; horizon de prédiction multi-pas (l'action compte davantage à 0.3-0.5 s); latent plus grand ou entraînement plus long pour H2; et à terme la comparaison aux mêmes sondes sur les données réelles du banc v1.0.
