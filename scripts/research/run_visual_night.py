@@ -37,6 +37,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--summary-dir", type=Path, default=Path("data/processed/experiments/visual_night_001"))
     parser.add_argument("--prefix", type=str, default="", help="Tag prefix for this campaign's runs (e.g. v2_).")
     parser.add_argument("--select", choices=("ratio", "final"), default="ratio", help="Checkpoint selection passed to the trainer.")
+    parser.add_argument("--max-horizon", type=int, default=1, help="Horizon-conditioned prediction (frames of 0.1 s), passed to the trainer.")
+    parser.add_argument("--latent-dim", type=int, default=128, help="Latent dimension passed to the trainer.")
     parser.add_argument("--summary-only", action="store_true")
     parser.add_argument("--smoke", action="store_true", help="Tiny end-to-end check of the whole night pipeline.")
     return parser
@@ -96,6 +98,8 @@ def launch_training(args: argparse.Namespace, variant: str, seed: int) -> None:
         str(metrics_path(tag)),
     ]
     command.extend(["--select", args.select])
+    command.extend(["--max-horizon", str(args.max_horizon)])
+    command.extend(["--latent-dim", str(args.latent_dim)])
     if variant == "no_action":
         command.append("--no-action")
     print(f"[night] training {tag} ...", flush=True)
@@ -107,6 +111,7 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
     per_variant: dict[str, dict[str, list[float]]] = {
         v: {"ratio": [], "moving": [], "angle": [], "r2": []} for v in VARIANTS
     }
+    horizon_data: dict[str, dict[str, list[float]]] = {v: {} for v in VARIANTS}
     for variant in VARIANTS:
         for seed in seeds:
             path = metrics_path(run_tag(variant, seed, args.tag_prefix))
@@ -124,6 +129,10 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
                 per_variant[variant]["moving"].append(moving)
             per_variant[variant]["angle"].append(angle)
             per_variant[variant]["r2"].append(r2)
+            for horizon, values in (best.get("per_horizon") or {}).items():
+                ratio_h = float(values.get("pred_to_copy_ratio_moving", math.nan))
+                if not math.isnan(ratio_h):
+                    horizon_data[variant].setdefault(horizon, []).append(ratio_h)
             moving_text = "n/a" if math.isnan(moving) else f"{moving:.4f}"
             rows.append(
                 f"| {variant} | {seed} | {ratio:.4f} | {moving_text} | {angle:.2f} | {r2:.3f} | {data.get('epochs_run', '?')} |"
@@ -150,6 +159,33 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
 
     h1 = verdict(action["ratio"], control["ratio"])
     h1_moving = verdict(action["moving"], control["moving"])
+
+    horizon_lines: list[str] = []
+    horizons = sorted({h for v in VARIANTS for h in horizon_data[v]}, key=lambda item: int(item))
+    if len(horizons) > 1:
+        horizon_lines.append("")
+        horizon_lines.append("## Ratios mouvement par horizon (0.1 s par pas)")
+        horizon_lines.append("")
+        advantages = []
+        for horizon in horizons:
+            act = horizon_data["action"].get(horizon, [])
+            ctl = horizon_data["no_action"].get(horizon, [])
+            if act and ctl:
+                advantage = statistics.mean(ctl) - statistics.mean(act)
+                advantages.append((int(horizon), advantage))
+                horizon_lines.append(
+                    f"- k={horizon}: action {stat(act)} | no_action {stat(ctl)} | avantage moyen {advantage:+.4f} | verdict: {verdict(act, ctl)}"
+                )
+        if advantages:
+            ordered = [value for _, value in sorted(advantages)]
+            trend = "croissant" if all(b >= a for a, b in zip(ordered, ordered[1:])) else "non monotone"
+            kmax = str(max(int(h) for h in horizons))
+            horizon_lines.append("")
+            horizon_lines.append(
+                f"**H1-v3 (avantage action à l'horizon max, intervalles disjoints): "
+                f"{verdict(horizon_data['action'].get(kmax, []), horizon_data['no_action'].get(kmax, []))}** "
+                f"(tendance de l'avantage avec l'horizon: {trend})"
+            )
     h2 = "indéterminé"
     if action["angle"]:
         h2 = "VALIDÉE" if statistics.mean(action["angle"]) < 5.0 else "REJETÉE"
@@ -175,6 +211,7 @@ def summarize(args: argparse.Namespace, seeds: tuple[int, ...]) -> str:
         "",
         f"**H1 (la commande motrice améliore la prédiction): {h1}**",
         f"**H1-mouvement (idem, paires |delta angle| > 5 deg): {h1_moving}**",
+        *horizon_lines,
         f"**H2 (pose lisible dans le latent, MAE < 5 deg): {h2}**",
         f"**H3 (distance lisible, R2 > 0.5): {h3}**",
         "",

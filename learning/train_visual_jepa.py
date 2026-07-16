@@ -49,6 +49,10 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-action", action="store_true", help="Control variant: zeroed action input.")
     parser.add_argument("--select", choices=("ratio", "final"), default="ratio", help="Checkpoint selection: best val ratio or final epoch.")
     parser.add_argument("--eval-motion-threshold-deg", type=float, default=5.0, help="Pairs with |delta as5600| above this are 'moving' at eval.")
+    parser.add_argument(
+        "--max-horizon", type=int, default=1,
+        help="Horizon-conditioned prediction: k is sampled in [1, max] per training batch (frames, i.e. 0.1 s each).",
+    )
     parser.add_argument("--device", choices=("auto", "cpu", "cuda"), default="auto")
     parser.add_argument("--output", type=Path, default=Path("models/visual_jepa_001.pth"))
     parser.add_argument("--metrics-output", type=Path, default=Path("data/processed/experiments/visual_jepa_001/metrics.json"))
@@ -112,6 +116,31 @@ def build_pairs(episode_ids: np.ndarray) -> np.ndarray:
     return np.nonzero(same)[0].astype(np.int64)
 
 
+def build_pairs_multi(episode_ids: np.ndarray, max_horizon: int) -> dict[int, np.ndarray]:
+    """For each k, indices i such that i and i+k stay in the same episode."""
+
+    return {
+        k: np.nonzero(episode_ids[:-k] == episode_ids[k:])[0].astype(np.int64)
+        for k in range(1, max_horizon + 1)
+    }
+
+
+def eval_horizons(max_horizon: int) -> tuple[int, ...]:
+    if max_horizon <= 1:
+        return (1,)
+    middle = max(2, (max_horizon + 1) // 2)
+    return tuple(sorted({1, middle, max_horizon}))
+
+
+def action_sequence(action_norm: np.ndarray, index: np.ndarray, k: int, max_horizon: int) -> np.ndarray:
+    """Commands issued from frame i to i+k-1, zero-padded to max_horizon."""
+
+    sequence = np.zeros((index.shape[0], max_horizon), dtype=np.float32)
+    for offset in range(k):
+        sequence[:, offset] = action_norm[index + offset]
+    return sequence
+
+
 def normalize_action(requested_deg: np.ndarray) -> np.ndarray:
     return ((requested_deg - SERVO_NEUTRAL_DEG) / SERVO_SPAN_DEG).astype(np.float32)
 
@@ -127,72 +156,86 @@ def evaluate(
     model,
     probes,
     data,
-    pairs,
+    val_pairs_by_k,
     action_norm,
     device,
     batch_size: int,
     motion_threshold_deg: float = 5.0,
+    max_horizon: int = 1,
 ) -> dict[str, float]:
     model.eval()
     probes.eval()
-    moving_mask = np.abs(data["as5600_deg"][pairs + 1] - data["as5600_deg"][pairs]) > motion_threshold_deg
-    sums = {"all": [0.0, 0.0, 0], "moving": [0.0, 0.0, 0], "static": [0.0, 0.0, 0]}
+    per_horizon: dict[str, dict[str, float]] = {}
     angle_err_deg = []
     distance_true = []
     distance_pred = []
 
     with torch.no_grad():
-        for start in range(0, len(pairs), batch_size):
-            index = pairs[start : start + batch_size]
-            frames_t = torch.from_numpy(data["frames"][index]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
-            frames_next = torch.from_numpy(data["frames"][index + 1]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
-            action = torch.from_numpy(action_norm[index]).to(device).unsqueeze(-1)
+        for k in eval_horizons(max_horizon):
+            pairs = val_pairs_by_k[k]
+            moving_mask = np.abs(data["as5600_deg"][pairs + k] - data["as5600_deg"][pairs]) > motion_threshold_deg
+            sums = {"all": [0.0, 0.0, 0], "moving": [0.0, 0.0, 0], "static": [0.0, 0.0, 0]}
 
-            latent_t = model.encode(frames_t)
-            latent_next = model.encode(frames_next)
-            prediction = model.predict_next(latent_t, action)
+            for start in range(0, len(pairs), batch_size):
+                index = pairs[start : start + batch_size]
+                frames_t = torch.from_numpy(data["frames"][index]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
+                frames_next = torch.from_numpy(data["frames"][index + k]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
+                action = torch.from_numpy(action_sequence(action_norm, index, k, max_horizon)).to(device)
+                horizon = None
+                if max_horizon > 1:
+                    horizon = torch.full((index.shape[0], 1), k / max_horizon, device=device)
 
-            pred_per_sample = torch.sum((prediction - latent_next) ** 2, dim=1)
-            copy_per_sample = torch.sum((latent_t - latent_next) ** 2, dim=1)
-            batch_moving = torch.from_numpy(moving_mask[start : start + batch_size]).to(device)
-            for name, mask in (("all", None), ("moving", batch_moving), ("static", ~batch_moving)):
-                selected_pred = pred_per_sample if mask is None else pred_per_sample[mask]
-                selected_copy = copy_per_sample if mask is None else copy_per_sample[mask]
-                sums[name][0] += float(selected_pred.sum().item())
-                sums[name][1] += float(selected_copy.sum().item())
-                sums[name][2] += int(selected_pred.shape[0]) * latent_t.shape[1]
+                latent_t = model.encode(frames_t)
+                latent_next = model.encode(frames_next)
+                prediction = model.predict_next(latent_t, action, horizon)
 
-            angle_out = probes.angle(latent_next)
-            angle_pred = torch.atan2(angle_out[:, 0], angle_out[:, 1])
-            angle_true = torch.from_numpy(np.radians(data["as5600_deg"][index + 1])).to(device)
-            wrapped = torch.remainder(angle_pred - angle_true + math.pi, 2.0 * math.pi) - math.pi
-            angle_err_deg.extend(torch.abs(torch.rad2deg(wrapped)).cpu().numpy().tolist())
+                pred_per_sample = torch.sum((prediction - latent_next) ** 2, dim=1)
+                copy_per_sample = torch.sum((latent_t - latent_next) ** 2, dim=1)
+                batch_moving = torch.from_numpy(moving_mask[start : start + batch_size]).to(device)
+                for name, mask in (("all", None), ("moving", batch_moving), ("static", ~batch_moving)):
+                    selected_pred = pred_per_sample if mask is None else pred_per_sample[mask]
+                    selected_copy = copy_per_sample if mask is None else copy_per_sample[mask]
+                    sums[name][0] += float(selected_pred.sum().item())
+                    sums[name][1] += float(selected_copy.sum().item())
+                    sums[name][2] += int(selected_pred.shape[0]) * latent_t.shape[1]
 
-            distance_pred.extend(probes.distance(latent_next).squeeze(-1).cpu().numpy().tolist())
-            distance_true.extend(data["distance_m"][index + 1].tolist())
+                if k == 1:
+                    angle_out = probes.angle(latent_next)
+                    angle_pred = torch.atan2(angle_out[:, 0], angle_out[:, 1])
+                    angle_true = torch.from_numpy(np.radians(data["as5600_deg"][index + 1])).to(device)
+                    wrapped = torch.remainder(angle_pred - angle_true + math.pi, 2.0 * math.pi) - math.pi
+                    angle_err_deg.extend(torch.abs(torch.rad2deg(wrapped)).cpu().numpy().tolist())
+                    distance_pred.extend(probes.distance(latent_next).squeeze(-1).cpu().numpy().tolist())
+                    distance_true.extend(data["distance_m"][index + 1].tolist())
 
-    def ratio_of(name: str) -> float:
-        pred_sum, copy_sum, count = sums[name]
-        if count == 0 or copy_sum <= 0:
-            return float("nan")
-        return float(pred_sum / copy_sum)
+            def ratio_of(name: str) -> float:
+                pred_sum, copy_sum, count = sums[name]
+                if count == 0 or copy_sum <= 0:
+                    return float("nan")
+                return float(pred_sum / copy_sum)
 
-    pred_mse = sums["all"][0] / max(1, sums["all"][2])
-    copy_mse = sums["all"][1] / max(1, sums["all"][2])
+            per_horizon[str(k)] = {
+                "pred_mse": float(sums["all"][0] / max(1, sums["all"][2])),
+                "copy_mse": float(sums["all"][1] / max(1, sums["all"][2])),
+                "pred_to_copy_ratio": ratio_of("all"),
+                "pred_to_copy_ratio_moving": ratio_of("moving"),
+                "pred_to_copy_ratio_static": ratio_of("static"),
+                "moving_pair_fraction": float(np.mean(moving_mask)) if len(pairs) else float("nan"),
+            }
+
     distance_true_arr = np.asarray(distance_true)
     distance_pred_arr = np.asarray(distance_pred)
     ss_res = float(np.sum((distance_true_arr - distance_pred_arr) ** 2))
     ss_tot = float(np.sum((distance_true_arr - distance_true_arr.mean()) ** 2))
-    return {
-        "pred_mse": float(pred_mse),
-        "copy_mse": float(copy_mse),
-        "pred_to_copy_ratio": float(pred_mse / copy_mse) if copy_mse > 0 else float("inf"),
-        "pred_to_copy_ratio_moving": ratio_of("moving"),
-        "pred_to_copy_ratio_static": ratio_of("static"),
-        "moving_pair_fraction": float(np.mean(moving_mask)) if len(pairs) else float("nan"),
-        "angle_probe_mae_deg": float(np.mean(angle_err_deg)) if angle_err_deg else float("nan"),
-        "distance_probe_r2": float(1.0 - ss_res / ss_tot) if ss_tot > 0 else float("nan"),
-    }
+    metrics = dict(per_horizon["1"])
+    metrics.update(
+        {
+            "angle_probe_mae_deg": float(np.mean(angle_err_deg)) if angle_err_deg else float("nan"),
+            "distance_probe_r2": float(1.0 - ss_res / ss_tot) if ss_tot > 0 else float("nan"),
+            "per_horizon": per_horizon,
+        }
+    )
+    return metrics
 
 
 def main() -> None:
@@ -207,18 +250,24 @@ def main() -> None:
     episodes = np.unique(data["episode"])
     val_count = max(1, int(round(len(episodes) * args.val_episode_fraction)))
     val_episodes = set(episodes[-val_count:].tolist())
-    pairs = build_pairs(data["episode"])
-    is_val = np.isin(data["episode"][pairs], list(val_episodes))
-    train_pairs = pairs[~is_val]
-    val_pairs = pairs[is_val]
+    pairs_by_k = build_pairs_multi(data["episode"], args.max_horizon)
+    train_by_k: dict[int, np.ndarray] = {}
+    val_by_k: dict[int, np.ndarray] = {}
+    for k, pairs in pairs_by_k.items():
+        is_val = np.isin(data["episode"][pairs], list(val_episodes))
+        train_by_k[k] = pairs[~is_val]
+        val_by_k[k] = pairs[is_val]
+    train_pairs = train_by_k[1]
+    val_pairs = val_by_k[1]
     action_norm = normalize_action(data["requested_deg"])
 
     model = VisualJEPA(
         latent_dim=args.latent_dim,
-        action_dim=1,
+        action_dim=args.max_horizon,
         hidden_dim=args.hidden_dim,
         encoder_width=args.encoder_width,
         use_action=not args.no_action,
+        horizon_dim=1 if args.max_horizon > 1 else 0,
     ).to(device)
     probes = ProbeHeads(args.latent_dim).to(device)
     optimizer = torch.optim.AdamW(
@@ -236,18 +285,22 @@ def main() -> None:
     for epoch in range(args.epochs):
         model.train()
         probes.train()
-        order = rng.permutation(len(train_pairs))
         epoch_loss = 0.0
-        for step in range(steps_per_epoch):
-            index = train_pairs[order[step * args.batch_size : (step + 1) * args.batch_size]]
+        for _ in range(steps_per_epoch):
+            k = int(rng.integers(1, args.max_horizon + 1))
+            pool = train_by_k[k]
+            index = pool[rng.integers(0, len(pool), size=args.batch_size)]
             frames_t = torch.from_numpy(data["frames"][index]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
-            frames_next = torch.from_numpy(data["frames"][index + 1]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
-            action = torch.from_numpy(action_norm[index]).to(device).unsqueeze(-1)
+            frames_next = torch.from_numpy(data["frames"][index + k]).to(device).permute(0, 3, 1, 2).float().div_(255.0)
+            action = torch.from_numpy(action_sequence(action_norm, index, k, args.max_horizon)).to(device)
+            horizon = None
+            if args.max_horizon > 1:
+                horizon = torch.full((index.shape[0], 1), k / args.max_horizon, device=device)
 
             with torch.autocast(device_type=device.type, dtype=autocast_dtype, enabled=device.type == "cuda"):
                 latent_t = model.encode(frames_t)
                 latent_next = model.encode(frames_next)
-                prediction = model.predict_next(latent_t, action)
+                prediction = model.predict_next(latent_t, action, horizon)
 
                 pred_loss = torch.mean((prediction - latent_next.detach()) ** 2)
                 reg = args.variance_weight * 0.5 * (variance_loss(latent_t) + variance_loss(latent_next))
@@ -255,10 +308,10 @@ def main() -> None:
 
                 detached = latent_next.detach()
                 angle_out = probes.angle(detached)
-                angle_true = torch.from_numpy(np.radians(data["as5600_deg"][index + 1])).to(device).float()
+                angle_true = torch.from_numpy(np.radians(data["as5600_deg"][index + k])).to(device).float()
                 probe_loss = torch.mean((angle_out[:, 0] - torch.sin(angle_true)) ** 2)
                 probe_loss = probe_loss + torch.mean((angle_out[:, 1] - torch.cos(angle_true)) ** 2)
-                distance_true = torch.from_numpy(data["distance_m"][index + 1]).to(device).float()
+                distance_true = torch.from_numpy(data["distance_m"][index + k]).to(device).float()
                 probe_loss = probe_loss + torch.mean((probes.distance(detached).squeeze(-1) - distance_true) ** 2)
 
                 loss = pred_loss + reg + probe_loss
@@ -270,8 +323,9 @@ def main() -> None:
 
         if (epoch + 1) % args.eval_every == 0 or epoch == args.epochs - 1:
             metrics = evaluate(
-                model, probes, data, val_pairs, action_norm, device, args.batch_size,
+                model, probes, data, val_by_k, action_norm, device, args.batch_size,
                 motion_threshold_deg=args.eval_motion_threshold_deg,
+                max_horizon=args.max_horizon,
             )
             metrics["epoch"] = epoch + 1
             metrics["train_loss"] = epoch_loss / steps_per_epoch

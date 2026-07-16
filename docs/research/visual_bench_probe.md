@@ -78,3 +78,30 @@ Le modèle, ses hyperparamètres et la baseline copie restent strictement identi
 - **H3 rejetée** (R2 distance ~0.16): la profondeur n'est presque pas linéairement décodable.
 
 Lecture d'ensemble: la contingence sensorimotrice minimale est apprenable en simulation, son signal le plus robuste étant représentationnel (sonde d'angle) plutôt que prédictif. Suites candidates (à arbitrer, aucune lancée): plus de graines pour trancher H1-mouvement; horizon de prédiction multi-pas (l'action compte davantage à 0.3-0.5 s); latent plus grand ou entraînement plus long pour H2; et à terme la comparaison aux mêmes sondes sur les données réelles du banc v1.0.
+
+## Protocole v3 - horizon conditionné (pré-enregistré le 2026-07-17, arbitré par Anthony)
+
+Motivation: à 0.1 s d'horizon, la moitié des paires sont quasi statiques et la copie est
+presque imbattable - le dispositif v2 est structurellement défavorable à H1. Par ailleurs,
+Anthony souligne qu'un horizon codé en dur est artificiel (le système nerveux module ses
+échelles de temps) et que la voie JEPA/LeCun vise une prédiction en espace de représentation,
+pas une reconstruction parfaite. Réponses de conception:
+
+- **un seul prédicteur conditionné par l'horizon** (pas un modèle par k): il reçoit le latent
+  courant, la séquence des commandes servo `a_t..a_t+k-1` (zéro-paddée) et `k/k_max`; à
+  l'entraînement, k est tiré uniformément dans {1..5} (0.1 à 0.5 s). L'horizon devient une
+  entrée continue du même système - la grille {1,3,5} n'est que l'instrument de mesure;
+- le contrôle `no_action` perd les commandes mais **garde l'horizon** (même capacité, même
+  connaissance du "jusqu'où", seule l'information motrice disparaît);
+- la prédiction reste en espace latent avec cible stop-gradient (voie JEPA), inchangée.
+
+Hypothèses v3 (fixées avant exécution):
+
+- **H1-v3**: à k=5 (0.5 s) sur les paires en mouvement, `action` bat `no_action` en moyenne
+  avec intervalles min-max disjoints sur 3 graines;
+- **critère secondaire**: l'avantage moyen de `action` croît avec k sur {1, 3, 5};
+- H2 et H3 inchangées (sondes sur latent gelé, checkpoint final).
+
+Dispositif identique à v2 par ailleurs: corpus 240 pièces réutilisé tel quel, 2 variantes x
+3 graines (4301-4303), 400 epochs à budget fixe, checkpoint final, latent 128.
+Résultats v3: `data/processed/experiments/visual_night_003/summary.md`.

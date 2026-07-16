@@ -60,14 +60,16 @@ if nn is not None:
             hidden_dim: int = 512,
             encoder_width: int = 32,
             use_action: bool = True,
+            horizon_dim: int = 0,
         ):
             super().__init__()
             self.latent_dim = latent_dim
             self.action_dim = action_dim
+            self.horizon_dim = horizon_dim
             self.use_action = use_action
             self.encoder = ConvEncoder(latent_dim, encoder_width)
             self.predictor = nn.Sequential(
-                nn.Linear(latent_dim + action_dim, hidden_dim),
+                nn.Linear(latent_dim + action_dim + horizon_dim, hidden_dim),
                 nn.GELU(),
                 nn.Linear(hidden_dim, hidden_dim),
                 nn.GELU(),
@@ -77,14 +79,21 @@ if nn is not None:
         def encode(self, frames):
             return self.encoder(frames)
 
-        def predict_next(self, latent, action):
+        def predict_next(self, latent, action, horizon=None):
+            # The control variant loses the motor commands but keeps the
+            # horizon: both variants know how far to project.
             if not self.use_action:
                 action = torch.zeros_like(action)
-            return self.predictor(torch.cat([latent, action], dim=-1))
+            parts = [latent, action]
+            if self.horizon_dim > 0:
+                if horizon is None:
+                    raise ValueError("This model was built with horizon conditioning; pass `horizon`.")
+                parts.append(horizon)
+            return self.predictor(torch.cat(parts, dim=-1))
 
-        def forward(self, frames_t, action_t):
+        def forward(self, frames_t, action_t, horizon_t=None):
             latent_t = self.encode(frames_t)
-            return latent_t, self.predict_next(latent_t, action_t)
+            return latent_t, self.predict_next(latent_t, action_t, horizon_t)
 
 else:
 

@@ -74,6 +74,36 @@ class VisualJEPATests(unittest.TestCase):
         pairs = build_pairs(episodes)
         self.assertEqual(pairs.tolist(), [0, 1, 3])
 
+    def test_multi_horizon_pairs_respect_boundaries(self):
+        from learning.train_visual_jepa import build_pairs_multi
+
+        episodes = np.array([0, 0, 0, 0, 1, 1, 1], dtype=np.int32)
+        by_k = build_pairs_multi(episodes, 3)
+        self.assertEqual(by_k[1].tolist(), [0, 1, 2, 4, 5])
+        self.assertEqual(by_k[2].tolist(), [0, 1, 4])
+        self.assertEqual(by_k[3].tolist(), [0])
+
+    def test_action_sequence_padding(self):
+        from learning.train_visual_jepa import action_sequence
+
+        actions = np.arange(10, dtype=np.float32)
+        sequence = action_sequence(actions, np.array([2, 4]), 2, 5)
+        self.assertEqual(sequence.shape, (2, 5))
+        self.assertEqual(sequence[0].tolist(), [2.0, 3.0, 0.0, 0.0, 0.0])
+        self.assertEqual(sequence[1].tolist(), [4.0, 5.0, 0.0, 0.0, 0.0])
+
+    def test_horizon_conditioned_forward(self):
+        from learning.visual_jepa import VisualJEPA
+
+        model = VisualJEPA(latent_dim=16, hidden_dim=32, encoder_width=8, action_dim=5, horizon_dim=1)
+        frames = torch.rand(2, 3, 64, 64)
+        action = torch.rand(2, 5)
+        horizon = torch.full((2, 1), 0.6)
+        latent, prediction = model(frames, action, horizon)
+        self.assertEqual(prediction.shape, (2, 16))
+        with self.assertRaises(ValueError):
+            model.predict_next(latent, action, None)
+
     def test_downsample_box_average(self):
         from learning.train_visual_jepa import downsample_frames
 
