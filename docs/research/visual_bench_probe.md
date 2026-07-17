@@ -105,3 +105,28 @@ Hypothèses v3 (fixées avant exécution):
 Dispositif identique à v2 par ailleurs: corpus 240 pièces réutilisé tel quel, 2 variantes x
 3 graines (4301-4303), 400 epochs à budget fixe, checkpoint final, latent 128.
 Résultats v3: `data/processed/experiments/visual_night_003/summary.md`.
+
+## Résultats campagne v3 (2026-07-17, 252 min)
+
+- **H1-v3: VALIDÉE.** Sur les paires en mouvement, `action` bat `no_action` avec intervalles
+  min-max disjoints sur les 3 graines à **tous** les horizons: k=1 `0.813` contre `0.847`
+  (avantage +0.034), k=3 `0.698` contre `0.770` (+0.072), k=5 `0.661` contre `0.716` (+0.055).
+  Le conditionnement par l'horizon a même débloqué le cas k=1 que v2 laissait en chevauchement.
+  C'est la première hypothèse pré-enregistrée validée de cette ligne de recherche: **la
+  contingence sensorimotrice visuelle est apprise et exploitée en prédiction**.
+- **Critère secondaire (croissance monotone avec k): non satisfait.** L'avantage culmine à
+  k=3 (0.3 s) puis décroît légèrement à k=5. Interprétation (non testée): à ~600°/s un
+  déplacement servo typique s'achève en 0.15-0.3 s; à 0.5 s la cible est souvent atteinte et
+  l'issue redevient plus prévisible sans le détail des commandes.
+- **Effet représentationnel répliqué et renforcé**: MAE d'angle `11.75 +/- 0.36` avec action
+  contre `24.90 +/- 1.33` sans - troisième réplication, intervalles disjoints.
+- H1 globale toujours rejetée (paires statiques dominantes, attendu). **H2 rejetée** mais en
+  progression (14.6 -> 11.7 deg). **H3 rejetée** (R2 ~0.28).
+
+Bilan de la ligne v1-v3: contingence sensorimotrice démontrée en simulation au sens
+pré-enregistré (H1-v3), effet représentationnel robuste (3 réplications), précision de pose
+et profondeur encore insuffisantes (H2/H3). Suites candidates, à arbitrer: pousser H2
+(latent plus grand, entraînement long, babbling plus riche); exploiter le modèle en
+**exploration active** (choisir la commande qui maximise le progrès de prédiction - la tête
+deviendrait pilotée par l'IA dans le viewer); préparer la réplication des sondes sur les
+premières données réelles du banc v1.0 quand il existera.
