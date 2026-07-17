@@ -58,6 +58,32 @@ final. 3 graines (4301-4303) par condition, 6 runs.
   « surprise = bruit » est peu probable ici; ce dispositif ne le teste pas.
 - Simulation uniquement; la réplication sur banc réel reste un point de passage ultérieur.
 
-## Résultats
+## Résultats (2026-07-17, 20 min de campagne)
 
-Renseignés après campagne dans `data/processed/experiments/active_exploration_001/summary.md`.
+- **H-A1 REJETÉE**: ratio k=3 mouvement final `0.747 +/- 0.010` pour `active` contre
+  `0.732 +/- 0.014` pour `babbling` - le babbling fait légèrement mieux, la moyenne n'est
+  même pas favorable à l'actif.
+- **H-A2 REJETÉE**: MAE angle `22.8 +/- 0.9` contre `20.8 +/- 2.1` - même sens.
+- Garde-fou: l'actif a bien concentré son échantillonnage (entropie `0.794` contre
+  `0.994`) sans s'effondrer; la concentration n'a simplement rien rapporté.
+
+**Conséquence D-002: le module « motivation par learning progress », dans sa forme
+minimale régionale, ne regagne pas sa place.** Il reste hors du chemin critique.
+
+Lecture: dans cet environnement à un seul degré de liberté moteur et aux pièces
+statistiquement homogènes, toutes les régions angulaires sont à peu près également
+apprenables; la couverture uniforme est alors quasi optimale et la sélectivité de
+l'actif est un coût sans bénéfice. Le LP régional n'avait littéralement rien de
+différentiel à exploiter. La sonde condamne la variante minimale ici, pas la famille:
+le test discriminant serait un environnement **hétérogène** (une région au stimulus
+imprévisible - du bruit inapprenable - contre des régions structurées), où le LP doit
+théoriquement éviter le piège du bruit alors que le babbling y gaspille son budget.
+
+Observation annexe (non pré-enregistrée): les deux conditions montrent une courbe en U -
+le ratio sur le juge externe s'améliore jusqu'à ~7 500 images puis se dégrade jusqu'au
+budget final. L'entraînement continu sur un buffer on-policy croissant dérive de la
+distribution du juge externe (collectée par un babbling différent). Toute future sonde
+de ce type devra soit ancrer l'évaluation dans la distribution de collecte, soit
+mélanger un tampon de rejeu, soit s'arrêter sur validation.
+
+Aucune suite lancée sans arbitrage.
