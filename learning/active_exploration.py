@@ -1,11 +1,14 @@
-"""Active exploration of the bench head driven by regional learning progress.
+"""Exploration policies for the visual bench-head learning loop.
 
 Pre-registered protocol: docs/research/active_exploration_probe.md. The head
 alternates collection rounds (choosing servo targets) and training rounds of
 the horizon-conditioned VisualJEPA from v3. The `active` condition picks the
 angle region whose prediction error decreases fastest (learning progress, IAC
 style); the `babbling` control draws targets uniformly at the same cadence,
-in the same rooms, with the same model and budgets.
+in the same rooms, with the same model and budgets. The later `developmental`
+condition is continuous and documented separately in
+docs/research/developmental_curiosity_probe.md; it is not part of the completed
+pre-registered campaign.
 """
 
 from __future__ import annotations
@@ -19,6 +22,7 @@ from pathlib import Path
 
 import numpy as np
 
+from learning.developmental_curiosity import DevelopmentalCuriosity
 from learning.jepa import covariance_loss, variance_loss
 from learning.train_visual_jepa import (
     ProbeHeads,
@@ -47,11 +51,17 @@ class UniformChooser:
         self.min_deg = min_deg
         self.max_deg = max_deg
 
-    def choose(self, rng: np.random.Generator) -> float:
+    def choose(self, rng: np.random.Generator, current_deg: float | None = None) -> float:
         return float(rng.uniform(self.min_deg, self.max_deg))
 
     def update(self, target_deg: float, error: float) -> None:
         pass
+
+    def update_transition(self, start_deg: float, target_deg: float, error: float) -> None:
+        self.update(target_deg, error)
+
+    def diagnostics(self) -> dict:
+        return {}
 
     def visit_counts(self) -> list[int]:
         return []
@@ -91,7 +101,7 @@ class LearningProgressChooser:
         recent = history[half:]
         return float(np.mean(older) - np.mean(recent))
 
-    def choose(self, rng: np.random.Generator) -> float:
+    def choose(self, rng: np.random.Generator, current_deg: float | None = None) -> float:
         if rng.random() < self.epsilon:
             index = int(rng.integers(0, self.bins))
         else:
@@ -106,8 +116,73 @@ class LearningProgressChooser:
     def update(self, target_deg: float, error: float) -> None:
         self.histories[self.bin_of(target_deg)].append(float(error))
 
+    def update_transition(self, start_deg: float, target_deg: float, error: float) -> None:
+        self.update(target_deg, error)
+
     def visit_counts(self) -> list[int]:
         return list(self.visits)
+
+    def diagnostics(self) -> dict:
+        return {"bin_visits": self.visit_counts()}
+
+
+class DevelopmentalCuriosityChooser:
+    """Continuous state-action adapter for :class:`DevelopmentalCuriosity`.
+
+    The descriptor is ``(current_angle, target_angle)`` normalized to [0, 1].
+    Candidate targets are continuous samples, not authored difficulty bins.
+    """
+
+    def __init__(self, min_deg: float, max_deg: float, neutral_deg: float, seed: int):
+        self.min_deg = float(min_deg)
+        self.max_deg = float(max_deg)
+        self.neutral_deg = float(neutral_deg)
+        neutral = self._normalize(neutral_deg)
+        self.scheduler = DevelopmentalCuriosity(
+            descriptor_dim=2,
+            home_descriptor=np.array([neutral, neutral]),
+            bandwidth=0.16,
+            initial_frontier=0.10,
+            max_frontier=0.80,
+            epsilon=0.05,
+            seed=seed,
+        )
+        self.targets: list[float] = []
+
+    def _normalize(self, angle: float) -> float:
+        return float(np.clip((angle - self.min_deg) / (self.max_deg - self.min_deg), 0.0, 1.0))
+
+    def descriptor(self, start_deg: float, target_deg: float) -> np.ndarray:
+        return np.array([self._normalize(start_deg), self._normalize(target_deg)], dtype=np.float64)
+
+    def choose(self, rng: np.random.Generator, current_deg: float | None = None) -> float:
+        current = self.neutral_deg if current_deg is None else float(current_deg)
+        span = self.max_deg - self.min_deg
+        uniform = rng.uniform(self.min_deg, self.max_deg, size=32)
+        local = np.clip(rng.normal(current, 0.12 * span, size=28), self.min_deg, self.max_deg)
+        targets = np.concatenate(
+            [uniform, local, np.array([self.neutral_deg, current, self.min_deg, self.max_deg])]
+        )
+        descriptors = np.stack([self.descriptor(current, target) for target in targets])
+        selected = self.scheduler.choose(descriptors, rng)
+        target = float(targets[selected])
+        self.targets.append(target)
+        return target
+
+    def update(self, target_deg: float, error: float) -> None:
+        self.update_transition(self.neutral_deg, target_deg, error)
+
+    def update_transition(self, start_deg: float, target_deg: float, error: float) -> None:
+        self.scheduler.observe(self.descriptor(start_deg, target_deg), error)
+
+    def visit_counts(self) -> list[int]:
+        if not self.targets:
+            return []
+        counts, _ = np.histogram(self.targets, bins=16, range=(self.min_deg, self.max_deg))
+        return counts.astype(int).tolist()
+
+    def diagnostics(self) -> dict:
+        return {**self.scheduler.diagnostics(), "target_histogram": self.visit_counts()}
 
 
 class ExperienceBuffer:
@@ -141,7 +216,16 @@ class ExperienceBuffer:
         }
 
 
-def prediction_error(model, device, frames_start, frames_end, actions_norm_window, max_horizon: int) -> float:
+def prediction_error(
+    model,
+    device,
+    frames_start,
+    frames_end,
+    actions_norm_window,
+    max_horizon: int,
+    *,
+    scale_invariant: bool = False,
+) -> float:
     """Latent prediction error over the elapsed decision window."""
 
     k_span = min(len(actions_norm_window), max_horizon)
@@ -155,10 +239,25 @@ def prediction_error(model, device, frames_start, frames_end, actions_norm_windo
         latent_t = model.encode(frame_t)
         latent_next = model.encode(frame_next)
         prediction = model.predict_next(latent_t, action_t, horizon)
-        return float(torch.mean((prediction - latent_next) ** 2).item())
+        pred_mse = torch.mean((prediction - latent_next) ** 2)
+        if not scale_invariant:
+            return float(pred_mse.item())
+        copy_mse = torch.mean((latent_t - latent_next) ** 2)
+        return float((pred_mse / torch.clamp(pred_mse + copy_mse, min=1e-8)).item())
 
 
-def collect_episode(env, chooser, model, device, rng, frames_per_episode: int, image_size: int, room_seed: int, max_horizon: int, active: bool):
+def collect_episode(
+    env,
+    chooser,
+    model,
+    device,
+    rng,
+    frames_per_episode: int,
+    image_size: int,
+    room_seed: int,
+    max_horizon: int,
+    condition: str,
+):
     env.reset(seed=room_seed)
     capture_every = max(1, round(1.0 / (CAPTURE_HZ * env.config.control_dt)))
     frames: list[np.ndarray] = []
@@ -169,15 +268,22 @@ def collect_episode(env, chooser, model, device, rng, frames_per_episode: int, i
 
     for frame_index in range(frames_per_episode):
         if frame_index % DECISION_FRAMES == 0:
-            if active and frame_index >= DECISION_FRAMES:
+            if condition != "babbling" and frame_index >= DECISION_FRAMES:
                 # Elapsed window: frames i-5 .. i-1 (span 4 transitions).
                 window = slice(frame_index - DECISION_FRAMES, frame_index - 1)
                 actions_norm = normalize_action(np.asarray(requested[window], dtype=np.float32))
                 error = prediction_error(
-                    model, device, frames[frame_index - DECISION_FRAMES], frames[-1], actions_norm, max_horizon
+                    model,
+                    device,
+                    frames[frame_index - DECISION_FRAMES],
+                    frames[-1],
+                    actions_norm,
+                    max_horizon,
+                    scale_invariant=condition == "developmental",
                 )
-                chooser.update(target, error)
-            target = chooser.choose(rng)
+                chooser.update_transition(as5600[frame_index - DECISION_FRAMES], target, error)
+            current_deg = as5600[-1] if as5600 else env.config.servo.neutral_deg
+            target = chooser.choose(rng, current_deg)
 
         obs = None
         for _ in range(capture_every):
@@ -265,7 +371,7 @@ def load_validation(corpus_dir: Path, image_size: int, max_horizon: int, val_fra
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Active exploration vs babbling on the bench twin.")
-    parser.add_argument("--condition", choices=("active", "babbling"), required=True)
+    parser.add_argument("--condition", choices=("active", "babbling", "developmental"), required=True)
     parser.add_argument("--seed", type=int, default=4301)
     parser.add_argument("--rounds", type=int, default=8)
     parser.add_argument("--frames-per-round", type=int, default=2500)
@@ -303,11 +409,12 @@ def main() -> None:
 
     env = BenchHeadEnv(BenchConfig(seed=args.seed))
     servo = env.config.servo
-    chooser = (
-        LearningProgressChooser(servo.min_deg, servo.max_deg)
-        if args.condition == "active"
-        else UniformChooser(servo.min_deg, servo.max_deg)
-    )
+    if args.condition == "active":
+        chooser = LearningProgressChooser(servo.min_deg, servo.max_deg)
+    elif args.condition == "developmental":
+        chooser = DevelopmentalCuriosityChooser(servo.min_deg, servo.max_deg, servo.neutral_deg, args.seed)
+    else:
+        chooser = UniformChooser(servo.min_deg, servo.max_deg)
 
     model = VisualJEPA(
         latent_dim=args.latent_dim,
@@ -340,7 +447,7 @@ def main() -> None:
             frames, requested, as5600, distance = collect_episode(
                 env, chooser, model, device, rng,
                 args.frames_per_episode, args.image_size, room_seed, args.max_horizon,
-                active=args.condition == "active",
+                condition=args.condition,
             )
             buffer.add_episode(frames, requested, as5600, distance)
             round_as5600.extend(as5600)
@@ -362,6 +469,7 @@ def main() -> None:
                 "train_loss": train_loss,
                 "coverage_entropy": entropy,
                 "bin_visits": chooser.visit_counts(),
+                "curiosity": chooser.diagnostics(),
                 "eval": eval_metrics,
             }
         )

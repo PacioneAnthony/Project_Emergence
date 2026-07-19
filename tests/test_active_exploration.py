@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 
 from learning.active_exploration import (
+    DevelopmentalCuriosityChooser,
     LearningProgressChooser,
     UniformChooser,
     coverage_entropy,
@@ -50,6 +51,19 @@ class LearningProgressChooserTests(unittest.TestCase):
         collapsed = np.full(5000, 42.0)
         self.assertGreater(coverage_entropy(uniform, 10.0, 170.0), 0.95)
         self.assertLess(coverage_entropy(collapsed, 10.0, 170.0), 0.05)
+
+    def test_developmental_adapter_uses_continuous_safe_targets(self):
+        chooser = DevelopmentalCuriosityChooser(10.0, 170.0, 90.0, seed=6)
+        rng = np.random.default_rng(6)
+        first = chooser.choose(rng, current_deg=90.0)
+        self.assertGreaterEqual(first, 10.0)
+        self.assertLessEqual(first, 170.0)
+        for error in np.linspace(0.9, 0.1, 20):
+            chooser.update_transition(90.0, first, float(error))
+        later = chooser.choose(rng, current_deg=first)
+        self.assertGreaterEqual(later, 10.0)
+        self.assertLessEqual(later, 170.0)
+        self.assertEqual(chooser.diagnostics()["observations"], 20)
 
 
 if __name__ == "__main__":

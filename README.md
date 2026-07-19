@@ -1,6 +1,8 @@
 # Projet Emergence
 
-Emergence explore une architecture développementale pour un organisme artificiel incarné. Le chemin actif commence par une instrumentation physique fiable avant tout apprentissage complexe.
+Emergence explore une architecture développementale pour un organisme artificiel incarné.
+Depuis D-008, le chemin actif exige d'abord des comportements probants et répliqués en
+simulation avant toute reprise du banc physique.
 
 ## Reprise Du Projet
 
@@ -9,6 +11,13 @@ Commencer par [PILOTAGE.md](PILOTAGE.md), puis lire [SESSION_HANDOFF.md](SESSION
 La vision technique est définie dans [DEVELOPMENTAL_ARCHITECTURE.md](DEVELOPMENTAL_ARCHITECTURE.md). Les décisions et responsabilités sont consignées dans [DECISIONS.md](DECISIONS.md) et [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md).
 
 ## Jalon Actif
+
+La branche active est la simulation développementale. DC-003 fournit un premier résultat
+prometteur mais non promu: gains appariés sur 20/20 mondes, évitement du bruit et
+progression graduelle validés, tandis que la porte min-max pré-enregistrée échoue dans des
+mondes hétérogènes. L'étape suivante est une revue statistique avant toute réplication.
+
+Le matériel J0 est conservé mais suspendu:
 
 J0 valide le protocole EMG1, l'enregistrement multimodal, le replay, la synchronisation et la sécurité du servo :
 

@@ -80,3 +80,57 @@ Avis Claude: recommandation MuJoCo et implémentation Phase A réalisées en ses
 Arbitrage Anthony: piste parallèle et Phase A validées le 2026-07-15.  
 Conséquences: `requirements/research.txt` ajoute la dépendance `mujoco`; `learning/rollout_lnn.py` gagne l'option `--backend sim3d`; les tests `tests/test_sim3d.py` se désactivent proprement sans MuJoCo.  
 Condition de réouverture: la maintenance du double backend coûte plus que sa valeur, ou la Phase B démontre qu'un autre moteur est nécessaire pour le rendu caméra.
+
+## D-007 - Curiosité graduelle sans niveaux annotés
+
+Date: 2026-07-17
+Décision: conserver le learning progress régional rejeté uniquement comme baseline
+reproductible et développer, en branche expérimentale, un ordonnanceur continu où la
+difficulté est relative aux compétences courantes. Les niveaux de difficulté conçus par
+l'expérimentateur ne peuvent servir que d'oracle caché dans un test contrôlé, jamais
+d'entrée de la politique.
+Statut: acceptée sous l'autorité technique de D-004; ne modifie pas la rétrogradation D-002.
+Motif: `active_exploration_001` montre qu'une partition arbitraire de huit angles concentre
+les données sans gain dans un monde homogène. L'analogie développementale pertinente est
+un refuge initial puis une frontière apprenable qui se déplace avec la maîtrise, pas une
+recherche de surprise maximale.
+Données utilisées: `docs/research/active_exploration_probe.md`, ratios finaux `0.747`
+contre `0.732`, MAE angle `22.8°` contre `20.8°`, entropies `0.794` contre `0.994`.
+Baseline: babbling uniforme et round-robin+habituation; learning progress régional comme
+ablation historique.
+Implémentation: `learning/developmental_curiosity.py`, intégration conditionnelle dans
+`learning/active_exploration.py`, tests synthétiques et protocole
+`docs/research/developmental_curiosity_probe.md`.
+Conséquences: aucun run GPU long n'est lancé avant pré-enregistrement du banc discriminant;
+aucune promotion dans le chemin critique sans gain tenu à part, évitement du bruit,
+couverture suffisante et réplication sur au moins trois graines.
+Condition de réouverture: la variante continue ne bat pas round-robin+habituation, son
+incertitude bootstrap est mal calibrée, ou son coût excède son gain mesuré.
+
+Résultat de réouverture (2026-07-17): DC-001 déclenche la condition. La variante continue
+évite le bruit (`4.66%` du budget contre `22.74%` pour le babbling) mais perd fortement sur
+l'apprentissage structuré (`0.253` contre `0.113`) et ne satisfait la progression graduelle
+que sur 11/20 graines. Le bootstrap de la surface d'erreur confond connaissance d'une
+erreur élevée et preuve qu'elle est irréductible. D-007 reste le principe de recherche,
+mais son implémentation DC-001 est rejetée et demeure hors chemin critique sous D-002.
+
+## D-008 - Simulation probante avant reprise du banc physique
+
+Date: 2026-07-20
+Décision: suspendre le chemin critique matériel J0/J1 et faire de la validation en
+simulation la priorité active. Le banc physique n'est réintroduit qu'après émergence de
+comportements robustes, prometteurs et répliqués dans des environnements simulés de
+réalisme croissant.
+Statut: accepté par arbitrage explicite d'Anthony; remplace l'ordre opérationnel de D-005
+sans lever ses règles de sécurité.
+Motif: un mécanisme qui n'émerge pas dans un environnement simplifié et contrôlable a peu
+de chances d'apparaître sur un banc réel plus bruité, coûteux et difficile à diagnostiquer.
+Baseline de preuve: protocoles pré-enregistrés, baselines simples, plusieurs graines,
+environnements tenus à part, robustesse au bruit et réplication indépendante.
+Conséquences: aucune action physique, achat, flash ou essai servo n'est attendu. La
+progression active devient abstraction contrôlée, monde continu non annoté, jumeau visuel,
+domain randomization, puis seulement transfert physique. Le matériel existant est conservé
+mais ne bloque plus l'avancement logiciel.
+Condition de réouverture: au moins un comportement développemental central bat ses
+baselines, généralise hors distribution et se réplique sur une seconde série de graines;
+la décision de retour au matériel reste à Anthony.

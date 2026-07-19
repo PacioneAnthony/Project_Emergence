@@ -154,6 +154,41 @@ Ceci ne modifie ni J0, ni le firmware, ni le chemin critique développemental.
 
 Sonde d'exploration active terminée le 2026-07-17 (20 min): **H-A1 et H-A2 REJETÉES** - le learning progress régional minimal ne bat pas le babbling uniforme sur le jumeau (ratio k=3 `0.747` contre `0.732`, MAE angle `22.8°` contre `20.8°`), l'environnement homogène ne lui donnant rien de différentiel à exploiter. Conséquence D-002: le module motivation par learning progress reste hors chemin critique. Deux enseignements consignés dans `docs/research/active_exploration_probe.md`: le test discriminant exigerait un environnement hétérogène (région bruitée inapprenable vs régions structurées), et les deux conditions montrent une dérive en U sur juge externe (buffer on-policy croissant) à corriger dans toute future sonde itérative.
 
+Suite conçue et implémentée le 2026-07-17 sous D-007, sans lancement de campagne longue:
+`learning/developmental_curiosity.py` remplace les niveaux/bins annotés par un descripteur
+continu état-action, une incertitude bootstrap, un progrès local, une habituation, une
+pénalité d'imprévisibilité persistante et une frontière qui s'élargit avec la maîtrise.
+La condition `developmental` est raccordée à `learning/active_exploration.py`; l'ancien
+runner à deux conditions reste inchangé pour reproductibilité. Tests synthétiques ciblés
+verts. Plan et limites dans `docs/research/developmental_curiosity_probe.md`. La branche
+reste hors chemin critique tant qu'elle ne bat pas babbling et round-robin+habituation sur
+un protocole pré-enregistré.
+
+DC-001 a été pré-enregistré puis exécuté le 2026-07-17 (20 graines, 1 200 décisions, 41 s
+CPU): **DC-H1 et DC-H3 rejetées, DC-H2 validée, garde-fou couverture validé**. La curiosité
+continue évite nettement le bruit (`4.66%` contre `22.74%` pour babbling) mais apprend mal
+le domaine structuré (`0.253` contre `0.113`) et retourne parfois vers le familier; 11/20
+graines seulement suivent la séquence attendue. Cause: l'ensemble bootstrap apprend que
+l'erreur élevée est stable et la classe trop tôt comme irréductible, alors qu'une
+intervention d'apprentissage supplémentaire pourrait encore la réduire. Aucune promotion;
+une suite éventuelle est DC-002 avec ancres avant/après entraînement ou désaccord entre
+modèles de conséquences, jamais une retouche post hoc des poids DC-001. Résultats dans
+`data/processed/experiments/developmental_curiosity_001/summary.md`.
+
+Décision D-008 (2026-07-20): Anthony suspend le chemin matériel jusqu'à obtention de
+résultats simulés probants et prometteurs. Aucune action physique, achat ou flash n'est
+attendu; la simulation devient le chemin actif.
+
+DC-002 (ancres fixes avant/après) est rejeté: H2 et couverture passent, mais erreur
+structurée `0.172` contre `0.113` pour babbling, seulement 7/20 signatures et forte
+variance. DC-003 corrige ensuite par gain fractionnel absolu, pression de couverture et
+vingt mondes cachés randomisés. Résultat prometteur: erreur `0.1067` contre `0.1298`
+babbling et `0.1199` round-robin, gains appariés sur 20/20 mondes face aux deux, bruit
+`4.90%`, progression 19/20, couverture et stabilité validées. DC3-H1 reste formellement
+rejetée car les intervalles min-max bruts de mondes hétérogènes se chevauchent; aucune
+réplication lancée conformément au protocole. Prochaine étape: revue statistique et nouveau
+pré-enregistrement apparié, sans retuning de DC-003.
+
 Campagne v3 terminée le 2026-07-17 (252 min, protocole horizon conditionné arbitré par Anthony): **H1-v3 VALIDÉE** - sur les paires en mouvement, la variante conditionnée par la commande servo bat le contrôle sans action avec intervalles disjoints sur 3 graines à tous les horizons (0.1/0.3/0.5 s), avantage maximal à 0.3 s; effet représentationnel répliqué (MAE angle 11.7° contre 24.9°). Critère secondaire de monotonie non satisfait (pic à 0.3 s, interprétation mécanique consignée). H2/H3 toujours rejetées. Première hypothèse pré-enregistrée validée de la branche; détails dans `docs/research/visual_bench_probe.md`, résultats dans `data/processed/experiments/visual_night_003/`. Suites candidates consignées (H2, exploration active, réplication sur banc réel), aucune lancée sans arbitrage.
 
 Campagne v2 terminée le 2026-07-17 (246 min, v2 après amendement documenté): H1 globale rejetée; H1-mouvement favorable en moyenne (`0.907` contre `0.932`) mais non validée au critère strict (léger chevauchement à n=3); résultat exploratoire net: l'action motrice améliore fortement la lisibilité de la pose dans le latent (MAE angle `14.6°` avec action contre `23.0°` sans, intervalles disjoints); H2 et H3 rejetées. Détails et suites candidates dans `docs/research/visual_bench_probe.md`. Aucune nouvelle expérience lancée sans arbitrage d'Anthony.

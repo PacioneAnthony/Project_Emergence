@@ -358,4 +358,29 @@ Balayage continu visualisable: `python -m scripts.research.bench_head_sim scan -
 
 Première exploitation d'apprentissage: la sonde pré-enregistrée de contingence sensorimotrice visuelle (`docs/research/visual_bench_probe.md`), corpus via `sim3d/bench_corpus.py`, entraînement via `learning/train_visual_jepa.py`, campagne via `scripts/research/run_visual_night.py`. H1-v3 validée le 2026-07-17 (l'action motrice améliore la prédiction latente, avantage disjoint sur 3 graines à tous les horizons). Suite: sonde d'exploration active par learning progress (`docs/research/active_exploration_probe.md`, `learning/active_exploration.py`, `scripts/research/run_active_exploration.py`) - le test par lequel le module « motivation par learning progress » de D-002 peut regagner sa place.
 
+La sonde `active_exploration_001` a ensuite rejeté le learning progress régional: il
+concentre la collecte (`entropie 0.794` contre `0.994`) mais perd face au babbling sur la
+prédiction et la sonde d'angle. Une variante de curiosité développementale continue est
+désormais implémentée (`learning/developmental_curiosity.py`, condition `developmental`):
+descripteur état-action sans bins, ensemble bootstrap d'erreur, progrès local,
+habituation, pénalité d'imprévisibilité persistante et frontière élargie par la maîtrise.
+Plan de validation dans `docs/research/developmental_curiosity_probe.md`; aucune campagne
+longue ni promotion D-002 n'a été effectuée.
+
+DC-001 a ensuite été exécuté sur le banc discriminant CPU continu (20 graines, 1 200
+décisions). La variante évite le bruit (`4.66%` du budget contre `22.74%` pour babbling)
+mais perd fortement sur l'erreur structurée (`0.253` contre `0.113`) et ne produit la
+progression temporelle attendue que sur 11/20 graines. DC-H1/DC-H3 rejetées, DC-H2 et
+couverture validées. Le désaccord bootstrap de la surface d'erreur ne suffit pas à estimer
+la réductibilité par apprentissage; détails et suite DC-002 conditionnelle dans
+`docs/research/developmental_curiosity_probe.md`.
+
+Sous D-008, la simulation devient prioritaire sur le banc physique. DC-002 échoue malgré
+un bon évitement du bruit. DC-003, sur vingt mondes continus randomisés, obtient ensuite
+des gains appariés sur 20/20 mondes face au babbling et au round-robin (`17.8%` et `11.0%`
+en moyenne), avec bruit `4.90%`, progression 19/20, couverture et stabilité validées. La
+porte H1 pré-enregistrée exigeait aussi des intervalles min-max bruts disjoints; elle échoue
+car elle compare des mondes de difficultés différentes. Résultat conservé comme
+quasi-succès non promu; aucune réplication avant revue statistique appariée.
+
 Constat utile pour le banc réel: à ~600°/s de balayage servo, le gyro MPU en plage par défaut ±250 dps sature (LSB à ±32768 dans les logs du jumeau). Pour observer les panoramiques complets sur le banc physique, configurer la plage gyro à ±1000 dps dans le firmware ou limiter la vitesse des consignes; la séquence de qualification J0 (pas de ±10-20°) n'est pas affectée car la métrique note les fenêtres post-mouvement.

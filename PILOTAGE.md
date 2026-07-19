@@ -1,6 +1,6 @@
 # Émergence - Tableau de pilotage
 
-Dernière mise à jour: 2026-06-12
+Dernière mise à jour: 2026-07-20
 
 Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir maintenant et quelle demande envoyer sans avoir à interpréter la roadmap technique.
 
@@ -8,25 +8,21 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | J0 - Instrumentation fiable |
-| État logiciel | Qualification courte J0 réussie; firmware passif v2 prêt; dépôt nettoyé et suite active validée |
-| Responsable de l'action courante | Anthony et Claude pour le banc v1.0; aucune nouvelle manipulation J0 immédiate |
-| Action attendue d'Anthony maintenant | Continuer la conception/mesure/impression du banc selon `BENCH_DESIGN.md`; ne plus tester le servo sur v0.1 |
-| Action attendue de Claude maintenant | Poursuivre la conception mécanique déjà engagée avec Anthony |
-| Blocage actuel | Banc v1.0 non construit; la session J0 de 30 minutes attend sa qualification mécanique |
+| Jalon actif | Revue statistique après DC-003 |
+| État logiciel | DC-003 prometteur: 20/20 gains appariés, H2/H3/couverture/stabilité validées, H1 formelle rejetée par chevauchement brut |
+| Responsable de l'action courante | Codex pour protocoles, implémentation, campagnes et documentation |
+| Action attendue d'Anthony maintenant | Aucune action matérielle; laisser les campagnes de simulation s'exécuter |
+| Action attendue de Claude maintenant | Aucune; revue contradictoire seulement à une future porte de promotion |
+| Blocage actuel | Réplication interdite par le protocole; la porte min-max est inadaptée aux mondes randomisés et doit être revue avant toute nouvelle campagne |
 
 ## Prochaine action exacte
 
-**Anthony doit maintenant:**
+**Codex doit maintenant:** conserver DC-003 sans promotion, préparer une revue statistique
+du critère apparié et ne lancer aucune réplication avant un nouveau pré-enregistrement.
 
-1. poursuivre avec Claude les mesures réelles et la modélisation du banc de `BENCH_DESIGN.md`;
-2. imprimer d'abord le coupon de tolérances prévu par le dossier, puis les pièces après ajustement;
-3. ne lancer aucun nouvel essai moteur sur le montage v0.1;
-4. signaler simplement à Codex lorsque le banc v1.0 est assemblé, avec les éventuels écarts apportés au dossier.
-
-**Codex fera ensuite automatiquement:** revue des écarts de montage, flash du firmware passif v2, qualification mécanique comparative, puis autorisation ou correction avant la session de 30 minutes.
-
-Décision parallèle: répondre à ANT-008 dans `ANTHONY_INBOX.md` concernant le kit AS5600, prévu par le banc pour la vérité terrain d'angle.
+**Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
+sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au
+matériel existant.
 
 ## Ce qu'Anthony doit demander
 

@@ -87,3 +87,20 @@ de ce type devra soit ancrer l'évaluation dans la distribution de collecte, soi
 mélanger un tampon de rejeu, soit s'arrêter sur validation.
 
 Aucune suite lancée sans arbitrage.
+
+## Suite technique après discussion — curiosité graduelle continue
+
+L'échec ne justifie pas de fabriquer davantage de régions « faciles » et « difficiles »:
+cela imposerait le curriculum de l'expérimentateur. Une nouvelle branche a donc été
+implémentée le 2026-07-17 dans `learning/developmental_curiosity.py` et raccordée comme
+condition `developmental` de `learning/active_exploration.py`.
+
+Elle remplace les huit bins par un descripteur continu état-action et définit la difficulté
+relativement au modèle courant: familiarité, baisse locale d'erreur, désaccord bootstrap,
+habituation et erreur persistante. Sa frontière s'étend avec la maîtrise mesurée au lieu de
+suivre des niveaux annotés. Le test hétérogène reste nécessaire, mais comme **oracle de
+validation** caché à l'agent, pas comme curriculum fourni à sa politique.
+
+Conception, limites et validation progressive:
+`docs/research/developmental_curiosity_probe.md`. Aucun nouveau run long n'a été lancé et
+la conséquence D-002 reste inchangée.

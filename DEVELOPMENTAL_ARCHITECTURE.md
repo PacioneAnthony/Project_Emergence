@@ -4,6 +4,11 @@ Statut: proposition de référence pour revue technique
 Date: 2026-06-11  
 Portée : objectifs scientifiques, architecture cible, contrat de données, apprentissage et jalons
 
+Ordre opérationnel actuel (D-008, 2026-07-20): les mécanismes développementaux doivent
+d'abord émerger, battre leurs baselines et se répliquer dans des simulations de réalisme
+croissant. Les jalons physiques J0/J1 restent spécifiés mais sont suspendus jusqu'à une
+décision explicite de retour au banc.
+
 ## 1. Vision du projet
 
 Emergence vise un robot domestique développemental, capable d'acquérir progressivement des régularités sensorimotrices, perceptives et sociales à partir de son expérience dans une pièce partagée avec un humain.
@@ -309,6 +314,12 @@ La familiarité n'est pas un nom. C'est d'abord une estimation de récurrence et
 
 Le robot ne maximise pas la surprise brute. Une télévision bruyante ou du bruit aléatoire ne doit pas devenir infiniment attractif.
 
+La difficulté n'est pas une étiquette fixe de l'environnement. Elle décrit la relation
+entre les capacités actuelles du robot et une expérience candidate. Une même expérience
+peut être d'abord trop incertaine, devenir apprenable, puis être maîtrisée et subir
+l'habituation. Le système de production ne reçoit donc aucun niveau « facile/moyen/dur »
+annoté à la main; les environnements à difficulté contrôlée sont réservés aux tests.
+
 La priorité d'une expérience combine :
 
 - progrès d'apprentissage : diminution récente de l'erreur sur une famille de situations ;
@@ -332,6 +343,15 @@ intérêt = progrès_prédiction
 ```
 
 Les coefficients ne doivent pas être fixés une fois pour toutes. Ils doivent être tracés, bornés et soumis à ablations.
+
+Après l'échec de la sonde régionale `active_exploration_001`, la première réalisation
+testable est volontairement réduite. Elle utilise un descripteur continu état-action, un
+progrès local, une incertitude réductible estimée par ensemble bootstrap, une habituation,
+une pénalité d'imprévisibilité persistante et des portes de contrôlabilité/risque. Une
+frontière de proximité s'élargit avec la baisse mesurée de l'erreur: le refuge initial et
+la curiosité graduelle émergent ainsi de la compétence, pas d'un curriculum codé en dur.
+Voir `docs/research/developmental_curiosity_probe.md`. Conformément à D-002, cette branche
+reste hors chemin critique tant qu'elle ne bat pas round-robin+habituation et babbling.
 
 ### 7.7 Compétences et actions
 
@@ -596,6 +616,8 @@ Les tableaux de bord doivent séparer au moins :
 ### 12.3 Motivation
 
 - progrès de prédiction par famille d'événements ;
+- calibration de l'incertitude épistémique et décroissance avec l'évidence locale ;
+- rayon de frontière en fonction de la maîtrise, sans niveaux annotés ;
 - répartition du temps entre compétences ;
 - taux de répétition stérile ;
 - sensibilité au bruit irréductible ;
@@ -678,7 +700,15 @@ Critère de passage : sur des sessions et phrases nouvelles, la fusion audio-vid
 
 Objectif : choisir entre plusieurs expériences sûres sans récompense de tâche.
 
-Critère de passage : le robot réduit spontanément les répétitions d'une contingence maîtrisée, évite le bruit aléatoire et revient vers une compétence encore améliorable.
+Critère de passage : face aux mêmes budgets, risques et primitives, le robot réduit
+spontanément les répétitions d'une contingence maîtrisée, évite le bruit aléatoire et
+revient vers une compétence encore améliorable. L'ordre doit émerger dans un espace
+continu sans niveaux communiqués à l'agent. La comparaison obligatoire inclut babbling et
+round-robin+habituation; les seuils d'allocation, de gain tenu à part, de couverture et de
+variance entre graines sont pré-enregistrés avant campagne. Le learning progress régional
+ayant échoué, l'implémentation continue de
+`docs/research/developmental_curiosity_probe.md` reste une branche candidate, pas le
+mécanisme par défaut.
 
 ### J6 - Mémoire épisodique et sommeil
 

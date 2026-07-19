@@ -390,7 +390,8 @@ Pas de revue obligatoire entre ces portes si les résultats sont nets et le prot
 
 La recommandation de `DEVELOPMENTAL_ARCHITECTURE_REVIEW.md` est la base de travail technique active conformément à D-002 et D-004:
 
-- J0 reste bloquant et est durci;
+- J0 reste la porte physique obligatoire mais est suspendu sous D-008; la simulation
+  développementale probante devient le chemin actif avant tout retour au banc;
 - la collecte audio/vidéo sociale passive commence dès J0;
 - J1 est scindé en estimation J1a et prédiction J1b;
 - J2.5, attribution auto-produit vs externe, est ajouté;
