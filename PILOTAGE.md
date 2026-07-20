@@ -8,17 +8,20 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | Revue statistique après DC-003 |
-| État logiciel | DC-003 prometteur: 20/20 gains appariés, H2/H3/couverture/stabilité validées, H1 formelle rejetée par chevauchement brut |
-| Responsable de l'action courante | Codex pour protocoles, implémentation, campagnes et documentation |
-| Action attendue d'Anthony maintenant | Aucune action matérielle; laisser les campagnes de simulation s'exécuter |
-| Action attendue de Claude maintenant | Aucune; revue contradictoire seulement à une future porte de promotion |
-| Blocage actuel | Réplication interdite par le protocole; la porte min-max est inadaptée aux mondes randomisés et doit être revue avant toute nouvelle campagne |
+| Jalon actif | DC-004 (durcissement) après réplication DC-003R réussie |
+| État logiciel | DC-003R validée intégralement: R-H1 20/20 (p 9.5e-07, Holm, IC BCa positifs), non-infériorité vs regional_lp, bruit 4.97%, signatures 20/20 — promotion pré-enregistrée vers DC-004 |
+| Responsable de l'action courante | Session Claude du 2026-07-20 (implémentation et campagne DC-004 selon `docs/research/dc004_preregistration.md`) |
+| Action attendue d'Anthony maintenant | Aucune action matérielle (D-008); laisser les campagnes de simulation s'exécuter |
+| Action attendue de Claude maintenant | Exécuter DC-004: geler le pré-enregistrement, implémenter les nouveaux fichiers, lancer les 40 mondes |
+| Blocage actuel | Aucun |
 
 ## Prochaine action exacte
 
-**Codex doit maintenant:** conserver DC-003 sans promotion, préparer une revue statistique
-du critère apparié et ne lancer aucune réplication avant un nouveau pré-enregistrement.
+**Prochaine action:** exécuter DC-004 tel que pré-enregistré dans
+`docs/research/dc004_preregistration.md` (ancres bruitées, layout permuté, contrôle
+informationnel `regional_lp_gain`), sans toucher à l'algorithme gelé. La revue
+contradictoire DC-003 (`docs/research/dc003_statistical_review.md`) et la réplication
+DC-003R (`data/processed/experiments/developmental_curiosity_003R/`) sont terminées.
 
 **Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
 sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au

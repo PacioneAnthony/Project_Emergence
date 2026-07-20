@@ -385,3 +385,35 @@ favorables. Ce défaut n'autorise pas à réécrire DC3-H1 après coup ni à lan
 prévue. La prochaine action est une revue statistique du protocole; toute reprise devra
 pré-enregistrer un critère apparié (intervalle de confiance ou test de permutation sur les
 différences) et conserver DC-003 comme quasi-succès non promu.
+
+## Résultats DC-003R — réplication appariée, 2026-07-20
+
+Pré-enregistrement gelé dans `dc003r_preregistration.md` avant implémentation du script
+d'analyse (`scripts/research/run_fractional_replication.py`, statistiques dans
+`learning/paired_stats.py`). Graines vierges 6301..6320, monde, politiques et budgets
+strictement inchangés.
+
+| condition | erreur structurée | fraction bruit | entropie |
+|---|---:|---:|---:|
+| fractional | `0.1071 +/- 0.0083` | `0.0497 +/- 0.0164` | `0.9066 +/- 0.0192` |
+| babbling | `0.1308 +/- 0.0273` | `0.2342 +/- 0.0373` | `0.9868 +/- 0.0032` |
+| round-robin+habituation | `0.1239 +/- 0.0228` | `0.3080 +/- 0.0599` | `0.9766 +/- 0.0041` |
+| learning progress régional | `0.1062 +/- 0.0074` | `0.1043 +/- 0.0306` | `0.9389 +/- 0.0139` |
+
+- **R-H1 VALIDÉE**: réduction relative appariée `15.68%` face au babbling et `11.92%` face
+  au round-robin, signes `20/20` dans les deux cas, p permutation exacte `9.54e-07`
+  (minimum atteignable 2⁻²⁰), Holm `1.91e-06`, IC BCa 95% `[10.15%, 21.07%]` et
+  `[7.70%, 16.48%]`;
+- **R-H1b VALIDÉE**: différence appariée face à regional_lp `+0.0008` pour une marge de
+  non-infériorité de `0.0053`, p `9.54e-06`. Conforme au constat de la revue: regional_lp
+  reste marginalement meilleur en erreur (5/20 signes favorables à fractional) mais
+  l'écart tient dans la marge gelée;
+- **R-H2 VALIDÉE**: bruit `4.97%`, p permutation vs babbling `9.54e-07`, signes `20/20`;
+- **R-H3 VALIDÉE**: signatures `20/20` (19/20 en DC-003);
+- **Couverture** `0.907` et **stabilité** (`0.0083` vs `0.0273`) validées.
+
+**Décision pré-enregistrée: promotion vers DC-004.** Le signal DC-003 est répliqué sur
+graines vierges avec la porte appariée; les objections de construction de la revue
+(oracle de gain sans bruit, géométrie monotone, contrôle informationnel absent) restent
+entières et sont l'objet exclusif de DC-004 (`dc004_preregistration.md`).
+Artefacts: `data/processed/experiments/developmental_curiosity_003R/`.
