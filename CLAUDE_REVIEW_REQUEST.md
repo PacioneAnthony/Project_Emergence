@@ -1,6 +1,6 @@
 # Demande de revue Claude — TV-001 avant calibration et campagne
 
-Date: 2026-07-20  
+Date: 2026-07-20
 Porte: revue contradictoire obligatoire avant le premier calcul sur les graines
 `9201..9203` et `9301..9312`.
 
