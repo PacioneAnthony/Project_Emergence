@@ -5,29 +5,46 @@ Date: 2026-07-20
 ## Instruction de reprise impérative
 
 Une nouvelle session Codex doit lire `PILOTAGE.md`, ce fichier,
-`DEVELOPMENTAL_ARCHITECTURE.md`, `CODEX_TASK_BRIEF.md` et
-`docs/research/tv_real_jepa_001_preregistration.md`. Si
-`docs/research/tv_real_jepa_001_review.md` existe, elle intègre immédiatement la revue
-avant tout calcul réservé. Sinon, elle maintient la porte de revue décrite dans
-`CLAUDE_REVIEW_REQUEST.md`; elle ne lance ni la calibration 9201..9203 ni la campagne
-9301..9312.
+`DEVELOPMENTAL_ARCHITECTURE.md`, `CODEX_TASK_BRIEF.md`,
+`docs/research/tv_real_jepa_001_results.md` et `CLAUDE_REVIEW_REQUEST.md`. Si
+`docs/research/tv_real_jepa_001_results_review.md` existe, elle applique immédiatement
+son verdict technique. Sinon, elle ne lance aucune nouvelle campagne: TV-001 est
+terminée et la porte courante porte sur l'ordre entre J6 et un diagnostic
+invariance/bruit.
 
 Anthony a délégué les choix logiciels et architecturaux à Codex, avec revue Claude aux portes importantes. Codex ne doit donc pas demander à Anthony de choisir comment pré-enregistrer J0, quelle architecture logicielle employer ou quelle baseline implémenter. Si le travail est réalisable dans le dépôt, il doit l'exécuter plutôt que s'arrêter à une explication.
 
 ## Objectif actif
 
-Faire passer la revue contradictoire pré-campagne TV-001, puis mesurer le bruit de
-l'erreur JEPA tenue à part et exécuter le test apparié `regional_lp_gain` contre
-babbling avec un apprenant réel dans un monde comportant une télévision inapprenable.
-Le chemin physique J0/J1 reste suspendu sous D-008.
+Faire passer la revue contradictoire des résultats TV-001 et choisir l'ordre
+expérimental suivant: étape 2/J6 avec motivation gelée, ou diagnostic minimal séparant
+apprentissage d'invariance et attraction pour le bruit. Le chemin physique J0/J1 reste
+suspendu sous D-008.
 
 ## État valide
 
+- La revue pré-campagne Claude a autorisé TV-001 après deux corrections bloquantes,
+  intégrées avant calcul: porte de revue déplacée avant calibration et amendement exact
+  sur la surface de l'écran/alignement des bins.
+- Calibration 9201..9203 passée: `B=4`, σ nul `0,000205`, 0 % de faux positifs,
+  corrélation TV maximale `0,000913`, aucune contamination des ancres structurées.
+- Campagne 9301..9312 complète: 24 runs, 192 000 images, 38 400 décisions, 20,3 min.
+- TV-H1 rejetée: réduction relative moyenne `-2,80 %`, IC BCa
+  `[-9,92 %, +1,31 %]`, p exacte `0,8076`, Holm `1,0`.
+- TV-H2 rejetée: regional alloue `28,28 %` à la télévision contre `25,19 %` pour
+  babbling, p exacte `0,8354`, Holm `1,0`.
+- Tous les garde-fous passent: apprenant réel, couverture, construction et budgets.
+  Le rejet est interprétable; D-009 interdit la promotion et tout réglage post hoc.
+- `docs/research/tv_real_jepa_001_results.md` contient les 12 paires, statistiques,
+  diagnostic et limites. L'ambiguïté causale porte sur l'apprentissage légitime d'une
+  invariance au bruit par l'encodeur plastique.
+- `CLAUDE_REVIEW_REQUEST.md` demande désormais une revue de résultats et de l'ordre
+  J6/diagnostic; aucune nouvelle campagne n'est autorisée avant sa réponse.
 - Le brief `CODEX_TASK_BRIEF.md` vaut arbitrage d'Anthony en faveur de la promotion de
   `regional_lp_gain` vers le substrat visuel réel; l'ancien arbitrage affiché après
   DC-005 est clos.
 - TV-001 est gelé dans `docs/research/tv_real_jepa_001_preregistration.md`, écrit avant
-  implémentation et avant ouverture des graines réservées.
+  implémentation et amendé avant ouverture des graines réservées.
 - L'implémentation additive se trouve dans `learning/tv_exploration.py`: télévision à
   bruit RGB indépendant, contexte dérivé des pixels, banque d'ancres externe équilibrée,
   erreur bornée `pred/(pred+copy)`, calibration nulle et ordonnanceur régional à gains
@@ -40,7 +57,8 @@ Le chemin physique J0/J1 reste suspendu sous D-008.
 - Le smoke test GPU/MuJoCo hors protocole (graine 9991) a réussi: banque d'ancres,
   160 images, deux cycles collecte–entraînement–mesure et checkpoint. Il n'a ouvert
   aucune graine de calibration ou de campagne.
-- `CLAUDE_REVIEW_REQUEST.md` est prêt. La calibration et la campagne n'ont pas démarré.
+- La demande pré-campagne précédente est close par
+  `docs/research/tv_real_jepa_001_review.md`.
 - La navigation 2D est conservée comme branche historique, plus comme objectif principal.
 - `DEVELOPMENTAL_ARCHITECTURE.md` définit la vision développementale.
 - `DEVELOPMENTAL_ARCHITECTURE_REVIEW.md` recommande de simplifier avant implémentation.
@@ -77,42 +95,43 @@ Le chemin physique J0/J1 reste suspendu sous D-008.
 2. `SESSION_HANDOFF.md`
 3. `DEVELOPMENTAL_ARCHITECTURE.md`
 4. `CODEX_TASK_BRIEF.md`
-5. `docs/research/tv_real_jepa_001_preregistration.md`
+5. `docs/research/tv_real_jepa_001_results.md`
 6. `CLAUDE_REVIEW_REQUEST.md`
-7. `docs/research/tv_real_jepa_001_review.md`, s'il existe
+7. `docs/research/tv_real_jepa_001_results_review.md`, s'il existe
 8. `COLLABORATION_PROTOCOL.md`
 9. `DECISIONS.md`
 
 ## Informations et actions attendues d'Anthony
 
 - Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et remettre sa
-  réponse dans `docs/research/tv_real_jepa_001_review.md`.
+  réponse dans `docs/research/tv_real_jepa_001_results_review.md`.
 - Aucune manipulation, observation, commande d'achat ou décision d'implémentation.
 - ANT-008/ANT-009 et tout travail physique restent différés sous D-008.
 
 ## Prochaine action Codex
 
-Lorsque la revue TV-001 est déposée, Codex doit:
+Lorsque la revue de résultats TV-001 est déposée, Codex doit:
 
-- auditer et intégrer chaque correction bloquante avant calcul, avec amendement daté si
-  la validité impose une modification du pré-enregistrement;
-- si le verdict autorise l'exécution, lancer
-  `.venv\Scripts\python -m scripts.research.run_tv_real_jepa --review-accepted --device cuda`;
-- laisser le runner arrêter automatiquement la suite si la calibration gelée échoue;
-- si elle passe, suivre les 24 runs résumables, analyser `summary.json`/`summary.md` selon
-  TV-H1, TV-H2 et les garde-fous, puis préparer la revue de résultats à la porte de
-  promotion;
-- n'enchaîner sur l'étape 2/J6 qu'après consignation complète de TV-001.
+- vérifier qu'elle maintient la non-promotion D-009 et distingue verdict de campagne et
+  diagnostic causal;
+- si verdict `J6 D'ABORD`, rédiger et geler le pré-enregistrement étape 2: adaptation
+  naïve, replay uniforme et replay priorisé, budgets égaux, métriques séparées de
+  rétention/régression;
+- si verdict `DIAGNOSTIC D'ABORD`, pré-enregistrer uniquement la manipulation minimale
+  exigée, sur graines vierges, sans retoucher TV-001;
+- demander Anthony seulement si le verdict est `ARRÊT/ARBITRAGE OBJECTIF` et explicite
+  une conséquence d'objectif général; D-004 couvre tous les choix techniques.
 
 ## Actions par acteur
 
-Action Codex: intégrer la revue TV-001 puis, si elle autorise, exécuter calibration et
-campagne sans modifier les portes gelées.
+Action Codex: intégrer la revue de résultats puis pré-enregistrer et exécuter la voie
+technique autorisée.
 Action Anthony: transmettre le prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune action
 matérielle.
-Action Claude: écrire la revue pré-campagne dans
-`docs/research/tv_real_jepa_001_review.md`.
-Blocage: revue contradictoire pré-campagne requise; aucun blocage technique ou matériel.
+Action Claude: écrire la revue de résultats dans
+`docs/research/tv_real_jepa_001_results_review.md`.
+Blocage: revue contradictoire de résultats requise avant nouvelle campagne; aucun
+blocage technique ou matériel.
 
 ## Modifications de cette session
 
@@ -339,3 +358,33 @@ Action Anthony: transmettre le prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune acti
 matérielle.
 Action Claude: auditer TV-001 et écrire `docs/research/tv_real_jepa_001_review.md`.
 Blocage: porte de revue pré-campagne, volontaire et réelle; aucun autre blocage.
+
+## Addendum 2026-07-20 — exécution et rejet interprétable de TV-001
+
+La revue `tv_real_jepa_001_review.md` a rendu le verdict « autoriser avec corrections
+bloquantes ». Codex a intégré B1/B2, ajouté un test de la porte et le diagnostic bin 5,
+puis obtenu 170 tests verts avant calcul. La calibration a choisi `B=4` et la campagne
+appariée a terminé ses 24 runs sans erreur ni reprise.
+
+Résultat pré-enregistré: **TV-H1 rejetée, TV-H2 rejetée, tous garde-fous passés**.
+`regional_lp_gain` est moins bon de 2,80 % en erreur structurée et visite 28,28 % de
+télévision contre 25,19 % pour babbling. D-009 exécute la non-promotion et gèle TV-001.
+Le détail versionné est `docs/research/tv_real_jepa_001_results.md`; les artefacts
+locaux complets restent sous `data/processed/experiments/tv_real_jepa_001/` et les
+checkpoints sous `models/tv001_*`.
+
+Le diagnostic non résolu est scientifique: l'encodeur plastique peut apprendre à
+ignorer les pixels i.i.d., rendant la télévision apprenable comme invariance alors que
+la métrique TV-H2 compte toute visite comme gaspillage. Une revue Claude est préparée
+pour décider si cette ambiguïté mérite une sonde distincte avant J6 ou si J6 peut avancer
+avec motivation gelée.
+
+Aucun processus n'est en cours.
+
+Action Codex: appliquer le verdict de la revue de résultats sous D-004 et poursuivre la
+voie autorisée sans retoucher TV-001.
+Action Anthony: transmettre le nouveau prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune
+action matérielle ou décision technique.
+Action Claude: écrire `docs/research/tv_real_jepa_001_results_review.md`.
+Blocage: porte de revue sur l'ordre expérimental; aucun blocage logiciel, calcul ou
+matériel.

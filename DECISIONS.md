@@ -134,3 +134,30 @@ mais ne bloque plus l'avancement logiciel.
 Condition de réouverture: au moins un comportement développemental central bat ses
 baselines, généralise hors distribution et se réplique sur une seconde série de graines;
 la décision de retour au matériel reste à Anthony.
+
+## D-009 - Non-promotion de regional_lp_gain sur apprenant visuel réel
+
+Date: 2026-07-20
+Décision: ne pas promouvoir `regional_lp_gain` comme ordonnanceur développemental du
+JEPA visuel après TV-001; geler l'implémentation et les graines, sans retouche post hoc.
+Statut: acceptée par application des règles pré-enregistrées de TV-001 sous D-004.
+Motif: TV-H1 et TV-H2 sont rejetées dans une campagne appariée interprétable. L'actif
+dégrade l'erreur structurée de 2,80 % en moyenne et alloue 28,28 % du budget à la
+télévision contre 25,19 % pour babbling.
+Données utilisées: `docs/research/tv_real_jepa_001_results.md`, 12 paires 9301..9312,
+calibration 9201..9203, statistiques exactes/BCa/Holm et garde-fous tous passés.
+Baseline: babbling uniforme avec mêmes modèles, pièces, ancres, images, décisions et
+pas d'optimisation.
+Avis Codex: non-promotion obligatoire; la baisse initiale d'erreur dans les cellules TV
+peut représenter l'apprentissage légitime d'une invariance au bruit, ce qui rend le
+diagnostic causal ambigu sans invalider le verdict pré-enregistré.
+Avis Claude: revue de résultats demandée avant choix de la suite.
+Arbitrage Anthony: aucun arbitrage technique demandé; D-004 s'applique. Une décision
+d'objectif général ne sera demandée que si la revue oppose durablement J6 à un nouveau
+diagnostic de motivation.
+Conséquences: `regional_lp_gain` reste une baseline historique, pas un mécanisme par
+défaut. Aucun réglage sur TV-001. Étape 2/J6 non lancée avant revue du diagnostic et de
+l'ordre expérimental.
+Condition de réouverture: hypothèse nouvelle pré-enregistrée distinguant progrès
+d'invariance et attraction pour l'aléatoire, sur graines vierges, ou preuve que la
+question mémoire J6 peut avancer indépendamment sans réintroduire l'ordonnanceur.

@@ -429,6 +429,7 @@ def calibrate_noise(
     null_differences: list[float] = []
     base_errors: list[float] = []
     lag_correlations: list[float] = []
+    bin5_television_counts: list[int] = []
     for seed in seeds:
         torch.manual_seed(seed)
         model = VisualJEPA(
@@ -440,6 +441,9 @@ def calibrate_noise(
             horizon_dim=1,
         ).to(device)
         bank = generate_anchor_bank(seed, anchor_dir / f"anchors_seed{seed}.npz", image_size=image_size)
+        bin5_television_counts.append(
+            int(np.sum((bank.angle_bins <= 5) & (bank.target_deg >= TV_LOW_DEG)))
+        )
         lag_correlations.append(television_lag_correlation(seed))
         for angle in range(ANGLE_BINS):
             for context in range(CONTEXT_BINS):
@@ -477,6 +481,8 @@ def calibrate_noise(
         "selected_probe_batches": selected,
         "television_lag_correlations": lag_correlations,
         "television_lag_abs_max": lag_max,
+        "target_bin_le5_television_anchor_counts": bin5_television_counts,
+        "target_bin_le5_television_anchor_total": int(sum(bin5_television_counts)),
     }
     if output is not None:
         output.parent.mkdir(parents=True, exist_ok=True)

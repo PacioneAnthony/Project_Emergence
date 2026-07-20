@@ -1,85 +1,96 @@
-# Demande de revue Claude — TV-001 avant calibration et campagne
+# Demande de revue Claude — résultats TV-001 et ordre de la suite
 
 Date: 2026-07-20
-Porte: revue contradictoire obligatoire avant le premier calcul sur les graines
-`9201..9203` et `9301..9312`.
+Porte: revue contradictoire après rejet interprétable de TV-H1 et TV-H2, avant toute
+nouvelle campagne ou étape J6.
 
 ## Question de décision unique
 
-Le protocole et l'implémentation TV-001 isolent-ils correctement la valeur de
-`regional_lp_gain` avec un JEPA réellement entraîné, sans oracle, fuite d'ancres,
-asymétrie d'information ou porte statistique vacueuse, au point d'autoriser la
-calibration puis la campagne appariée?
+TV-001 démontre-t-elle suffisamment que `regional_lp_gain` échoue avec un apprenant
+visuel réel pour passer directement à l'étape 2/J6 en gardant la motivation gelée, ou
+l'ambiguïté « apprentissage légitime d'une invariance au bruit » contre « attraction
+pour l'aléatoire » exige-t-elle d'abord une sonde diagnostique nouvelle?
 
-## Fichiers à lire en priorité, et uniquement ceux-ci sauf dépendance directe nécessaire
+La non-promotion TV-001 n'est pas à réinterpréter: elle est acquise par protocole. La
+question porte uniquement sur l'ordre expérimental suivant et la cause à tester.
+
+## Fichiers à lire en priorité
 
 1. `CODEX_TASK_BRIEF.md`
 2. `docs/research/tv_real_jepa_001_preregistration.md`
-3. `learning/tv_exploration.py`
-4. `scripts/research/run_tv_real_jepa.py`
-5. `tests/test_tv_exploration.py`
-6. `learning/active_exploration.py` — uniquement les fonctions réutilisées
-   `ExperienceBuffer`, `train_round` et `coverage_entropy`
-7. `learning/paired_stats.py`
-8. `docs/research/dc005_design_review.md` — diagnostic historique clip/bruit
+3. `docs/research/tv_real_jepa_001_review.md`
+4. `docs/research/tv_real_jepa_001_results.md`
+5. `learning/tv_exploration.py`
+6. `scripts/research/run_tv_real_jepa.py`
+7. `DEVELOPMENTAL_ARCHITECTURE.md`, sections 7.6 et 9
+8. `DECISIONS.md`, D-009
 
-## État factuel
+Les métriques brutes locales ne sont pas nécessaires: le document de résultats contient
+les 12 paires, statistiques, garde-fous et diagnostics agrégés requis.
 
-- Le pré-enregistrement a été écrit avant l'implémentation et avant tout calcul sur les
-  graines réservées.
-- Conditions: babbling uniforme et `regional_lp_gain`; aucune nouvelle politique active
-  n'est introduite.
-- La politique voit huit bins servo et un contexte dérivé d'une image neutre; elle ne
-  voit ni la frontière de la télévision, ni la graine, ni un label de région.
-- Le gain est la baisse signée d'erreur JEPA sur mini-batchs d'ancres externes; les gains
-  sont agrégés avant le clip de sélection.
-- La calibration choisit `B` par une règle gelée sur `9201..9203`, puis la campagne
-  appariée utilise `9301..9312`.
-- Le runner impose `--review-accepted` avant d'ouvrir les graines de campagne.
-- Vérifications Codex déjà exécutées: `169 passed`; smoke GPU/MuJoCo hors protocole
-  graine 9991 réussi, 160 images, deux cycles collecte–apprentissage–mesure, artefacts
-  sérialisés. Aucune graine réservée n'a été ouverte.
+## Résultats compacts
 
-## Points que la revue doit chercher activement
+- Calibration: passée, `B=4`, σ nul `0,000205`, 0 % de faux positifs, corrélation TV
+  maximale `0,000913`, aucune contamination du bin 5.
+- TV-H1: réduction relative regional vs babbling `-2,80 %`, IC BCa 95 %
+  `[-9,92 %, +1,31 %]`, 5/12 signes favorables, p exacte `0,8076`, Holm `1,0`.
+- TV-H2: regional `28,28 %` de TV contre `25,19 %`, différence `-3,09 points`,
+  5/12 signes favorables, p exacte `0,8354`, Holm `1,0`.
+- Garde apprenant, couverture, construction et budgets: tous passés.
+- Gains régionaux moyens: structuré `0,0780`, TV `0,0860`; au round 1, TV `0,498`
+  contre structuré `0,341`.
+- Allocation regional moyenne par round: `26,0, 25,1, 41,7, 25,7, 45,7, 34,7,
+  26,6, 37,7, 8,8, 10,9 %`.
 
-1. La télévision post-rendue constitue-t-elle bien une source visuelle inapprenable et
-   équitable, ou son secteur fixe / son bezel crée-t-il un raccourci qui invalide H1?
-2. La banque d'ancres est-elle réellement hors entraînement et identique entre les deux
-   conditions d'une paire? La classification angle×contexte donne-t-elle une information
-   gratuite?
-3. La mesure `pred/(pred+copy)` et les mini-batchs avant/après répondent-ils à la question
-   de progrès réel sans favoriser une dérive ou un effondrement du latent?
-4. La règle de calibration de `B` contrôle-t-elle raisonnablement le bruit sans utiliser
-   les résultats de campagne? Le regroupement des différences ou le taux de faux positifs
-   comporte-t-il une faille.
-5. Les deux budgets sont-ils réellement égaux en images, décisions et optimisation?
-6. Les portes TV-H1/TV-H2, Holm, taille d'effet minimale, garde apprenant et garde de
-   couverture permettent-ils une décision falsifiable à n=12?
-7. Le code du runner applique-t-il exactement le pré-enregistrement, notamment les seuils,
-   les graines, l'appariement et les règles de promotion/arrêt?
+## Interprétation actuelle de Codex
 
-## Forme attendue de la réponse
+La non-promotion est nette. Le diagnostic causal ne l'est pas: le contenu TV est
+i.i.d. au niveau pixel, mais un encodeur plastique peut réduire son erreur tenue à part
+en apprenant à ignorer ce contenu et à préserver le bezel/périphérie prédictible. Le
+signal de gain positif initial peut donc être un vrai progrès d'invariance, alors que
+TV-H2 qualifie toute visite de gaspillage. Les mises à jour une fois par round et le
+retour uniforme lorsque tous les scores sont clippés à zéro amplifient ensuite les
+oscillations.
 
-Écrire la revue dans `docs/research/tv_real_jepa_001_review.md` avec:
+Option technique préférée à challenger: **geler la motivation et passer à J6**, car la
+question oubli/replay est falsifiable sans ordonnanceur actif. Conserver comme future
+sonde diagnostique distincte une comparaison encodeur gelé/plastique ou une cible
+externe irréductible; ne pas retarder J6 si cette sonde ne conditionne pas ses baselines.
 
-- verdict `AUTORISER`, `AUTORISER AVEC CORRECTIONS BLOQUANTES`, ou `REFUSER`;
-- défauts classés par gravité, avec fichier et ligne/fonction;
-- corrections minimales exigées avant calibration;
-- confirmation explicite que les seuils/graines restent gelés, ou texte exact d'un
-  amendement nécessaire avant tout calcul;
-- commande finale autorisée si le verdict permet l'exécution.
+## Mission de Claude
 
-Ne propose pas une politique plus complexe. Toute correction doit préserver la baseline,
-les budgets et la question gelée; si elle modifie une porte, elle doit être justifiée comme
-correction de validité et datée avant calcul.
+- vérifier que l'interprétation invariance vs bruit est compatible avec les métriques;
+- dire si elle rend TV-001 non informatif au-delà de la non-promotion (sans rouvrir le
+  verdict);
+- recommander explicitement l'une des options:
+  - `J6 D'ABORD`: motivation gelée, pré-enregistrement naïf vs replay uniforme vs
+    replay priorisé;
+  - `DIAGNOSTIC D'ABORD`: définir la manipulation minimale et la décision qu'elle
+    change avant J6;
+  - `ARRÊT/ARBITRAGE OBJECTIF`: seulement si aucune des deux voies ne répond encore au
+    brief;
+- si un diagnostic est exigé, donner hypothèse, baseline simple, métrique, coût maximal
+  et règle d'arrêt — aucune retouche de TV-001;
+- identifier tout écart entre le verdict documenté et les règles gelées.
+
+## Forme attendue
+
+Écrire `docs/research/tv_real_jepa_001_results_review.md` avec:
+
+- verdict parmi les trois options ci-dessus;
+- constats classés par gravité;
+- justification causale;
+- prochaine expérience minimale, si nécessaire;
+- commande ou pré-enregistrement que Codex est autorisé à préparer ensuite.
+
+Ne lance aucun calcul et ne modifie aucun autre fichier.
 
 ## Prompt exact à transmettre à Claude
 
 ```text
-Tu effectues la revue contradictoire pré-campagne demandée dans
-CLAUDE_REVIEW_REQUEST.md. Lis les fichiers qui y sont indiqués, cherche en priorité les
-fuites d'information, asymétries de budget, problèmes de mesure du progrès et écarts
-protocole/code. Écris ton verdict et tes corrections éventuelles dans
-docs/research/tv_real_jepa_001_review.md. Ne lance aucun calcul et ne modifie aucun autre
-fichier.
+Effectue la revue de résultats demandée dans CLAUDE_REVIEW_REQUEST.md. Lis les fichiers
+indiqués, maintiens la non-promotion TV-001 acquise, puis tranche uniquement l'ordre de
+la suite: J6 d'abord, diagnostic d'abord, ou arrêt/arbitrage objectif. Écris ton verdict
+dans docs/research/tv_real_jepa_001_results_review.md. Ne lance aucun calcul et ne
+modifie aucun autre fichier.
 ```

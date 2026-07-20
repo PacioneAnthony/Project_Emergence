@@ -8,20 +8,20 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | TV-001, étape 1 du brief: test de la télévision avec JEPA réel et `regional_lp_gain` |
-| État logiciel | Pré-enregistrement gelé avant calcul; monde hétérogène, ancres tenues à part, calibration du bruit, ordonnanceur régional, analyse appariée et runner résumable implémentés; 169 tests passent et le smoke GPU/MuJoCo hors protocole réussit |
-| Responsable de l'action courante | Claude pour la revue contradictoire pré-campagne; Anthony transmet le dossier préparé |
-| Action attendue d'Anthony maintenant | Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md`; aucune manipulation, aucun achat, aucun flash |
-| Action attendue de Claude maintenant | Auditer le protocole et le code TV-001, puis écrire `docs/research/tv_real_jepa_001_review.md` avec le verdict demandé |
-| Blocage actuel | Porte de protocole: calibration `9201..9203` et campagne `9301..9312` interdites avant la revue; aucun blocage technique ou matériel |
+| Jalon actif | Porte de décision après TV-001, avant étape 2/J6 |
+| État logiciel | TV-001 complète et interprétable: calibration passée, 24 runs achevés; TV-H1 rejetée (`-2,80 %`), TV-H2 rejetée (`28,28 %` de TV contre `25,19 %`); tous les garde-fous passent; `regional_lp_gain` non promu sous D-009 |
+| Responsable de l'action courante | Claude pour la revue contradictoire des résultats; Anthony transmet le dossier préparé |
+| Action attendue d'Anthony maintenant | Transmettre à Claude le nouveau prompt exact de `CLAUDE_REVIEW_REQUEST.md`; aucune décision technique, manipulation, achat ou flash |
+| Action attendue de Claude maintenant | Trancher l'ordre expérimental: J6 d'abord, diagnostic invariance/bruit d'abord, ou arrêt nécessitant arbitrage d'objectif |
+| Blocage actuel | Porte de revue de résultats avant nouvelle campagne; aucun blocage technique ou matériel |
 
 ## Prochaine action exacte
 
-**Prochaine action:** Anthony transmet à Claude le prompt préparé dans
-`CLAUDE_REVIEW_REQUEST.md`. Après un verdict favorable, Codex intègre les éventuelles
-corrections bloquantes sans ouvrir les graines, exécute la calibration gelée, puis lance
-la campagne appariée si la calibration passe. Le runner refuse les graines de campagne
-sans confirmation explicite de cette revue.
+**Prochaine action:** Anthony transmet à Claude le prompt de revue de résultats préparé
+dans `CLAUDE_REVIEW_REQUEST.md`. Codex appliquera ensuite le verdict technique sous
+D-004: soit pré-enregistrer J6 avec motivation gelée, soit pré-enregistrer le diagnostic
+minimal demandé. Anthony ne tranche que si Claude conclut qu'un choix d'objectif général
+est réellement nécessaire.
 
 **Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
 sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au
@@ -32,19 +32,18 @@ matériel existant.
 Pour effectuer la porte actuelle, transmettre à Claude:
 
 ```text
-Tu effectues la revue contradictoire pré-campagne demandée dans
-CLAUDE_REVIEW_REQUEST.md. Lis les fichiers qui y sont indiqués, cherche en priorité les
-fuites d'information, asymétries de budget, problèmes de mesure du progrès et écarts
-protocole/code. Écris ton verdict et tes corrections éventuelles dans
-docs/research/tv_real_jepa_001_review.md. Ne lance aucun calcul et ne modifie aucun autre
-fichier.
+Effectue la revue de résultats demandée dans CLAUDE_REVIEW_REQUEST.md. Lis les fichiers
+indiqués, maintiens la non-promotion TV-001 acquise, puis tranche uniquement l'ordre de
+la suite: J6 d'abord, diagnostic d'abord, ou arrêt/arbitrage objectif. Écris ton verdict
+dans docs/research/tv_real_jepa_001_results_review.md. Ne lance aucun calcul et ne
+modifie aucun autre fichier.
 ```
 
 Après dépôt de la revue, pour reprendre avec Codex:
 
 ```text
-Continue le projet Emergence. Intègre la revue TV-001, puis exécute la calibration et la
-campagne autorisées selon le pré-enregistrement. Mets à jour les documents de reprise.
+Continue le projet Emergence. Intègre la revue de résultats TV-001 et exécute la voie
+qu'elle autorise jusqu'à la prochaine porte réelle. Mets à jour les documents de reprise.
 ```
 
 Une version encore plus courte est acceptable:

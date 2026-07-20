@@ -1,4 +1,7 @@
 import unittest
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 
@@ -75,6 +78,20 @@ class CalibrationRuleTests(unittest.TestCase):
         selected, report = select_probe_batches(values, median_error=0.2)
         self.assertIsNone(selected)
         self.assertFalse(any(item["passed"] for item in report["candidates"].values()))
+
+
+class RunnerReviewGateTests(unittest.TestCase):
+    def test_calibration_is_blocked_without_accepted_review(self):
+        from scripts.research import run_tv_real_jepa
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            with patch(
+                "sys.argv",
+                ["run_tv_real_jepa", "--calibration-only", "--output-dir", str(Path(temp_dir) / "out")],
+            ), patch.object(run_tv_real_jepa, "run_calibration") as calibration:
+                with self.assertRaisesRegex(SystemExit, "calibration and campaign require --review-accepted"):
+                    run_tv_real_jepa.main()
+        calibration.assert_not_called()
 
 
 if __name__ == "__main__":

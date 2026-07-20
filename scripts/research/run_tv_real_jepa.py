@@ -269,6 +269,19 @@ def main() -> None:
         return
 
     calibration_path = args.output_dir / "calibration.json"
+    if args.summary_only:
+        result = summarize(args.output_dir, CAMPAIGN_SEEDS)
+        print(json.dumps(result, indent=2), flush=True)
+        return
+
+    # The contradictory review protects both reserved calibration seeds and
+    # campaign seeds. Smoke and summary-only do not open either set.
+    if not args.review_accepted:
+        raise SystemExit(
+            "TV-001 calibration and campaign require --review-accepted after "
+            "CLAUDE_REVIEW_REQUEST.md is resolved"
+        )
+
     if not args.summary_only and not args.campaign_only:
         calibration = run_calibration(args, CALIBRATION_SEEDS)
         if calibration["status"] != "passed":
@@ -277,13 +290,6 @@ def main() -> None:
     if args.calibration_only:
         return
 
-    if args.summary_only:
-        result = summarize(args.output_dir, CAMPAIGN_SEEDS)
-        print(json.dumps(result, indent=2), flush=True)
-        return
-
-    if not args.review_accepted:
-        raise SystemExit("TV-001 campaign requires --review-accepted after CLAUDE_REVIEW_REQUEST.md is resolved")
     if not calibration_path.exists():
         raise SystemExit("missing calibration.json")
     calibration = json.loads(calibration_path.read_text(encoding="utf-8"))

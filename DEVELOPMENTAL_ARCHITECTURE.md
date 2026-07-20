@@ -353,6 +353,15 @@ la curiosité graduelle émergent ainsi de la compétence, pas d'un curriculum c
 Voir `docs/research/developmental_curiosity_probe.md`. Conformément à D-002, cette branche
 reste hors chemin critique tant qu'elle ne bat pas round-robin+habituation et babbling.
 
+TV-001 (2026-07-20) a ensuite testé `regional_lp_gain`, seul contrôle robuste de
+DC-004/DC-005, avec un JEPA réellement entraîné face à une télévision à contenu i.i.d.
+La campagne appariée sur 12 graines rejette à la fois le gain d'apprentissage structuré
+(`-2,80 %` relatif en moyenne) et l'évitement du bruit (`28,28 %` de télévision contre
+`25,19 %` pour babbling), avec tous les garde-fous passés. Aucun ordonnanceur de
+motivation n'est donc promu. Le diagnostic ouvert est désormais la distinction entre
+apprendre légitimement une invariance au bruit et gaspiller des interactions sur une
+source irréductible; voir `docs/research/tv_real_jepa_001_results.md` et D-009.
+
 ### 7.7 Compétences et actions
 
 L'action initiale n'est pas un angle arbitraire produit par un grand réseau. Le système choisit parmi des primitives paramétrées et sûres :

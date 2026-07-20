@@ -160,3 +160,23 @@ Garde-fous interprétatifs, tous obligatoires:
    campagne, analyse et verdict sont exécutés sans réglage intermédiaire.
 
 Simulation uniquement sous D-008: aucune commande matérielle, aucun flash, aucun achat.
+
+## Amendement du 2026-07-20 — corrections pré-calibration de la revue contradictoire
+
+Amendement ajouté avant calibration et avant tout calcul sur graines réservées (revue
+contradictoire, correction de description sans changement de seuil ni de code du
+monde): (1) l'écran couvre les fractions `[1/8, 7/8]` de chaque dimension de l'image,
+soit 56,25 % des pixels (75 % par dimension); la périphérie et le bezel restent visibles
+et prédictibles, seul le contenu central est du bruit indépendant soumis à la porte de
+corrélation. (2) Le secteur `[130°, 170°]` coïncide exactement avec les bins servo 6 et
+7; les frontières des bins sont définies par le servo mais l'une d'elles tombe sur la
+frontière de la télévision. La conclusion TV-H2 vaut pour ce cas aligné; la
+généralisation à un secteur chevauchant plusieurs bins partiels n'est pas revendiquée.
+
+Clarifications de lecture gelées à la même date, avant données: le seuil TV-H2 « moins
+de 15 % » porte sur la moyenne des 12 graines, comme l'implémente le runner. Le partage
+des réalisations télévision entre conditions vaut au sens des mêmes graines et lois
+i.i.d., pas image par image après divergence des politiques. Le rapport final devra
+rappeler que la calibration du bruit porte sur un JEPA non entraîné et consigner le
+nombre d'ancres de bin visé inférieur ou égal à 5 dont l'angle réel atteint au moins
+130°.
