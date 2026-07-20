@@ -21,8 +21,27 @@ from learning.curiosity_benchmark import (
     coverage_entropy,
 )
 from learning.fractional_curiosity_benchmark import FractionalPolicy
+from learning.pooled_curiosity import PooledFractionalCuriosity
 
 CONDITIONS = ("fractional", "babbling", "regional_lp", "regional_lp_gain")
+
+# Conditions whose policies consume the (noisy) before/after anchor pair.
+ANCHOR_PAIR_CONDITIONS = ("fractional", "pooled")
+
+
+class PooledPolicy(FractionalPolicy):
+    """DC-005 variant wrapper: identical parameters, pooled scheduler."""
+
+    def __init__(self):
+        self.scheduler = PooledFractionalCuriosity(
+            1,
+            np.array([0.10]),
+            bandwidth=0.08,
+            min_evidence=5.0,
+            frontier=0.09,
+            epsilon=0.05,
+            max_observations=512,
+        )
 
 
 def _sigmoid(value: np.ndarray | float) -> np.ndarray:
@@ -102,6 +121,8 @@ class RegionalGainPolicy(RegionalLearningProgressPolicy):
 def make_hardened_policy(condition: str):
     if condition == "fractional":
         return FractionalPolicy()
+    if condition == "pooled":
+        return PooledPolicy()
     if condition == "babbling":
         return BabblingPolicy()
     if condition == "regional_lp":
@@ -145,7 +166,7 @@ def run_condition_hardened(
         # every anchor-consuming policy; documented in the pre-registration.
         noisy_before = max(before + sigma * float(anchor_rng.normal()), 0.0)
         noisy_after = max(after + sigma * float(anchor_rng.normal()), 0.0)
-        if condition == "fractional":
+        if condition in ANCHOR_PAIR_CONDITIONS:
             policy.observe(x, noisy_before, noisy_after)
             if noise_low <= x < noise_high:
                 noise_zone_gains.append(max(noisy_before - noisy_after, 0.0))
@@ -165,9 +186,9 @@ def run_condition_hardened(
         "noise_fraction": shares["noise"],
         "allocation": shares,
         "coverage_entropy": coverage_entropy(choices),
-        "noise_zone_interventions": len(noise_zone_gains) if condition == "fractional" else None,
+        "noise_zone_interventions": len(noise_zone_gains) if condition in ANCHOR_PAIR_CONDITIONS else None,
         "noise_zone_clipped_gain_mean": (
-            float(np.mean(noise_zone_gains)) if condition == "fractional" and noise_zone_gains else None
+            float(np.mean(noise_zone_gains)) if condition in ANCHOR_PAIR_CONDITIONS and noise_zone_gains else None
         ),
         "world": {
             "base_limit": world.base_limit,

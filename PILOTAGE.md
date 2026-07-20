@@ -8,22 +8,24 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | Revue de conception de l'ordonnanceur après rejet DC-004 |
-| État logiciel | DC-003R validée (20/20, portes appariées) puis DC-004 rejetée: l'ordonnanceur fractionnel s'effondre sous bruit d'ancre (0/40 à σ=0.05), biais du clip confirmé; la géométrie permutée seule est indolore; `regional_lp_gain` robuste |
-| Responsable de l'action courante | Codex ou Claude pour la revue de conception (clip et normalisation du gain, moyennage fenêtré); aucune campagne avant nouveau pré-enregistrement |
-| Action attendue d'Anthony maintenant | Aucune action matérielle (D-008); arbitrer la suite si la revue de conception propose plusieurs pistes |
-| Action attendue de Claude maintenant | Aucune; la décision pré-enregistrée DC-004 (retour en conception) est exécutoire |
-| Blocage actuel | Pas de simulation visuelle tant qu'un ordonnanceur n'a pas survécu à des ancres bruitées sur protocole pré-enregistré |
+| Jalon actif | Arbitrage d'Anthony après DC-005: `regional_lp_gain` promu ordonnanceur de référence |
+| État logiciel | DC-003R validée, DC-004 rejetée (bruit d'ancre), DC-005 rejetée (le correctif agréger-puis-clipper ne régresse pas mais ne rattrape ni babbling ni le contrôle sous bruit): arrêt pré-enregistré de la famille à gain fractionnel; `regional_lp_gain` seul robuste sur les trois campagnes durcies |
+| Responsable de l'action courante | Anthony pour l'arbitrage de la suite; Codex/Claude préparent le pré-enregistrement correspondant |
+| Action attendue d'Anthony maintenant | Arbitrer: (a) promouvoir `regional_lp_gain` vers la conception de la simulation visuelle via un pré-enregistrement dédié, ou (b) exiger une hypothèse nouvelle avant tout ordonnanceur développemental |
+| Action attendue de Claude maintenant | Revue contradictoire du prochain pré-enregistrement, quel que soit l'arbitrage |
+| Blocage actuel | Arbitrage humain requis: la décision DC-005 clôt la famille en cours, la direction suivante est un choix de priorités |
 
 ## Prochaine action exacte
 
-**Prochaine action:** revue de conception de l'ordonnanceur, à partir des deux constats
-gelés de DC-004: le clip `max(gain, 0)` transforme le bruit d'évaluation en signal
-fantôme (biais mesuré croissant avec σ), et le moyennage fenêtré du gain
-(`regional_lp_gain`) est robuste là où le gain fractionnel instantané s'effondre. Toute
-nouvelle variante repart d'un pré-enregistrement neuf (graines vierges), sans retuning
-sur les mondes 7301..7340. La lecture d'ensemble: DC-003/DC-003R valident la mesure
-interventionnelle, pas l'ordonnanceur.
+**Prochaine action (Anthony):** arbitrer la suite après l'arrêt pré-enregistré de la
+famille à gain fractionnel (DC-005). Les faits pour trancher: la mesure
+interventionnelle avant/après est validée et robuste; `regional_lp_gain` (LP régional
+fenêtré nourri de cette mesure) est le seul ordonnanceur stable sous bruit d'ancre sur
+DC-004 et DC-005 (`0.109` à σ=0.05 contre `0.115` babbling et `0.142` pour la meilleure
+variante développementale); la machinerie développementale continue n'a pas démontré de
+valeur ajoutée. Les deux options sont détaillées dans le tableau ci-dessus; dans les
+deux cas, le protocole suivant est pré-enregistré et passe par une revue contradictoire
+Claude avant exécution.
 
 **Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
 sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au

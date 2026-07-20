@@ -452,3 +452,38 @@ d'évaluation en signal fantôme. Premiers suspects gelés pour la revue de conc
 clip (biais positif systématique sous bruit) et l'absence de moyennage fenêtré du gain
 (le contrôle `regional_lp_gain`, qui moyenne sur 40 observations par bin, survit).
 Artefacts: `data/processed/experiments/developmental_curiosity_004/`.
+
+## Résultats DC-005 — agréger puis clipper, 2026-07-20
+
+Revue de conception dans `dc005_design_review.md`, pré-enregistrement gelé dans
+`dc005_preregistration.md` avant implémentation. Variante `PooledFractionalCuriosity`
+(gains signés, agrégation régionale, clip après moyennage), graines vierges 8301..8340,
+banc durci DC-004 inchangé, `fractional` conservé comme contrôle positif d'effondrement.
+
+| condition | erreur (σ=0.05) | erreur (σ=0.02) | erreur (σ=0) | bruit (σ=0.05) |
+|---|---:|---:|---:|---:|
+| pooled | `0.1415 +/- 0.0613` | `0.1114` | `0.1050` | `5.92%` |
+| fractional | `0.3665 +/- 0.2027` | `0.2387` | `0.1039` | `1.98%` |
+| babbling | `0.1151 +/- 0.0165` | idem | idem | `21.29%` |
+| regional_lp_gain | `0.1088 +/- 0.0157` | `0.1048` | `0.1043` | `11.96%` |
+
+- **D5-H3 VALIDÉE**: aucune régression en régime propre (`+0.0011` pour une marge de
+  `0.0052`, p `1.5e-05`) — le correctif est neutre à σ = 0, comme prédit;
+- le test unitaire de biais confirme le mécanisme corrigé: sur données synthétiques
+  inapprenables bruitées identiques, gain fantôme `~0` pour pooled contre `>0.03` pour
+  fractional; l'effondrement du témoin est reproduit (contrôle positif du banc);
+- **D5-H1 REJETÉE**: à σ = 0.05, pooled reste derrière babbling (`0.1415` contre
+  `0.1151`, 11/40 signes, p MC `1.0`) — trois fois moins dégradé que fractional, mais
+  dégradé quand même;
+- **D5-H2 REJETÉE**: `+0.0327` d'erreur face à `regional_lp_gain` (marge `0.0054`),
+  volet bruit passé (5.92% contre 11.96%, p `5e-06`) mais insuffisant seul.
+
+**Décision pré-enregistrée: arrêt de la famille développementale à gain fractionnel;
+`regional_lp_gain` devient l'ordonnanceur de référence du projet.** Bilan de la famille
+sur cinq campagnes: la *mesure* interventionnelle avant/après est validée et précieuse
+(le seul ordonnanceur robuste au bruit l'exploite), la machinerie développementale
+continue (noyaux, frontière, habituation, pression de couverture) n'a jamais démontré de
+valeur ajoutée face à un mécanisme fenêtré simple recevant la même information — et le
+correctif minimal du clip ne suffit pas à combler l'écart de robustesse. Toute reprise
+de cette famille exigerait une hypothèse nouvelle, pas un réglage.
+Artefacts: `data/processed/experiments/developmental_curiosity_005/`.

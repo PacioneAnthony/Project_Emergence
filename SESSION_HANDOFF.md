@@ -242,3 +242,33 @@ propose plusieurs pistes.
 Action Claude: revue contradictoire du prochain pré-enregistrement avant exécution.
 Blocage: aucun blocage technique; blocage de protocole sur la simulation visuelle tant
 que la robustesse au bruit d'ancre n'est pas démontrée.
+
+## Addendum 2026-07-20 (suite) - DC-005 et arrêt de la famille fractionnelle
+
+Après le rejet DC-004, la même session a conduit la revue de conception
+(`docs/research/dc005_design_review.md`: le clip par observation transforme le bruit en
+signal fantôme; le dénominateur bruité l'amplifie en zone base) et la campagne DC-005
+pré-enregistrée (`dc005_preregistration.md`, graines vierges 8301..8340):
+
+- variante `PooledFractionalCuriosity` (`learning/pooled_curiosity.py`): gains signés,
+  agrégation régionale, clip après moyennage — seule modification face au gel DC-003;
+- **D5-H3 validée** (aucune régression à σ=0), biais fantôme éliminé au niveau unitaire,
+  effondrement du témoin `fractional` reproduit (contrôle positif);
+- **D5-H1 et D5-H2 rejetées**: à σ=0.05, pooled (`0.1415`) reste derrière babbling
+  (`0.1151`) et loin de `regional_lp_gain` (`0.1088`, marge `0.0054`);
+- **décision pré-enregistrée exécutée: arrêt de la famille développementale à gain
+  fractionnel; `regional_lp_gain` devient l'ordonnanceur de référence.**
+- Suite de tests: 160 verts. Artefacts: `developmental_curiosity_005/`.
+
+Bilan de la branche sur cinq campagnes (DC-001..005): la mesure interventionnelle
+avant/après est l'acquis scientifique durable; aucun ordonnanceur développemental
+continu n'a battu un mécanisme fenêtré simple recevant la même information, dans un
+protocole équitable et durci. Toute reprise de la famille exigera une hypothèse
+nouvelle pré-enregistrée, pas un réglage.
+
+Action Codex: préparer, selon l'arbitrage d'Anthony, le pré-enregistrement suivant —
+(a) promotion de `regional_lp_gain` comme ordonnanceur de la future simulation visuelle,
+ou (b) cadrage d'une hypothèse nouvelle; aucune campagne avant gel et revue.
+Action Anthony: arbitrer entre (a) et (b) (voir PILOTAGE.md, tableau de situation).
+Action Claude: revue contradictoire du pré-enregistrement retenu avant exécution.
+Blocage: arbitrage humain requis sur la direction; aucun blocage technique.
