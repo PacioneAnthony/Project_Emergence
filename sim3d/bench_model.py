@@ -69,6 +69,13 @@ class BenchRoomConfig:
     max_object_size: float = 0.28
     table_size: tuple[float, float, float] = (0.8, 0.6, 0.72)
     bench_position: tuple[float, float] = (1.5, 3.2)  # neck axis, faces -y
+    primary_light_rgb: tuple[float, float, float] = (0.7, 0.7, 0.7)
+    secondary_light_rgb: tuple[float, float, float] = (0.4, 0.4, 0.4)
+    headlight_ambient_rgb: tuple[float, float, float] = (0.35, 0.35, 0.35)
+    headlight_diffuse_rgb: tuple[float, float, float] = (0.6, 0.6, 0.6)
+    landmark_angle_deg: float | None = None
+    landmark_rgba: tuple[float, float, float, float] = (0.85, 0.08, 0.08, 1.0)
+    landmark_distance_m: float = 1.45
 
 
 @dataclass
@@ -180,6 +187,36 @@ def _object_geom(index: int, obj: RoomObject) -> str:
     )
 
 
+def _landmark_geoms(config: BenchRoomConfig) -> str:
+    """A physical checkerboard panel facing the bench at a servo-angle bearing."""
+
+    if config.landmark_angle_deg is None:
+        return ""
+    bx, by = config.bench_position
+    heading = math.radians(config.landmark_angle_deg - 180.0)
+    direction = np.array([math.cos(heading), math.sin(heading)])
+    center = np.array([bx, by]) + config.landmark_distance_m * direction
+    rotation = heading - math.pi / 2.0
+    local_x = np.array([math.cos(rotation), math.sin(rotation)])
+    rgba = " ".join(f"{value:.3f}" for value in config.landmark_rgba)
+    geoms = [
+        f'    <geom name="j6_landmark_panel" type="box" pos="{center[0]:.4f} {center[1]:.4f} 1.0000" '
+        f'size="0.300 0.012 0.300" euler="0 0 {rotation:.6f}" rgba="0.035 0.035 0.035 1" contype="0" conaffinity="0"/>\n'
+    ]
+    for row in range(4):
+        for column in range(4):
+            offset = (column - 1.5) * 0.125
+            position = center + offset * local_x - 0.014 * direction
+            z = 1.0 + (row - 1.5) * 0.125
+            square_rgba = rgba if (row + column) % 2 == 0 else "0.92 0.92 0.92 1"
+            geoms.append(
+                f'    <geom name="j6_landmark_{row}_{column}" type="box" '
+                f'pos="{position[0]:.4f} {position[1]:.4f} {z:.4f}" size="0.058 0.006 0.058" '
+                f'euler="0 0 {rotation:.6f}" rgba="{square_rgba}" contype="0" conaffinity="0"/>\n'
+            )
+    return "".join(geoms)
+
+
 def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels: str = "") -> str:
     room = config.room
     servo = config.servo
@@ -191,6 +228,11 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
     range_lo = math.radians(servo.min_deg - servo.neutral_deg)
 
     object_geoms = "".join(_object_geom(i, obj) for i, obj in enumerate(objects))
+    landmark_geoms = _landmark_geoms(room)
+    primary_light = " ".join(f"{value:.3f}" for value in room.primary_light_rgb)
+    secondary_light = " ".join(f"{value:.3f}" for value in room.secondary_light_rgb)
+    headlight_ambient = " ".join(f"{value:.3f}" for value in room.headlight_ambient_rgb)
+    headlight_diffuse = " ".join(f"{value:.3f}" for value in room.headlight_diffuse_rgb)
 
     # Head local frame: +x = forward (camera axis), +z = up, hinge on the neck axis.
     return f"""
@@ -199,7 +241,7 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
   <option timestep="{config.physics_timestep:.6f}" integrator="implicitfast"/>
   <visual>
     <global offwidth="1280" offheight="960"/>
-    <headlight ambient="0.35 0.35 0.35" diffuse="0.6 0.6 0.6"/>
+    <headlight ambient="{headlight_ambient}" diffuse="{headlight_diffuse}"/>
   </visual>
   <asset>
     <texture name="floor_tex" type="2d" builtin="checker" rgb1="0.72 0.66 0.55" rgb2="0.62 0.55 0.44" width="256" height="256"/>
@@ -209,14 +251,14 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
     <texture name="sky" type="skybox" builtin="gradient" rgb1="0.6 0.75 0.95" rgb2="0.15 0.2 0.35" width="128" height="128"/>
   </asset>
   <worldbody>
-    <light pos="{room.width / 2:.3f} {room.depth / 2:.3f} 2.3" dir="0 0 -1" diffuse="0.7 0.7 0.7"/>
-    <light pos="{bx:.3f} {by - 1.5:.3f} 2.2" dir="0 0.3 -1" diffuse="0.4 0.4 0.4"/>
+    <light name="room_key_light" pos="{room.width / 2:.3f} {room.depth / 2:.3f} 2.3" dir="0 0 -1" diffuse="{primary_light}"/>
+    <light name="room_fill_light" pos="{bx:.3f} {by - 1.5:.3f} 2.2" dir="0 0.3 -1" diffuse="{secondary_light}"/>
     <geom name="room_floor" type="plane" pos="{room.width / 2:.3f} {room.depth / 2:.3f} 0" size="{room.width:.3f} {room.depth:.3f} 0.1" material="floor_mat"/>
     <geom name="room_wall_front" type="box" pos="{room.width / 2:.3f} -0.05 {room.wall_height / 2:.3f}" size="{room.width / 2 + 0.1:.3f} 0.05 {room.wall_height / 2:.3f}" material="wall_mat"/>
     <geom name="room_wall_back" type="box" pos="{room.width / 2:.3f} {room.depth + 0.05:.3f} {room.wall_height / 2:.3f}" size="{room.width / 2 + 0.1:.3f} 0.05 {room.wall_height / 2:.3f}" material="wall_mat"/>
     <geom name="room_wall_left" type="box" pos="-0.05 {room.depth / 2:.3f} {room.wall_height / 2:.3f}" size="0.05 {room.depth / 2 + 0.1:.3f} {room.wall_height / 2:.3f}" rgba="0.75 0.82 0.9 1"/>
     <geom name="room_wall_right" type="box" pos="{room.width + 0.05:.3f} {room.depth / 2:.3f} {room.wall_height / 2:.3f}" size="0.05 {room.depth / 2 + 0.1:.3f} {room.wall_height / 2:.3f}" rgba="0.9 0.82 0.75 1"/>
-{object_geoms}{wall_panels}
+{object_geoms}{wall_panels}{landmark_geoms}
     <geom name="bench_table" type="box" pos="{bx:.4f} {by:.4f} {table_h / 2:.4f}" size="{table_lx / 2:.4f} {table_ly / 2:.4f} {table_h / 2:.4f}" rgba="0.5 0.36 0.25 1"/>
     <geom name="bench_plate" type="box" pos="{bx:.4f} {by:.4f} {table_h + Z_PLATE_TOP / 2:.4f}" size="0.110 0.105 {Z_PLATE_TOP / 2:.4f}" rgba="0.2 0.2 0.22 1"/>
     <geom name="bench_tower" type="cylinder" pos="{bx:.4f} {by:.4f} {base_z + Z_TRACK / 2:.4f}" size="0.035 {Z_TRACK / 2:.4f}" rgba="0.25 0.25 0.3 1"/>

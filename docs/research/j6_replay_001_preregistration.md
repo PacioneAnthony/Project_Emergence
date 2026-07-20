@@ -225,3 +225,51 @@ n'est ni implémentée ni exécutée avant J6-R001 et ne partage aucune graine a
    avant toute promotion.
 
 Simulation uniquement sous D-008; aucune action physique, aucun achat, aucun flash.
+
+## Amendement pré-calcul du 2026-07-20 — corrections B1, B2 et B3
+
+Les textes suivants sont intégrés avant toute implémentation de campagne, tout smoke et
+tout calcul sur 10301..10312. Ils sont strictement additifs et ne changent aucune
+graine, aucun budget, ratio, seuil ou règle de promotion.
+
+### B1 — garde d'oubli
+
+**Garde d'oubli (amendement pré-calcul du 2026-07-20).** J6-H1 n'est interprétée
+que si l'adaptation naïve régresse de façon mesurable sur le domaine considéré:
+pour A et pour B séparément, la régression relative moyenne de `naive` doit être
+`≥ 0,05` avec borne basse BCa 95 % strictement positive. Si cette condition échoue
+sur un domaine, la comparaison H1 de ce domaine est déclarée **non interprétable**
+(le monde n'a pas induit d'oubli), et non un rejet du replay. La règle de décision
+« H1 échoue → retour en conception » ne s'applique qu'à un domaine où la garde
+d'oubli est passée.
+
+Cette garde n'est jamais calibrée sur le smoke 10991.
+
+### B2 — régression absolue co-primaire
+
+**Amendement pré-calcul du 2026-07-20.** Pour A et B, la régression absolue
+`regression_abs[d,r] = e_final_C[d,r] − e_acquisition[d,r]` est calculée et rapportée
+à côté de la régression relative. La différence appariée absolue
+(`naive − uniform`, puis `uniform − prioritized`) est reportée avec sa moyenne, son
+IC BCa et ses signes. Une promotion fondée sur H1B ou sur la composante B de H2
+n'est valide que si la différence absolue et la différence relative **s'accordent en
+signe**; un désaccord signale un artefact de dénominateur et rend la revendication B
+non interprétable. Le test statistique primaire reste la version relative gelée.
+
+### B3 — identité de session A
+
+Les trois conditions partagent la même initialisation de modèle par graine et sont
+**bit à bit identiques jusqu'à la fin de la session A incluse** (mêmes données,
+mêmes 1 500 pas, aucun replay avant B). L'implémentation asserte l'égalité des poids
+et des évaluations post-A des trois conditions sur le smoke 10991 avant toute graine
+de campagne.
+
+### Clarifications de lecture gelées
+
+Un H2 nul s'interprète « aucune valeur ajoutée démontrée à cette puissance », pas
+« la priorité est inutile ». À 50/50 et calcul fixe, les conditions replay consacrent
+la moitié de leurs gradients aux données anciennes; un gain de rétention signifie que
+cette réallocation du calcul aide la stabilité, sous le contrôle de plasticité H3. La
+garde télévision à +5 points reste une porte de promotion du priorisé, sans établir de
+causalité entre télévision et éventuel gain H2. Aucune comparaison absolue de difficulté
+entre A et B n'est revendiquée; toutes les décisions sont intra-domaine et appariées.

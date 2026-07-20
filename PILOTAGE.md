@@ -1,93 +1,76 @@
-# Émergence - Tableau de pilotage
+# Émergence — Tableau de pilotage
 
 Dernière mise à jour: 2026-07-20
 
-Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir maintenant et quelle demande envoyer sans avoir à interpréter la roadmap technique.
+Ce fichier est le point d'entrée humain du projet. Les choix logiciels et expérimentaux
+relèvent de Codex (D-004). Le chemin reste intégralement simulé sous D-008.
 
 ## Situation actuelle
 
 | Élément | État |
 |---|---|
-| Jalon actif | J6-R001: rétention et replay en monde visuel non stationnaire |
-| État logiciel | Revue de résultats TV-001 conclue « J6 d'abord »; pré-enregistrement J6-R001 gelé avant implémentation/calcul avec adaptation naïve, replay uniforme et replay priorisé par erreur; motivation gelée |
-| Responsable de l'action courante | Claude pour la revue contradictoire pré-campagne J6; Anthony transmet le dossier préparé |
-| Action attendue d'Anthony maintenant | Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md`; aucune décision technique, manipulation, achat ou flash |
-| Action attendue de Claude maintenant | Auditer `docs/research/j6_replay_001_preregistration.md` et écrire `docs/research/j6_replay_001_review.md` |
-| Blocage actuel | Porte de protocole J6 avant implémentation et graines réservées; aucun blocage technique ou matériel |
+| Jalon actif | J6-R001 — revue contradictoire des résultats |
+| Pré-calcul | Amendements B1/B2/B3 intégrés mot pour mot avant le smoke et toute graine réservée |
+| Implémentation | Domaines MJCF A/B/C, corpus babbling partagé, ancres tenues à part et trois consolidations terminés |
+| Vérifications | 175 tests verts; smoke hors protocole 10991 vert sur les sept contrôles requis |
+| Campagne | 12 triplets 10301..10312, 36 runs complets, 26,9 min cumulées (< 90 min) |
+| Résultat mécanique | Aucune condition promue; revue Claude obligatoire avant décision |
+| Responsable courant | Claude, pour la revue contradictoire préparée dans `CLAUDE_REVIEW_REQUEST.md` |
 
-## Prochaine action exacte
+## Lecture des résultats gelés
 
-**Prochaine action:** Anthony transmet à Claude le prompt de revue J6 préparé dans
-`CLAUDE_REVIEW_REQUEST.md`. Après verdict, Codex intègre les corrections bloquantes,
-implémente le monde non stationnaire et les trois consolidations, vérifie le smoke 10991,
-puis lance 10301..10312 seulement si la revue l'autorise.
+- B1/A ne passe pas: la régression naïve moyenne sur A vaut `0,0397`, sous `0,05`.
+  H1A est **NON INTERPRÉTABLE** car le monde n'a pas induit assez d'oubli; ce n'est pas
+  un rejet du replay.
+- B1/B passe (`0,1414`, borne basse BCa `0,0922`) et H1B passe: le replay uniforme
+  réduit la régression relative de `0,1506`, borne basse `0,1066`, p Holm `0,000488`,
+  `6/6` bins. La métrique absolue B (`0,0501`) s'accorde en signe avec la relative.
+- H2 échoue sur A et B: aucune valeur ajoutée du replay priorisé n'est démontrée à cette
+  puissance. Les moyennes relatives valent `-0,00005` et `0,00395`.
+- H3 échoue pour uniform et priorisé après Holm; les pires bins C régressent de `14,25 %`
+  et `13,47 %`, au-dessus de la limite régionale de `10 %`.
+- Les gardes apprenant et télévision passent. Malgré H1B, les règles gelées n'autorisent
+  ni uniform ni priorisé: H1A n'est pas interprétable et H3 échoue.
 
-**Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
-sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au
-matériel existant.
+Le rapport lisible est `docs/research/j6_replay_001_results.md`. Les exports versionnés
+`docs/research/j6_replay_001_analysis.json` et `docs/research/j6_replay_001_runs.json`
+permettent à Claude d'auditer les calculs depuis le dépôt distant.
 
-## Ce qu'Anthony doit demander
+## Prochaine porte
 
-Pour effectuer la porte actuelle, transmettre à Claude:
+Claude doit exécuter mot pour mot le prompt de `CLAUDE_REVIEW_REQUEST.md`. Aucune
+promotion, aucun retuning et aucune nouvelle graine J6 ne sont autorisés avant son
+verdict. Après dépôt de sa revue de résultats dans
+`docs/research/j6_replay_001_results_review.md`, Codex intégrera seul le verdict,
+mettra à jour les décisions et déterminera le prochain protocole conforme.
+
+Anthony n'a aucune action physique à effectuer. Le banc, les achats et les flashs
+restent suspendus sous D-008.
+
+## Prompt court pour Claude
 
 ```text
-Effectue la revue pré-campagne demandée dans CLAUDE_REVIEW_REQUEST.md. Audite le
-pré-enregistrement J6-R001, en particulier l'équité des budgets, la mesure de l'oubli,
-les portes régionales et la priorité par erreur. Écris ton verdict dans
-docs/research/j6_replay_001_review.md. Ne lance aucun calcul et ne modifie aucun autre
-fichier.
+Effectue la revue de résultats demandée dans CLAUDE_REVIEW_REQUEST.md. Lis tous les
+fichiers versionnés qui y sont indiqués, puis écris ton verdict dans
+docs/research/j6_replay_001_results_review.md. Ne modifie aucun autre fichier et ne
+propose aucun retuning sur 10301..10312.
 ```
 
-Après dépôt de la revue, pour reprendre avec Codex:
+## Format obligatoire de fin de session
 
 ```text
-Continue le projet Emergence. Intègre la revue J6-R001 puis exécute le protocole autorisé
-jusqu'à la prochaine porte réelle. Mets à jour les documents de reprise.
-```
-
-Une version encore plus courte est acceptable:
-
-```text
-Continue le projet Emergence jusqu'à ce que tu aies réellement besoin de moi.
-```
-
-Codex ne doit pas répondre uniquement par un plan si les tâches peuvent être réalisées dans le dépôt. Il doit les exécuter, les vérifier et documenter la suite.
-
-## Quand utiliser Claude
-
-Anthony n'a pas à déterminer seul si Claude doit intervenir. Codex signale la nécessité d'une revue et prépare un fichier `CLAUDE_REVIEW_REQUEST.md` contenant le contexte et le prompt exact.
-
-Lorsque ce fichier existe et que ce tableau indique `Action attendue de Claude: revue prête`, Anthony peut transmettre à Claude:
-
-```text
-Effectue la revue demandée dans CLAUDE_REVIEW_REQUEST.md. Lis uniquement les
-fichiers qui y sont indiqués et écris ta conclusion dans le fichier demandé.
-```
-
-En l'absence de demande préparée, Claude n'est pas nécessaire pour faire avancer le travail courant.
-
-## Rôle permanent d'Anthony
-
-Anthony intervient principalement comme:
-
-- technicien du banc d'essai: montage, câblage, manipulation et observation physique;
-- garant de la sécurité matérielle et des limites mécaniques;
-- exécutant des procédures physiques préparées précisément par Codex;
-- validateur des achats et modifications de composants;
-- responsable du consentement des personnes et des contraintes personnelles du projet;
-- propriétaire de l'objectif général et des priorités personnelles.
-
-Anthony ne prend pas en charge les choix logiciels, l'architecture technique, les hyperparamètres, les baselines, les métriques ou l'interprétation scientifique courante. Codex décide et implémente ces éléments; Claude les challenge aux portes importantes.
-
-## Format obligatoire des prochaines étapes
-
-À la fin de chaque session substantielle, Codex doit écrire explicitement:
-
-```text
-Action Codex: ce que Codex peut faire seul et doit exécuter ensuite.
-Action Anthony: manipulation, observation ou achat précis; sinon « aucune ».
+Action Codex: ce que Codex exécute ensuite seul.
+Action Anthony: manipulation/observation/achat précis; sinon « aucune ».
 Action Claude: revue préparée avec fichier et prompt; sinon « aucune ».
 Blocage: condition réelle empêchant la suite; sinon « aucun ».
 ```
 
-Une formulation vague comme « il faut préparer J0 » est insuffisante. Elle doit préciser qui s'en charge et si Anthony doit faire quelque chose.
+## Actions par acteur
+
+Action Codex: après dépôt de `docs/research/j6_replay_001_results_review.md`, auditer et
+intégrer le verdict sans rouvrir ni régler J6 sur 10301..10312.
+Action Anthony: aucune.
+Action Claude: exécuter la revue préparée dans `CLAUDE_REVIEW_REQUEST.md` et écrire
+`docs/research/j6_replay_001_results_review.md`.
+Blocage: revue contradictoire des résultats requise avant toute promotion ou protocole
+successeur.
