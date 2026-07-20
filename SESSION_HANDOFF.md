@@ -6,23 +6,29 @@ Date: 2026-07-20
 
 Une nouvelle session Codex doit lire `PILOTAGE.md`, ce fichier,
 `DEVELOPMENTAL_ARCHITECTURE.md`, `CODEX_TASK_BRIEF.md`,
-`docs/research/tv_real_jepa_001_results.md` et `CLAUDE_REVIEW_REQUEST.md`. Si
-`docs/research/tv_real_jepa_001_results_review.md` existe, elle applique immédiatement
-son verdict technique. Sinon, elle ne lance aucune nouvelle campagne: TV-001 est
-terminée et la porte courante porte sur l'ordre entre J6 et un diagnostic
-invariance/bruit.
+`docs/research/tv_real_jepa_001_results_review.md`,
+`docs/research/j6_replay_001_preregistration.md` et `CLAUDE_REVIEW_REQUEST.md`. Si
+`docs/research/j6_replay_001_review.md` existe, elle applique immédiatement son verdict
+avant implémentation ou calcul. Sinon, elle maintient la porte de revue J6 et n'ouvre
+aucune graine 10301..10312.
 
 Anthony a délégué les choix logiciels et architecturaux à Codex, avec revue Claude aux portes importantes. Codex ne doit donc pas demander à Anthony de choisir comment pré-enregistrer J0, quelle architecture logicielle employer ou quelle baseline implémenter. Si le travail est réalisable dans le dépôt, il doit l'exécuter plutôt que s'arrêter à une explication.
 
 ## Objectif actif
 
-Faire passer la revue contradictoire des résultats TV-001 et choisir l'ordre
-expérimental suivant: étape 2/J6 avec motivation gelée, ou diagnostic minimal séparant
-apprentissage d'invariance et attraction pour le bruit. Le chemin physique J0/J1 reste
-suspendu sous D-008.
+Faire passer la revue contradictoire du pré-enregistrement J6-R001, puis implémenter et
+tester la rétention visuelle séquentielle par adaptation naïve, replay uniforme et
+replay priorisé par erreur. Motivation gelée; chemin physique J0/J1 suspendu sous D-008.
 
 ## État valide
 
+- `docs/research/tv_real_jepa_001_results_review.md` conclut **J6 D'ABORD**: la sonde
+  invariance/bruit reste dormante et ne conditionne aucune baseline J6.
+- `docs/research/j6_replay_001_preregistration.md` est gelé avant implémentation:
+  domaines physiques A/B/C, collecte babbling partagée, 12 triplets 10301..10312,
+  4 500 pas par condition, priorité unique par erreur d'épisode et portes H1/H2/H3.
+- Aucune implémentation J6, aucun smoke 10991 et aucune graine réservée n'ont été lancés.
+- `CLAUDE_REVIEW_REQUEST.md` demande maintenant la revue pré-campagne J6.
 - La revue pré-campagne Claude a autorisé TV-001 après deux corrections bloquantes,
   intégrées avant calcul: porte de revue déplacée avant calibration et amendement exact
   sur la surface de l'écran/alignement des bins.
@@ -38,8 +44,6 @@ suspendu sous D-008.
 - `docs/research/tv_real_jepa_001_results.md` contient les 12 paires, statistiques,
   diagnostic et limites. L'ambiguïté causale porte sur l'apprentissage légitime d'une
   invariance au bruit par l'encodeur plastique.
-- `CLAUDE_REVIEW_REQUEST.md` demande désormais une revue de résultats et de l'ordre
-  J6/diagnostic; aucune nouvelle campagne n'est autorisée avant sa réponse.
 - Le brief `CODEX_TASK_BRIEF.md` vaut arbitrage d'Anthony en faveur de la promotion de
   `regional_lp_gain` vers le substrat visuel réel; l'ancien arbitrage affiché après
   DC-005 est clos.
@@ -53,7 +57,8 @@ suspendu sous D-008.
   statistiques via `learning/paired_stats.py`, reprise par run et keep-awake. Il refuse
   la campagne sans `--review-accepted`.
 - `tests/test_tv_exploration.py` couvre le monde, l'absence d'oracle explicite, le clip
-  après agrégation et la règle de calibration. Suite complète: 169 tests réussis.
+  après agrégation, la règle de calibration et la porte de revue. Suite complète: 170
+  tests réussis.
 - Le smoke test GPU/MuJoCo hors protocole (graine 9991) a réussi: banque d'ancres,
   160 images, deux cycles collecte–entraînement–mesure et checkpoint. Il n'a ouvert
   aucune graine de calibration ou de campagne.
@@ -95,43 +100,43 @@ suspendu sous D-008.
 2. `SESSION_HANDOFF.md`
 3. `DEVELOPMENTAL_ARCHITECTURE.md`
 4. `CODEX_TASK_BRIEF.md`
-5. `docs/research/tv_real_jepa_001_results.md`
+5. `docs/research/tv_real_jepa_001_results_review.md`
 6. `CLAUDE_REVIEW_REQUEST.md`
-7. `docs/research/tv_real_jepa_001_results_review.md`, s'il existe
-8. `COLLABORATION_PROTOCOL.md`
-9. `DECISIONS.md`
+7. `docs/research/j6_replay_001_preregistration.md`
+8. `docs/research/j6_replay_001_review.md`, s'il existe
+9. `COLLABORATION_PROTOCOL.md`
+10. `DECISIONS.md`
 
 ## Informations et actions attendues d'Anthony
 
 - Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et remettre sa
-  réponse dans `docs/research/tv_real_jepa_001_results_review.md`.
+  réponse dans `docs/research/j6_replay_001_review.md`.
 - Aucune manipulation, observation, commande d'achat ou décision d'implémentation.
 - ANT-008/ANT-009 et tout travail physique restent différés sous D-008.
 
 ## Prochaine action Codex
 
-Lorsque la revue de résultats TV-001 est déposée, Codex doit:
+Lorsque la revue J6-R001 est déposée, Codex doit:
 
-- vérifier qu'elle maintient la non-promotion D-009 et distingue verdict de campagne et
-  diagnostic causal;
-- si verdict `J6 D'ABORD`, rédiger et geler le pré-enregistrement étape 2: adaptation
-  naïve, replay uniforme et replay priorisé, budgets égaux, métriques séparées de
-  rétention/régression;
-- si verdict `DIAGNOSTIC D'ABORD`, pré-enregistrer uniquement la manipulation minimale
-  exigée, sur graines vierges, sans retoucher TV-001;
-- demander Anthony seulement si le verdict est `ARRÊT/ARBITRAGE OBJECTIF` et explicite
-  une conséquence d'objectif général; D-004 couvre tous les choix techniques.
+- intégrer toute correction bloquante avant implémentation/calcul, avec amendement daté
+  si la validité modifie une description gelée;
+- implémenter additivement les domaines A/B/C, le corpus partagé, les trois conditions,
+  les évaluations par compétence et le runner résumable;
+- exécuter les tests et le smoke 10991, puis appliquer les contrôles de manipulation;
+- lancer 10301..10312 uniquement après verdict favorable et arrêt automatique si un
+  manifeste/budget/garde de construction diverge;
+- consigner H1/H2/H3 et préparer la revue de résultats avant promotion.
 
 ## Actions par acteur
 
-Action Codex: intégrer la revue de résultats puis pré-enregistrer et exécuter la voie
-technique autorisée.
+Action Codex: intégrer la revue J6-R001 puis implémenter, tester et exécuter uniquement
+ce qu'elle autorise.
 Action Anthony: transmettre le prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune action
 matérielle.
-Action Claude: écrire la revue de résultats dans
-`docs/research/tv_real_jepa_001_results_review.md`.
-Blocage: revue contradictoire de résultats requise avant nouvelle campagne; aucun
-blocage technique ou matériel.
+Action Claude: écrire la revue pré-campagne dans
+`docs/research/j6_replay_001_review.md`.
+Blocage: revue contradictoire J6 requise avant implémentation et campagne; aucun blocage
+technique ou matériel.
 
 ## Modifications de cette session
 
@@ -388,3 +393,30 @@ action matérielle ou décision technique.
 Action Claude: écrire `docs/research/tv_real_jepa_001_results_review.md`.
 Blocage: porte de revue sur l'ordre expérimental; aucun blocage logiciel, calcul ou
 matériel.
+
+## Addendum 2026-07-20 — verdict J6 d'abord et pré-enregistrement J6-R001
+
+La revue `docs/research/tv_real_jepa_001_results_review.md` confirme que la cause de
+l'échec TV-001 ne conditionne pas J6: collecte babbling commune, aucune motivation dans
+les trois conditions. Verdict **J6 D'ABORD**; sonde encodeur gelé/plastique dormante.
+
+Codex a gelé `docs/research/j6_replay_001_preregistration.md` avant implémentation:
+
+- domaines A/B/C avec landmark physique déplacé et éclairage modifié;
+- 12 triplets vierges 10301..10312, mêmes 12 000 images et 4 500 pas par condition;
+- adaptation naïve, replay uniforme 50/50, replay d'anciens épisodes priorisé une fois
+  par erreur normalisée;
+- régressions signées par domaine et six bins, portes exactes H1/H2/H3, plasticité
+  courante et garde anti-télévision du priorisé;
+- smoke 10991 et contrôles de manipulation avant toute graine réservée;
+- plafond 36 runs/90 minutes, reprise au niveau run.
+
+`CLAUDE_REVIEW_REQUEST.md` contient la question d'audit et le prompt exact. Aucune
+implémentation ou commande de calcul J6 n'a été lancée.
+
+Action Codex: intégrer la revue J6, puis implémenter/tester/exécuter seulement après
+autorisation.
+Action Anthony: transmettre le prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune action
+matérielle ou décision technique.
+Action Claude: écrire `docs/research/j6_replay_001_review.md`.
+Blocage: porte de revue pré-implémentation J6; aucun blocage technique ou matériel.

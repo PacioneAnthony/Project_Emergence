@@ -161,3 +161,9 @@ l'ordre expérimental.
 Condition de réouverture: hypothèse nouvelle pré-enregistrée distinguant progrès
 d'invariance et attraction pour l'aléatoire, sur graines vierges, ou preuve que la
 question mémoire J6 peut avancer indépendamment sans réintroduire l'ordonnanceur.
+
+Résultat de revue (2026-07-20): Claude confirme « J6 D'ABORD ». TV-001 est décisive
+sur la non-promotion et indécise sur la cause; cette cause ne conditionne ni les
+baselines ni les métriques J6 puisque les trois conditions collectent par babbling.
+La sonde encodeur gelé/plastique reste dormante. Codex gèle J6-R001 avant implémentation
+et soumet son pré-enregistrement à revue contradictoire.

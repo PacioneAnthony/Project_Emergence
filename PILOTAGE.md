@@ -8,20 +8,19 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | Porte de décision après TV-001, avant étape 2/J6 |
-| État logiciel | TV-001 complète et interprétable: calibration passée, 24 runs achevés; TV-H1 rejetée (`-2,80 %`), TV-H2 rejetée (`28,28 %` de TV contre `25,19 %`); tous les garde-fous passent; `regional_lp_gain` non promu sous D-009 |
-| Responsable de l'action courante | Claude pour la revue contradictoire des résultats; Anthony transmet le dossier préparé |
-| Action attendue d'Anthony maintenant | Transmettre à Claude le nouveau prompt exact de `CLAUDE_REVIEW_REQUEST.md`; aucune décision technique, manipulation, achat ou flash |
-| Action attendue de Claude maintenant | Trancher l'ordre expérimental: J6 d'abord, diagnostic invariance/bruit d'abord, ou arrêt nécessitant arbitrage d'objectif |
-| Blocage actuel | Porte de revue de résultats avant nouvelle campagne; aucun blocage technique ou matériel |
+| Jalon actif | J6-R001: rétention et replay en monde visuel non stationnaire |
+| État logiciel | Revue de résultats TV-001 conclue « J6 d'abord »; pré-enregistrement J6-R001 gelé avant implémentation/calcul avec adaptation naïve, replay uniforme et replay priorisé par erreur; motivation gelée |
+| Responsable de l'action courante | Claude pour la revue contradictoire pré-campagne J6; Anthony transmet le dossier préparé |
+| Action attendue d'Anthony maintenant | Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md`; aucune décision technique, manipulation, achat ou flash |
+| Action attendue de Claude maintenant | Auditer `docs/research/j6_replay_001_preregistration.md` et écrire `docs/research/j6_replay_001_review.md` |
+| Blocage actuel | Porte de protocole J6 avant implémentation et graines réservées; aucun blocage technique ou matériel |
 
 ## Prochaine action exacte
 
-**Prochaine action:** Anthony transmet à Claude le prompt de revue de résultats préparé
-dans `CLAUDE_REVIEW_REQUEST.md`. Codex appliquera ensuite le verdict technique sous
-D-004: soit pré-enregistrer J6 avec motivation gelée, soit pré-enregistrer le diagnostic
-minimal demandé. Anthony ne tranche que si Claude conclut qu'un choix d'objectif général
-est réellement nécessaire.
+**Prochaine action:** Anthony transmet à Claude le prompt de revue J6 préparé dans
+`CLAUDE_REVIEW_REQUEST.md`. Après verdict, Codex intègre les corrections bloquantes,
+implémente le monde non stationnaire et les trois consolidations, vérifie le smoke 10991,
+puis lance 10301..10312 seulement si la revue l'autorise.
 
 **Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
 sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au
@@ -32,18 +31,18 @@ matériel existant.
 Pour effectuer la porte actuelle, transmettre à Claude:
 
 ```text
-Effectue la revue de résultats demandée dans CLAUDE_REVIEW_REQUEST.md. Lis les fichiers
-indiqués, maintiens la non-promotion TV-001 acquise, puis tranche uniquement l'ordre de
-la suite: J6 d'abord, diagnostic d'abord, ou arrêt/arbitrage objectif. Écris ton verdict
-dans docs/research/tv_real_jepa_001_results_review.md. Ne lance aucun calcul et ne
-modifie aucun autre fichier.
+Effectue la revue pré-campagne demandée dans CLAUDE_REVIEW_REQUEST.md. Audite le
+pré-enregistrement J6-R001, en particulier l'équité des budgets, la mesure de l'oubli,
+les portes régionales et la priorité par erreur. Écris ton verdict dans
+docs/research/j6_replay_001_review.md. Ne lance aucun calcul et ne modifie aucun autre
+fichier.
 ```
 
 Après dépôt de la revue, pour reprendre avec Codex:
 
 ```text
-Continue le projet Emergence. Intègre la revue de résultats TV-001 et exécute la voie
-qu'elle autorise jusqu'à la prochaine porte réelle. Mets à jour les documents de reprise.
+Continue le projet Emergence. Intègre la revue J6-R001 puis exécute le protocole autorisé
+jusqu'à la prochaine porte réelle. Mets à jour les documents de reprise.
 ```
 
 Une version encore plus courte est acceptable:
