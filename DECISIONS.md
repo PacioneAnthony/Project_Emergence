@@ -224,3 +224,50 @@ soit son verdict, sauf nouvelle preuve exigeant une réplication de consolidatio
 Condition de réouverture: revue préalable défavorable, impossibilité de garantir
 l'absence de fuite entre suivi et décision, ou campagne non interprétable sur les deux
 domaines anciens.
+
+## D-012 - Clôture technique sans résultat de J6-AR001
+
+Date: 2026-07-20
+Décision: clore J6-AR001 sans analyse scientifique, sans promotion et sans reprise sur
+11301..11316 après l'arrêt automatique au plafond gelé de 75 minutes.
+Statut: arrêt technique pré-enregistré sous D-004.
+Motif: le runner a atteint la limite pendant `adaptive_replay` de 11313. Douze triplets
+11301..11312 sont complets; 11313 contient seulement `naive` et `uniform_50`; 11314 à
+11316 sont restées fermées. Le plan exige n=16/48 runs: toute analyse à n=12 ou toute
+extension du plafond après ouverture des graines serait post hoc.
+Données utilisées: métadonnées locales résumables de
+`data/processed/experiments/j6_adaptive_replay_001/`, 38 runs complets, 73,22 minutes
+enregistrées plus le fragment interrompu, et `j6_adaptive_replay_001_technical_stop.md`.
+Baseline: protocole J6-AR001 amendé C1–C4; aucune comparaison de résultats n'est faite.
+Avis Codex: préserver l'arrêt est plus important que récupérer une campagne incomplète;
+l'hypothèse adaptative reste non testée, ni confirmée ni rejetée.
+Avis Claude: revue pré-calcul favorable après C1–C4; aucune revue de résultats possible
+faute de campagne complète.
+Arbitrage Anthony: non requis; application mécanique du plafond sous D-004.
+Conséquences: aucun run supplémentaire, aucune analyse des portes et aucune promotion.
+Les artefacts partiels sont conservés localement comme audit technique. La règle de
+clôture J6-AR001 rend la réafférence étape 3 active.
+Condition de réouverture: aucune pour J6-AR001; une reprise de consolidation exigerait
+une hypothèse, des graines et un pré-enregistrement nouveaux.
+
+## D-013 - Passage à la réafférence visuelle
+
+Date: 2026-07-20
+Décision: après la clôture J6-AR001, passer à l'étape 3 du brief avec REF-001: tester si
+le résidu d'un JEPA conditionné par l'action détecte les changements externes tout en
+expliquant les changements auto-produits.
+Statut: pré-enregistrement soumis à revue contradictoire avant implémentation ou calcul.
+Motif: le point 2 de la définition du succès exige de séparer changement auto-produit et
+externe. L'action-JEPA existe déjà, mais cette propriété n'a jamais été testée avec un
+objet mobile indépendant et un critère tenu à part.
+Baseline: JEPA de même capacité sans action et score de changement pixel analytique;
+mêmes images, actions, budgets et banques d'évaluation, labels physiques invisibles aux
+modèles.
+Avis Codex: voie la plus informative après la clôture explicite de la variante de
+consolidation; elle teste une capacité développementale nouvelle sans recycler J6.
+Avis Claude: à obtenir sur `reafference_001_preregistration.md` avant code.
+Arbitrage Anthony: non requis; choix scientifique dans le brief sous D-004.
+Conséquences: graines 12301..12316 et smoke 12991 interdits avant revue favorable; toute
+promotion exige une seconde revue des résultats.
+Condition de réouverture: critère tenu à part non identifiable sans oracle d'entraînement,
+baseline simple inadéquate ou revue pré-calcul défavorable.

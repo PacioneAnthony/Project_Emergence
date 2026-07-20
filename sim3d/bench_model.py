@@ -76,6 +76,9 @@ class BenchRoomConfig:
     landmark_angle_deg: float | None = None
     landmark_rgba: tuple[float, float, float, float] = (0.85, 0.08, 0.08, 1.0)
     landmark_distance_m: float = 1.45
+    sector_belt_pattern: str | None = None
+    sector_belt_primary_rgba: tuple[float, float, float, float] = (0.85, 0.08, 0.08, 1.0)
+    sector_belt_secondary_rgba: tuple[float, float, float, float] = (0.92, 0.92, 0.92, 1.0)
 
 
 @dataclass
@@ -217,6 +220,60 @@ def _landmark_geoms(config: BenchRoomConfig) -> str:
     return "".join(geoms)
 
 
+def _sector_belt_geoms(config: BenchRoomConfig) -> str:
+    """Six physical panels, one centered in every structured 20-degree bin."""
+
+    pattern = config.sector_belt_pattern
+    if pattern is None:
+        return ""
+    if pattern not in {"checker", "vertical", "horizontal"}:
+        raise ValueError(f"unknown sector belt pattern: {pattern}")
+    bx, by = config.bench_position
+    primary = " ".join(f"{value:.3f}" for value in config.sector_belt_primary_rgba)
+    secondary = " ".join(f"{value:.3f}" for value in config.sector_belt_secondary_rgba)
+    geoms: list[str] = []
+    for sector, servo_angle in enumerate((20.0, 40.0, 60.0, 80.0, 100.0, 120.0)):
+        heading = math.radians(servo_angle - 180.0)
+        direction = np.array([math.cos(heading), math.sin(heading)])
+        center = np.array([bx, by]) + config.landmark_distance_m * direction
+        rotation = heading - math.pi / 2.0
+        local_x = np.array([math.cos(rotation), math.sin(rotation)])
+        geoms.append(
+            f'    <geom name="j6ar_panel_{sector}" type="box" '
+            f'pos="{center[0]:.4f} {center[1]:.4f} 1.0000" size="0.255 0.012 0.255" '
+            f'euler="0 0 {rotation:.6f}" rgba="0.025 0.025 0.025 1" contype="0" conaffinity="0"/>\n'
+        )
+        if pattern == "checker":
+            for row in range(4):
+                for column in range(4):
+                    offset = (column - 1.5) * 0.105
+                    position = center + offset * local_x - 0.014 * direction
+                    z = 1.0 + (row - 1.5) * 0.105
+                    color = primary if (row + column) % 2 == 0 else secondary
+                    geoms.append(
+                        f'    <geom name="j6ar_panel_{sector}_{row}_{column}" type="box" '
+                        f'pos="{position[0]:.4f} {position[1]:.4f} {z:.4f}" size="0.048 0.006 0.048" '
+                        f'euler="0 0 {rotation:.6f}" rgba="{color}" contype="0" conaffinity="0"/>\n'
+                    )
+        else:
+            for stripe in range(6):
+                color = primary if stripe % 2 == 0 else secondary
+                if pattern == "vertical":
+                    offset = (stripe - 2.5) * 0.078
+                    position = center + offset * local_x - 0.014 * direction
+                    z, size = 1.0, "0.035 0.006 0.220"
+                else:
+                    position = center - 0.014 * direction
+                    z = 1.0 + (stripe - 2.5) * 0.078
+                    size = "0.220 0.006 0.035"
+                geoms.append(
+                    f'    <geom name="j6ar_panel_{sector}_stripe_{stripe}" type="box" '
+                    f'pos="{position[0]:.4f} {position[1]:.4f} {z:.4f}" size="{size}" '
+                    f'euler="0 0 {rotation:.6f}" rgba="{color}" contype="0" conaffinity="0"/>\n'
+                )
+    return "".join(geoms)
+
+
 def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels: str = "") -> str:
     room = config.room
     servo = config.servo
@@ -229,6 +286,7 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
 
     object_geoms = "".join(_object_geom(i, obj) for i, obj in enumerate(objects))
     landmark_geoms = _landmark_geoms(room)
+    belt_geoms = _sector_belt_geoms(room)
     primary_light = " ".join(f"{value:.3f}" for value in room.primary_light_rgb)
     secondary_light = " ".join(f"{value:.3f}" for value in room.secondary_light_rgb)
     headlight_ambient = " ".join(f"{value:.3f}" for value in room.headlight_ambient_rgb)
@@ -258,7 +316,7 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
     <geom name="room_wall_back" type="box" pos="{room.width / 2:.3f} {room.depth + 0.05:.3f} {room.wall_height / 2:.3f}" size="{room.width / 2 + 0.1:.3f} 0.05 {room.wall_height / 2:.3f}" material="wall_mat"/>
     <geom name="room_wall_left" type="box" pos="-0.05 {room.depth / 2:.3f} {room.wall_height / 2:.3f}" size="0.05 {room.depth / 2 + 0.1:.3f} {room.wall_height / 2:.3f}" rgba="0.75 0.82 0.9 1"/>
     <geom name="room_wall_right" type="box" pos="{room.width + 0.05:.3f} {room.depth / 2:.3f} {room.wall_height / 2:.3f}" size="0.05 {room.depth / 2 + 0.1:.3f} {room.wall_height / 2:.3f}" rgba="0.9 0.82 0.75 1"/>
-{object_geoms}{wall_panels}{landmark_geoms}
+{object_geoms}{wall_panels}{landmark_geoms}{belt_geoms}
     <geom name="bench_table" type="box" pos="{bx:.4f} {by:.4f} {table_h / 2:.4f}" size="{table_lx / 2:.4f} {table_ly / 2:.4f} {table_h / 2:.4f}" rgba="0.5 0.36 0.25 1"/>
     <geom name="bench_plate" type="box" pos="{bx:.4f} {by:.4f} {table_h + Z_PLATE_TOP / 2:.4f}" size="0.110 0.105 {Z_PLATE_TOP / 2:.4f}" rgba="0.2 0.2 0.22 1"/>
     <geom name="bench_tower" type="cylinder" pos="{bx:.4f} {by:.4f} {base_z + Z_TRACK / 2:.4f}" size="0.035 {Z_TRACK / 2:.4f}" rgba="0.25 0.25 0.3 1"/>

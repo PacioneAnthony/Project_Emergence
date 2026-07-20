@@ -277,3 +277,67 @@ indépendante d'un mécanisme promu est exigée par la revue des résultats.
    Claude avant toute promotion.
 
 Simulation uniquement sous D-008: aucune action physique, aucun achat, aucun flash.
+
+## Amendement pré-calcul du 2026-07-20 — corrections C1 à C4
+
+Cet amendement est ajouté après la revue contradictoire
+`j6_adaptive_replay_001_review.md` et avant toute implémentation, tout smoke 11991 et
+tout calcul sur 11301..11316. Il ne modifie aucun monde, graine, budget, seuil, marge ou
+règle de promotion.
+
+### C1 — B2 pour la non-infériorité AR-H2
+
+Pour AR-H2, B2 est violée uniquement si la porte relative passe alors que la différence
+absolue appariée `adaptive − uniform_50` montre une perte significative: moyenne `> 0`
+**et** borne BCa 95 % basse `> 0`. Un simple désaccord de signe autour de zéro ne viole
+pas B2. La moyenne, l'IC BCa et les signes de cette différence absolue restent
+obligatoirement rapportés.
+
+### C2 — ordre d'agrégation et source exclusive du suivi
+
+Pour AR-H3a, l'agrégat par graine est la moyenne des six erreurs de bin sur la banque
+finale F; `gain_F` est calculé sur ces agrégats. Le critère « 5/6 bins favorables »
+utilise la réduction relative par bin moyennée sur les 16 graines. Le plafond « aucun
+bin pire de plus de 0,05 relatif » s'entend en moyenne inter-graines.
+
+Dans la formule adaptative, `e_t`, `e_acquisition` et `e_session_start_current`
+proviennent exclusivement de la banque de suivi. La banque finale de décision ne peut
+jamais fournir directement ou indirectement une valeur à `d_old`, `d_current`, `q` ou
+`rho`.
+
+### C3 — assertions smoke d'équité et de composition
+
+Le smoke 11991 doit en plus asserter:
+
+1. chaque batch d'`adaptive_replay` contient exactement `256×rho` anciennes paires et
+   `256×(1−rho)` courantes;
+2. chaque `rho` est recomputable hors ligne au chiffre près depuis les `d_old` et
+   `d_current` consignés;
+3. les trois conditions exécutent le même nombre d'évaluations de suivi, aux mêmes pas,
+   sur des banques de même taille.
+
+Ces assertions portent sur l'exécution effective, pas seulement sur les constantes du
+manifeste.
+
+### C4 — fraction télévision invariante à rho
+
+La fraction effective de replay télévision est la part des **paires rejouées** dont
+l'angle cible appartient à `[130°,170°]`. Son dénominateur contient uniquement les
+paires anciennes effectivement rejouées, de sorte que la mesure est invariante à
+`rho`. Les blocs où `rho=0` sont exclus du dénominateur. Si une session entière a
+`rho=0`, la garde TV y est vide et la garde d'activation statue; aucune valeur zéro
+artificielle n'est imputée.
+
+## Précisions de traçabilité pré-calcul
+
+- La graine `2026072001` est passée explicitement à chaque IC BCa; les tests à n=16
+  utilisent l'énumération exacte, jamais Monte Carlo.
+- Le temps mural par run est consigné dès le smoke, sans créer de seuil supplémentaire.
+- Une éventuelle promotion établira seulement que **ce calendrier** résout le compromis;
+  elle ne revendiquera pas que l'adaptativité est nécessaire face à une fraction
+  statique basse non testée. Une telle ablation exigerait un pré-enregistrement neuf.
+- Le rapport décrira sans réinterprétation la dynamique attendue: `rho=0` en début de
+  session, puis saturation potentiellement rapide vers 0,5 une fois le domaine courant
+  acquis.
+- Chaque évaluation de suivi par bloc et condition possède un digest consigné, afin de
+  rendre la parité d'information auditable comme B3.
