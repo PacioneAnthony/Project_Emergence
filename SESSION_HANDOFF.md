@@ -1,19 +1,46 @@
 # Émergence - Handoff de session
 
-Date: 2026-06-12
+Date: 2026-07-20
 
 ## Instruction de reprise impérative
 
-Une nouvelle session Codex doit lire `PILOTAGE.md`, ce fichier, `ANTHONY_INBOX.md` et `COLLABORATION_PROTOCOL.md`. Si ANT-007 contient un chemin de session, elle analyse immédiatement les artefacts. Sinon, elle indique brièvement que l'essai physique du runbook reste l'action attendue d'Anthony, sans réinventer le plan.
+Une nouvelle session Codex doit lire `PILOTAGE.md`, ce fichier,
+`DEVELOPMENTAL_ARCHITECTURE.md`, `CODEX_TASK_BRIEF.md` et
+`docs/research/tv_real_jepa_001_preregistration.md`. Si
+`docs/research/tv_real_jepa_001_review.md` existe, elle intègre immédiatement la revue
+avant tout calcul réservé. Sinon, elle maintient la porte de revue décrite dans
+`CLAUDE_REVIEW_REQUEST.md`; elle ne lance ni la calibration 9201..9203 ni la campagne
+9301..9312.
 
 Anthony a délégué les choix logiciels et architecturaux à Codex, avec revue Claude aux portes importantes. Codex ne doit donc pas demander à Anthony de choisir comment pré-enregistrer J0, quelle architecture logicielle employer ou quelle baseline implémenter. Si le travail est réalisable dans le dépôt, il doit l'exécuter plutôt que s'arrêter à une explication.
 
 ## Objectif actif
 
-Valider physiquement l'instrumentation J0 par une session courte avant d'autoriser la session de 30 minutes.
+Faire passer la revue contradictoire pré-campagne TV-001, puis mesurer le bruit de
+l'erreur JEPA tenue à part et exécuter le test apparié `regional_lp_gain` contre
+babbling avec un apprenant réel dans un monde comportant une télévision inapprenable.
+Le chemin physique J0/J1 reste suspendu sous D-008.
 
 ## État valide
 
+- Le brief `CODEX_TASK_BRIEF.md` vaut arbitrage d'Anthony en faveur de la promotion de
+  `regional_lp_gain` vers le substrat visuel réel; l'ancien arbitrage affiché après
+  DC-005 est clos.
+- TV-001 est gelé dans `docs/research/tv_real_jepa_001_preregistration.md`, écrit avant
+  implémentation et avant ouverture des graines réservées.
+- L'implémentation additive se trouve dans `learning/tv_exploration.py`: télévision à
+  bruit RGB indépendant, contexte dérivé des pixels, banque d'ancres externe équilibrée,
+  erreur bornée `pred/(pred+copy)`, calibration nulle et ordonnanceur régional à gains
+  signés agrégés avant clip.
+- `scripts/research/run_tv_real_jepa.py` orchestre calibration, 12 paires de campagne,
+  statistiques via `learning/paired_stats.py`, reprise par run et keep-awake. Il refuse
+  la campagne sans `--review-accepted`.
+- `tests/test_tv_exploration.py` couvre le monde, l'absence d'oracle explicite, le clip
+  après agrégation et la règle de calibration. Suite complète: 169 tests réussis.
+- Le smoke test GPU/MuJoCo hors protocole (graine 9991) a réussi: banque d'ancres,
+  160 images, deux cycles collecte–entraînement–mesure et checkpoint. Il n'a ouvert
+  aucune graine de calibration ou de campagne.
+- `CLAUDE_REVIEW_REQUEST.md` est prêt. La calibration et la campagne n'ont pas démarré.
 - La navigation 2D est conservée comme branche historique, plus comme objectif principal.
 - `DEVELOPMENTAL_ARCHITECTURE.md` définit la vision développementale.
 - `DEVELOPMENTAL_ARCHITECTURE_REVIEW.md` recommande de simplifier avant implémentation.
@@ -25,7 +52,7 @@ Valider physiquement l'instrumentation J0 par une session courte avant d'autoris
 - L'IMU est sur la tête mobile; le microphone initial est celui de la BRIO 100; la plage servo initiale est 10 à 170 degrés.
 - Le quota de données initial est de 200 Go, sans suppression silencieuse ni durée fixe de rétention.
 - Deux à trois autres personnes peuvent participer occasionnellement aux futurs tests de familiarité.
-- J0 est le prochain jalon bloquant.
+- J0 reste spécifié mais n'est plus le jalon opérationnel bloquant sous D-008.
 - `J0_PROTOCOL.md` pré-enregistre les hypothèses, formats, seuils et stop-loss de J0.
 - Le paquet `j0/` implémente protocole EMG1, événements, recorder append-only, replay, qualité, synchronisation et capture multimodale.
 - `peripheral/brain_stem/brain_stem.ino` compile pour Arduino Mega et publie IMU 100 Hz, ultrason/piézo 20 Hz, état servo et réponses de synchronisation.
@@ -48,36 +75,44 @@ Valider physiquement l'instrumentation J0 par une session courte avant d'autoris
 
 1. `PILOTAGE.md`
 2. `SESSION_HANDOFF.md`
-3. `ANTHONY_INBOX.md`
-4. `COLLABORATION_PROTOCOL.md`
-5. `DEVELOPMENTAL_ARCHITECTURE_REVIEW.md`
-6. `DEVELOPMENTAL_ARCHITECTURE.md`
-7. `DECISIONS.md`
-8. `peripheral/brain_stem/brain_stem.ino`
-9. `BENCH_DESIGN.md`
+3. `DEVELOPMENTAL_ARCHITECTURE.md`
+4. `CODEX_TASK_BRIEF.md`
+5. `docs/research/tv_real_jepa_001_preregistration.md`
+6. `CLAUDE_REVIEW_REQUEST.md`
+7. `docs/research/tv_real_jepa_001_review.md`, s'il existe
+8. `COLLABORATION_PROTOCOL.md`
+9. `DECISIONS.md`
 
 ## Informations et actions attendues d'Anthony
 
-- ANT-009: terminer avec Claude les mesures, la modélisation, l'impression et l'assemblage du banc v1.0 décrit dans `BENCH_DESIGN.md`.
-- ANT-008: valider, remplacer ou différer l'achat du kit AS5600 décrit dans `HARDWARE_PURCHASES.md`.
+- Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et remettre sa
+  réponse dans `docs/research/tv_real_jepa_001_review.md`.
+- Aucune manipulation, observation, commande d'achat ou décision d'implémentation.
+- ANT-008/ANT-009 et tout travail physique restent différés sous D-008.
 
 ## Prochaine action Codex
 
-Lorsque Anthony signale que le banc v1.0 est prêt, Codex doit:
+Lorsque la revue TV-001 est déposée, Codex doit:
 
-- relire les écarts apportés à `BENCH_DESIGN.md` et mettre à jour les paramètres mécaniques;
-- faire flasher le firmware patch 2 passif;
-- exécuter une qualification courte 90/80/100/90 et produire `quality`, `clap-sync`, `replay` et `mechanics`;
-- exiger un ratio de stabilisation inférieur ou égal à 3,0, sans jeu ni tremblement persistant observé;
-- autoriser ensuite la session J0 de 30 minutes, estimée à environ 2 Go au débit actuel;
-- intégrer ANT-008 et préparer le support AS5600 pour J1a.
+- auditer et intégrer chaque correction bloquante avant calcul, avec amendement daté si
+  la validité impose une modification du pré-enregistrement;
+- si le verdict autorise l'exécution, lancer
+  `.venv\Scripts\python -m scripts.research.run_tv_real_jepa --review-accepted --device cuda`;
+- laisser le runner arrêter automatiquement la suite si la calibration gelée échoue;
+- si elle passe, suivre les 24 runs résumables, analyser `summary.json`/`summary.md` selon
+  TV-H1, TV-H2 et les garde-fous, puis préparer la revue de résultats à la porte de
+  promotion;
+- n'enchaîner sur l'étape 2/J6 qu'après consignation complète de TV-001.
 
 ## Actions par acteur
 
-Action Codex: logiciel J0 court, firmware passif et métrique mécanique prêts; attendre le nouveau banc avant toute commande moteur.  
-Action Anthony: poursuivre avec Claude le banc v1.0 et signaler lorsqu'il est assemblé; arbitrer ANT-008 quand le choix AS5600 doit être commandé.  
-Action Claude: poursuivre la conception mécanique de `BENCH_DESIGN.md` avec Anthony.  
-Blocage: banc v1.0 non construit; firmware patch 2 non flashé; session J0 de 30 minutes suspendue.
+Action Codex: intégrer la revue TV-001 puis, si elle autorise, exécuter calibration et
+campagne sans modifier les portes gelées.
+Action Anthony: transmettre le prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune action
+matérielle.
+Action Claude: écrire la revue pré-campagne dans
+`docs/research/tv_real_jepa_001_review.md`.
+Blocage: revue contradictoire pré-campagne requise; aucun blocage technique ou matériel.
 
 ## Modifications de cette session
 
@@ -272,3 +307,35 @@ ou (b) cadrage d'une hypothèse nouvelle; aucune campagne avant gel et revue.
 Action Anthony: arbitrer entre (a) et (b) (voir PILOTAGE.md, tableau de situation).
 Action Claude: revue contradictoire du pré-enregistrement retenu avant exécution.
 Blocage: arbitrage humain requis sur la direction; aucun blocage technique.
+
+## Addendum 2026-07-20 — préparation TV-001 avec apprenant réel
+
+Le brief de réorientation a clos l'arbitrage post-DC-005 en faveur de
+`regional_lp_gain`. Codex a exécuté tout le travail local autorisé avant la porte de
+revue:
+
+- pré-enregistrement `docs/research/tv_real_jepa_001_preregistration.md`: graines de
+  calibration 9201..9203, campagne appariée 9301..9312, budgets, métriques, tests exacts,
+  marges, garde-fous et règles de promotion/arrêt gelés avant implémentation;
+- `learning/tv_exploration.py`: monde télévision, contexte uniquement pixel, ancres
+  externes jamais entraînées, calibration empirique du bruit, agrégation signée et
+  boucle collecte/JEPA/mesure;
+- `scripts/research/run_tv_real_jepa.py`: keep-awake, reprise au niveau des runs,
+  alternance de l'ordre des conditions par paire, refus de campagne avant revue,
+  analyse par `learning/paired_stats.py` et génération des résumés;
+- `tests/test_tv_exploration.py`: 10 tests nouveaux; suite complète `169 passed`;
+- smoke GPU/MuJoCo graine 9991 réussi en 11,8 s, sans graine réservée;
+- dossier `CLAUDE_REVIEW_REQUEST.md` préparé avec question unique, fichiers bornés,
+  points d'audit et prompt exact.
+
+Aucun processus n'est en cours. Aucun calcul n'a été lancé sur 9201..9203 ou
+9301..9312. Les artefacts smoke sous `data/raw/tv_real_jepa_smoke/`,
+`data/processed/experiments/tv_real_jepa_smoke/` et `models/tv001_*9991.pth` sont des
+artefacts locaux ignorés par Git et ne participent à aucune décision.
+
+Action Codex: après dépôt de la revue, intégrer les corrections bloquantes puis lancer
+le runner autorisé; si la calibration échoue, appliquer l'arrêt gelé.
+Action Anthony: transmettre le prompt de `CLAUDE_REVIEW_REQUEST.md`; aucune action
+matérielle.
+Action Claude: auditer TV-001 et écrire `docs/research/tv_real_jepa_001_review.md`.
+Blocage: porte de revue pré-campagne, volontaire et réelle; aucun autre blocage.

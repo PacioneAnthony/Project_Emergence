@@ -8,24 +8,20 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | Arbitrage d'Anthony après DC-005: `regional_lp_gain` promu ordonnanceur de référence |
-| État logiciel | DC-003R validée, DC-004 rejetée (bruit d'ancre), DC-005 rejetée (le correctif agréger-puis-clipper ne régresse pas mais ne rattrape ni babbling ni le contrôle sous bruit): arrêt pré-enregistré de la famille à gain fractionnel; `regional_lp_gain` seul robuste sur les trois campagnes durcies |
-| Responsable de l'action courante | Anthony pour l'arbitrage de la suite; Codex/Claude préparent le pré-enregistrement correspondant |
-| Action attendue d'Anthony maintenant | Arbitrer: (a) promouvoir `regional_lp_gain` vers la conception de la simulation visuelle via un pré-enregistrement dédié, ou (b) exiger une hypothèse nouvelle avant tout ordonnanceur développemental |
-| Action attendue de Claude maintenant | Revue contradictoire du prochain pré-enregistrement, quel que soit l'arbitrage |
-| Blocage actuel | Arbitrage humain requis: la décision DC-005 clôt la famille en cours, la direction suivante est un choix de priorités |
+| Jalon actif | TV-001, étape 1 du brief: test de la télévision avec JEPA réel et `regional_lp_gain` |
+| État logiciel | Pré-enregistrement gelé avant calcul; monde hétérogène, ancres tenues à part, calibration du bruit, ordonnanceur régional, analyse appariée et runner résumable implémentés; 169 tests passent et le smoke GPU/MuJoCo hors protocole réussit |
+| Responsable de l'action courante | Claude pour la revue contradictoire pré-campagne; Anthony transmet le dossier préparé |
+| Action attendue d'Anthony maintenant | Transmettre à Claude le prompt exact de `CLAUDE_REVIEW_REQUEST.md`; aucune manipulation, aucun achat, aucun flash |
+| Action attendue de Claude maintenant | Auditer le protocole et le code TV-001, puis écrire `docs/research/tv_real_jepa_001_review.md` avec le verdict demandé |
+| Blocage actuel | Porte de protocole: calibration `9201..9203` et campagne `9301..9312` interdites avant la revue; aucun blocage technique ou matériel |
 
 ## Prochaine action exacte
 
-**Prochaine action (Anthony):** arbitrer la suite après l'arrêt pré-enregistré de la
-famille à gain fractionnel (DC-005). Les faits pour trancher: la mesure
-interventionnelle avant/après est validée et robuste; `regional_lp_gain` (LP régional
-fenêtré nourri de cette mesure) est le seul ordonnanceur stable sous bruit d'ancre sur
-DC-004 et DC-005 (`0.109` à σ=0.05 contre `0.115` babbling et `0.142` pour la meilleure
-variante développementale); la machinerie développementale continue n'a pas démontré de
-valeur ajoutée. Les deux options sont détaillées dans le tableau ci-dessus; dans les
-deux cas, le protocole suivant est pré-enregistré et passe par une revue contradictoire
-Claude avant exécution.
+**Prochaine action:** Anthony transmet à Claude le prompt préparé dans
+`CLAUDE_REVIEW_REQUEST.md`. Après un verdict favorable, Codex intègre les éventuelles
+corrections bloquantes sans ouvrir les graines, exécute la calibration gelée, puis lance
+la campagne appariée si la calibration passe. Le runner refuse les graines de campagne
+sans confirmation explicite de cette revue.
 
 **Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
 sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au
@@ -33,12 +29,22 @@ matériel existant.
 
 ## Ce qu'Anthony doit demander
 
-Pour faire avancer normalement le projet dans une nouvelle conversation Codex, ce message suffit:
+Pour effectuer la porte actuelle, transmettre à Claude:
 
 ```text
-Continue le projet Emergence. Lis PILOTAGE.md et SESSION_HANDOFF.md, puis exécute
-la prochaine action Codex jusqu'au prochain besoin réel d'intervention matérielle
-ou de validation d'achat. Mets à jour les documents de reprise avant de terminer.
+Tu effectues la revue contradictoire pré-campagne demandée dans
+CLAUDE_REVIEW_REQUEST.md. Lis les fichiers qui y sont indiqués, cherche en priorité les
+fuites d'information, asymétries de budget, problèmes de mesure du progrès et écarts
+protocole/code. Écris ton verdict et tes corrections éventuelles dans
+docs/research/tv_real_jepa_001_review.md. Ne lance aucun calcul et ne modifie aucun autre
+fichier.
+```
+
+Après dépôt de la revue, pour reprendre avec Codex:
+
+```text
+Continue le projet Emergence. Intègre la revue TV-001, puis exécute la calibration et la
+campagne autorisées selon le pré-enregistrement. Mets à jour les documents de reprise.
 ```
 
 Une version encore plus courte est acceptable:
