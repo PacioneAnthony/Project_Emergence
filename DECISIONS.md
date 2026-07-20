@@ -167,3 +167,60 @@ sur la non-promotion et indécise sur la cause; cette cause ne conditionne ni le
 baselines ni les métriques J6 puisque les trois conditions collectent par babbling.
 La sonde encodeur gelé/plastique reste dormante. Codex gèle J6-R001 avant implémentation
 et soumet son pré-enregistrement à revue contradictoire.
+
+## D-010 - Non-promotion des ordonnanceurs de consolidation J6-R001
+
+Date: 2026-07-20
+Décision: ne promouvoir ni `uniform_replay` ni `error_prioritized_replay` après J6-R001;
+geler les mondes A/B/C, les graines 10301..10312, les seuils et les artefacts, sans
+retuning post hoc.
+Statut: acceptée par application des règles pré-enregistrées sous D-004; revue Claude
+des résultats: **AUTORISER**, aucune correction bloquante et aucune promotion.
+Motif: le replay uniforme démontre une valeur de rétention réelle sur B, où la garde
+d'oubli passe (réduction relative `0,1506`, `6/6` bins, p Holm `0,000488`), mais H3
+échoue. À ratio 50/50 et calcul fixe, uniform et priorisé dégradent le pire bin courant
+C de `14,25 %` et `13,47 %`, au-dessus de la limite régionale de `10 %`; leur
+non-infériorité face à naïf n'est pas établie après Holm. A est non interprétable sous
+B1, pas un rejet du replay. H2 ne démontre aucune valeur ajoutée de la priorité et la
+garde TV confirme que le piège TV-001 ne s'est pas reproduit.
+Données utilisées: `docs/research/j6_replay_001_results.md`,
+`docs/research/j6_replay_001_analysis.json`, 36 runs appariés 10301..10312 et
+`docs/research/j6_replay_001_results_review.md`.
+Baseline: adaptation naïve; uniform 50/50 comme référence de rétention; priorité par
+erreur comme mécanisme candidat.
+Avis Codex: non-promotion obligatoire; le blocage décisif est la plasticité H3, non
+l'absence de valeur de la mémoire.
+Avis Claude: campagne intègre, calculs concordants, verdict AUTORISER et aucune
+promotion.
+Arbitrage Anthony: aucun arbitrage technique demandé; D-004 s'applique.
+Conséquences: toute reprise utilise une hypothèse, un pré-enregistrement, des mondes et
+des graines nouveaux. Les résultats J6-R001 restent des historiques probants.
+Condition de réouverture: aucune pour J6-R001. Seule une nouvelle campagne indépendante
+peut tester un autre compromis rétention/plasticité.
+
+## D-011 - Résoudre le compromis rétention/plasticité avant la réafférence
+
+Date: 2026-07-20
+Décision: poursuivre l'option A avec J6-AR001, une nouvelle campagne sur mondes D/E/F et
+graines vierges, avant de passer à l'étape 3 de réafférence. Le candidat est un replay
+uniforme à fraction adaptative, commandé par une banque de suivi séparée; il est comparé
+à naïf et au replay uniforme 50/50 exact.
+Statut: pré-enregistrement soumis à revue contradictoire avant implémentation ou calcul.
+Motif: J6-R001 a déjà établi que la répétition protège un acquis qui s'oublie et que le
+coût décisif est H3. Résoudre ce compromis directement est une progression plus
+informatrice que changer de question maintenant. Le mécanisme reste minimal: il ne
+priorise aucun épisode et ne reçoit aucune information refusée aux baselines.
+Données utilisées: acquis gelés de D-010 et recommandations de
+`docs/research/j6_replay_001_results_review.md`.
+Baseline: adaptation naïve et uniform 50/50, mêmes corpus, modèles, banques de suivi,
+évaluations et nombre de gradients.
+Avis Codex: option A recommandée; elle teste le problème exact exposé par H3 sans
+ressusciter la priorité par erreur rejetée ni la famille motivationnelle fractionnelle.
+Avis Claude: à obtenir sur le pré-enregistrement J6-AR001 avant toute implémentation.
+Arbitrage Anthony: non requis; choix technique sous D-004, sans changement de l'objectif
+général.
+Conséquences: l'étape 3 reste la suite par défaut après clôture de J6-AR001, quel que
+soit son verdict, sauf nouvelle preuve exigeant une réplication de consolidation.
+Condition de réouverture: revue préalable défavorable, impossibilité de garantir
+l'absence de fuite entre suivi et décision, ou campagne non interprétable sur les deux
+domaines anciens.

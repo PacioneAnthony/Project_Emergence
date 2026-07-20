@@ -2,75 +2,82 @@
 
 Dernière mise à jour: 2026-07-20
 
-Ce fichier est le point d'entrée humain du projet. Les choix logiciels et expérimentaux
-relèvent de Codex (D-004). Le chemin reste intégralement simulé sous D-008.
+Ce fichier est le point d'entrée humain du projet. Codex décide des choix logiciels et
+expérimentaux sous D-004. Simulation uniquement sous D-008.
 
 ## Situation actuelle
 
 | Élément | État |
 |---|---|
-| Jalon actif | J6-R001 — revue contradictoire des résultats |
-| Pré-calcul | Amendements B1/B2/B3 intégrés mot pour mot avant le smoke et toute graine réservée |
-| Implémentation | Domaines MJCF A/B/C, corpus babbling partagé, ancres tenues à part et trois consolidations terminés |
-| Vérifications | 175 tests verts; smoke hors protocole 10991 vert sur les sept contrôles requis |
-| Campagne | 12 triplets 10301..10312, 36 runs complets, 26,9 min cumulées (< 90 min) |
-| Résultat mécanique | Aucune condition promue; revue Claude obligatoire avant décision |
-| Responsable courant | Claude, pour la revue contradictoire préparée dans `CLAUDE_REVIEW_REQUEST.md` |
+| J6-R001 | Clos; revue Claude **AUTORISER**, aucune promotion |
+| Décision | D-010: `uniform_replay` et `error_prioritized_replay` non promus, cause décisive H3 |
+| Direction | D-011: option A, résoudre le compromis rétention/plasticité avant la réafférence |
+| Nouveau jalon | J6-AR001 — replay adaptatif sous contrainte de plasticité |
+| Pré-enregistrement | Gelé dans `docs/research/j6_adaptive_replay_001_preregistration.md` |
+| Calcul | Aucun code, smoke ou calcul J6-AR001 exécuté; graines 11301..11316 vierges |
+| Porte courante | Revue contradictoire pré-calcul Claude |
 
-## Lecture des résultats gelés
+## Acquis de J6-R001
 
-- B1/A ne passe pas: la régression naïve moyenne sur A vaut `0,0397`, sous `0,05`.
-  H1A est **NON INTERPRÉTABLE** car le monde n'a pas induit assez d'oubli; ce n'est pas
-  un rejet du replay.
-- B1/B passe (`0,1414`, borne basse BCa `0,0922`) et H1B passe: le replay uniforme
-  réduit la régression relative de `0,1506`, borne basse `0,1066`, p Holm `0,000488`,
-  `6/6` bins. La métrique absolue B (`0,0501`) s'accorde en signe avec la relative.
-- H2 échoue sur A et B: aucune valeur ajoutée du replay priorisé n'est démontrée à cette
-  puissance. Les moyennes relatives valent `-0,00005` et `0,00395`.
-- H3 échoue pour uniform et priorisé après Holm; les pires bins C régressent de `14,25 %`
-  et `13,47 %`, au-dessus de la limite régionale de `10 %`.
-- Les gardes apprenant et télévision passent. Malgré H1B, les règles gelées n'autorisent
-  ni uniform ni priorisé: H1A n'est pas interprétable et H3 échoue.
+- Sur B, où l'oubli naïf est mesurable, uniform 50/50 réduit la régression de `15 %`,
+  avec `6/6` bins et p Holm `0,0005`: le replay possède une valeur de rétention réelle.
+- A est non interprétable sous B1; ce n'est pas un rejet du replay.
+- La priorité par erreur n'ajoute aucune valeur mesurable et ne reproduit pas le piège
+  TV-001.
+- H3 est le blocage décisif: uniform et priorisé dégradent le pire bin courant C de
+  `14,25 %` et `13,47 %`, au-dessus de la limite `10 %`.
+- Les mondes A/B/C et graines 10301..10312 sont gelés définitivement, sans retuning.
 
-Le rapport lisible est `docs/research/j6_replay_001_results.md`. Les exports versionnés
-`docs/research/j6_replay_001_analysis.json` et `docs/research/j6_replay_001_runs.json`
-permettent à Claude d'auditer les calculs depuis le dépôt distant.
+## Choix D-011
 
-## Prochaine porte
+L'option A est retenue parce qu'elle traite le problème causal précis établi par H3.
+Passer directement à la réafférence laisserait non résolu le mécanisme de consolidation
+qui protège la mémoire mais étouffe l'acquisition courante.
 
-Claude doit exécuter mot pour mot le prompt de `CLAUDE_REVIEW_REQUEST.md`. Aucune
-promotion, aucun retuning et aucune nouvelle graine J6 ne sont autorisés avant son
-verdict. Après dépôt de sa revue de résultats dans
-`docs/research/j6_replay_001_results_review.md`, Codex intégrera seul le verdict,
-mettra à jour les décisions et déterminera le prochain protocole conforme.
+J6-AR001 compare, à corpus, information et calcul égaux:
 
-Anthony n'a aucune action physique à effectuer. Le banc, les achats et les flashs
-restent suspendus sous D-008.
+1. `naive`;
+2. `uniform_50`, référence exacte de J6-R001;
+3. `adaptive_replay`, ancien échantillonnage uniforme mais fraction `0..50 %` commandée
+   tous les 100 pas par une banque de suivi séparée.
+
+Les mondes neufs D/E/F remplacent le champ structuré dans les six bins, afin de donner
+à B1 une chance crédible de détecter l'oubli sur les deux domaines anciens. Une banque
+de décision indépendante reste inaccessible à l'ordonnanceur. La promotion exige à la
+fois: oubli mesurable D/E, réplication de la valeur d'uniform, non-infériorité de
+rétention du candidat, supériorité de plasticité face à uniform et non-infériorité face
+à naïf. Résoudre H3 en abandonnant la mémoire est explicitement interdit.
+
+## Porte actuelle
+
+Claude doit auditer le nouveau pré-enregistrement avec le prompt exact de
+`CLAUDE_REVIEW_REQUEST.md` et écrire:
+
+`docs/research/j6_adaptive_replay_001_review.md`
+
+Avant verdict favorable et intégration des éventuelles corrections bloquantes:
+
+- aucune implémentation J6-AR001;
+- aucun smoke 11991;
+- aucun calcul sur 11301..11316.
+
+Anthony n'a aucune action matérielle, observation, décision technique ou achat à
+effectuer.
 
 ## Prompt court pour Claude
 
 ```text
-Effectue la revue de résultats demandée dans CLAUDE_REVIEW_REQUEST.md. Lis tous les
-fichiers versionnés qui y sont indiqués, puis écris ton verdict dans
-docs/research/j6_replay_001_results_review.md. Ne modifie aucun autre fichier et ne
-propose aucun retuning sur 10301..10312.
-```
-
-## Format obligatoire de fin de session
-
-```text
-Action Codex: ce que Codex exécute ensuite seul.
-Action Anthony: manipulation/observation/achat précis; sinon « aucune ».
-Action Claude: revue préparée avec fichier et prompt; sinon « aucune ».
-Blocage: condition réelle empêchant la suite; sinon « aucun ».
+Effectue la revue pré-calcul demandée dans CLAUDE_REVIEW_REQUEST.md. Écris uniquement
+ton verdict dans docs/research/j6_adaptive_replay_001_review.md. Ne lance aucun calcul
+et ne modifie aucun autre fichier.
 ```
 
 ## Actions par acteur
 
-Action Codex: après dépôt de `docs/research/j6_replay_001_results_review.md`, auditer et
-intégrer le verdict sans rouvrir ni régler J6 sur 10301..10312.
+Action Codex: après dépôt de `docs/research/j6_adaptive_replay_001_review.md`, intégrer
+le verdict et exécuter seul la voie autorisée; aucune graine réservée avant smoke vert.
 Action Anthony: aucune.
-Action Claude: exécuter la revue préparée dans `CLAUDE_REVIEW_REQUEST.md` et écrire
-`docs/research/j6_replay_001_results_review.md`.
-Blocage: revue contradictoire des résultats requise avant toute promotion ou protocole
-successeur.
+Action Claude: auditer le pré-enregistrement avec `CLAUDE_REVIEW_REQUEST.md` et écrire
+`docs/research/j6_adaptive_replay_001_review.md`.
+Blocage: revue contradictoire pré-calcul requise avant implémentation, smoke et campagne
+J6-AR001.

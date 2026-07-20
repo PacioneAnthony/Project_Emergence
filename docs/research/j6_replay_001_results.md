@@ -1,7 +1,7 @@
 # Résultats J6-R001 — rétention visuelle séquentielle
 
 Date: 2026-07-20. Simulation uniquement (D-008). Protocole et seuils: `j6_replay_001_preregistration.md`.
-Aucune promotion n'est effectuée avant la revue contradictoire Claude.
+Revue contradictoire close: verdict **AUTORISER**, aucune promotion.
 
 ## Intégrité
 
@@ -26,11 +26,25 @@ Après Holm, p H3 vaut `0.08203` pour uniform et `0.08765` pour priorisé; leurs
 Garde apprenant: **PASS**. Garde TV B/C: **PASS**.
 Excès moyen de replay TV priorisé face à uniform: B `0.001` point, C `-0.104` point (limite +5 points). Temps cumulé enregistré: 26,9 minutes, sous le plafond de 90 minutes.
 
-## Décision mécanique, suspendue à la revue
+## Décision mécanique finale
 
 - Replay uniforme admissible selon les portes: `False`.
 - Replay priorisé admissible selon les portes: `False`.
-- Statut: promotion suspendue; revue de résultats Claude requise.
+- Statut: revue close; aucune promotion, décision consignée par D-010.
+
+## Lecture confirmée par la revue contradictoire
+
+La revue `j6_replay_001_results_review.md` a rendu **AUTORISER** sans correction
+bloquante. Le blocage décisif de `uniform_replay` est H3: sa valeur de rétention sur B
+est réelle, mais le ratio 50/50 coûte trop de plasticité courante. La non-interprétabilité
+de A n'est pas un rejet du replay.
+
+La priorité par erreur n'a apporté aucune valeur mesurable, mais le piège TV-001 ne
+s'est pas reproduit: sa fraction effective de replay TV est pratiquement égale à celle
+d'uniform. Les excès sont exprimés en points de pourcentage: environ `+0,001 point` en B
+et `−0,104 point` en C, très sous la garde `+5 points`.
+
+Décision finale: **aucune promotion**, consignée par D-010.
 
 ## Résultats complets audités
 
