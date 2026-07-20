@@ -204,3 +204,41 @@ Phase B livrée le 2026-07-16: jumeau numérique de la tête du banc v1.0 (`sim3
 - corpus visuel caméra + index CSV pour un futur JEPA visuel (`bench_head_sim corpus`);
 - constat transférable au banc réel: la plage gyro MPU par défaut ±250 dps sature pendant les panoramiques ~600°/s; prévoir ±1000 dps dans le firmware ou limiter la vitesse de consigne (la qualification J0 à pas de ±10-20° n'est pas affectée);
 - suite de tests: 98 verts dans `.venv` (`tests/test_bench_sim.py` inclus, skip propre sans MuJoCo).
+
+## Addendum 2026-07-20 - DC-003R et DC-004 (session Claude Code avec Anthony)
+
+Après la revue contradictoire de DC-003 (`docs/research/dc003_statistical_review.md`),
+la session a exécuté les deux campagnes qu'elle prescrivait, chacune gelée par
+pré-enregistrement avant implémentation:
+
+- **DC-003R VALIDÉE INTÉGRALEMENT** (`dc003r_preregistration.md`, graines vierges
+  6301..6320): R-H1 20/20 face aux deux baselines (permutation exacte p `9.5e-07`,
+  Holm, IC BCa positifs), non-infériorité face à regional_lp dans la marge gelée,
+  bruit `4.97%`, signatures `20/20`, couverture et stabilité passées. Nouveau module
+  `learning/paired_stats.py` (permutation exacte par signes, BCa, Holm,
+  non-infériorité, Monte-Carlo) testé sur cas de référence; runner
+  `scripts/research/run_fractional_replication.py`.
+- **DC-004 REJETÉE** (`dc004_preregistration.md`, 40 mondes 7301..7340, 20 permutés,
+  ancres bruitées): à σ=0.05 l'ordonnanceur fractionnel s'effondre (erreur `0.386`
+  contre `0.121` babbling, 0/40 signes); biais du clip confirmé (gain fantôme croissant
+  avec σ); géométrie permutée seule indolore (0.1065 à σ=0); contrôle informationnel
+  `regional_lp_gain` quasi immunisé (`0.1105`). Banc durci dans
+  `learning/hardened_curiosity_benchmark.py` + `scripts/research/run_hardened_curiosity.py`.
+- Suite de tests: 155 verts. Artefacts sous
+  `data/processed/experiments/developmental_curiosity_003R/` et `_004/`.
+
+Lecture d'ensemble, conforme à la prédiction de la revue: la **mesure interventionnelle
+avant/après est validée** (regional_lp_gain l'exploite robustement), l'**ordonnanceur à
+gain fractionnel ne survit pas au bruit d'évaluation** — le clip `max(gain, 0)` et le
+gain instantané non moyenné sont les suspects gelés. La décision pré-enregistrée
+interdit la simulation visuelle tant qu'un ordonnanceur n'a pas passé des ancres
+bruitées.
+
+Action Codex: conduire la revue de conception de l'ordonnanceur (clip, normalisation,
+moyennage fenêtré du gain), proposer une variante et son pré-enregistrement sur graines
+vierges; aucune campagne avant gel.
+Action Anthony: aucune action matérielle (D-008); arbitrer si la revue de conception
+propose plusieurs pistes.
+Action Claude: revue contradictoire du prochain pré-enregistrement avant exécution.
+Blocage: aucun blocage technique; blocage de protocole sur la simulation visuelle tant
+que la robustesse au bruit d'ancre n'est pas démontrée.

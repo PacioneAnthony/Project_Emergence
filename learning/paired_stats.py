@@ -63,6 +63,36 @@ def noninferiority_sign_flip_pvalue(diffs, margin: float) -> float:
     return exact_sign_flip_pvalue(d, alternative="less")
 
 
+def monte_carlo_sign_flip_pvalue(diffs, alternative: str = "greater", n_resamples: int = 200_000, seed: int = 0) -> float:
+    """Monte Carlo sign-flip p-value for n too large for exact enumeration.
+
+    Uses the add-one estimator (1 + hits) / (1 + n_resamples), which never
+    returns zero and is valid because the identity assignment belongs to the
+    null distribution.
+    """
+    d = np.asarray(diffs, dtype=float)
+    if d.size == 0:
+        raise ValueError("empty differences")
+    rng = np.random.default_rng(seed)
+    observed = d.mean()
+    tol = 1e-12 * max(1.0, float(np.abs(d).max(initial=0.0)))
+    signs = rng.integers(0, 2, size=(n_resamples, d.size)) * 2.0 - 1.0
+    means = signs @ d / d.size
+    if alternative == "greater":
+        hits = int(np.sum(means >= observed - tol))
+    elif alternative == "less":
+        hits = int(np.sum(means <= observed + tol))
+    else:
+        raise ValueError(f"unknown alternative: {alternative}")
+    return (1 + hits) / (1 + n_resamples)
+
+
+def monte_carlo_noninferiority_pvalue(diffs, margin: float, n_resamples: int = 200_000, seed: int = 0) -> float:
+    """Monte Carlo counterpart of noninferiority_sign_flip_pvalue."""
+    d = np.asarray(diffs, dtype=float) - float(margin)
+    return monte_carlo_sign_flip_pvalue(d, "less", n_resamples, seed)
+
+
 def bca_bootstrap_ci(values, statistic=np.mean, n_boot: int = 10_000, seed: int = 0, alpha: float = 0.05) -> tuple[float, float]:
     """Bias-corrected and accelerated bootstrap CI for statistic(values)."""
     x = np.asarray(values, dtype=float)

@@ -1,9 +1,32 @@
-# Pré-enregistrement DC-004 — durcissement du gain fractionnel (BROUILLON CONDITIONNEL)
+# Pré-enregistrement DC-004 — durcissement du gain fractionnel
 
-Statut: brouillon rédigé le 2026-07-20, avant exécution de DC-003R. Ce document ne
-devient un gel effectif que si DC-003R promeut (toutes portes passées); la date de gel
-sera alors ajoutée ici avant toute exécution DC-004. Si DC-003R ne promeut pas, ce
-document reste caduc. Découle de la section E de `dc003_statistical_review.md`.
+Statut: brouillon rédigé le 2026-07-20 avant exécution de DC-003R; **gelé le 2026-07-20
+après la promotion DC-003R (toutes portes passées) et avant toute implémentation ou
+exécution DC-004**. Découle de la section E de `dc003_statistical_review.md`. Aucun
+seuil ne peut être modifié après observation des résultats.
+
+Précision de gel (avant exécution): avec 40 mondes, l'énumération exacte 2⁴⁰ est
+impossible. Les tests appariés sur les 40 mondes utilisent la permutation par signes
+Monte-Carlo: 200 000 tirages, graine 20260721, estimateur add-one
+`(1 + succès) / (1 + tirages)`. Le test D4-H3, restreint aux 20 mondes permutés, reste
+en énumération exacte 2²⁰. Le bruit d'ancre s'applique à toutes les valeurs d'ancre
+visibles des politiques (before/after pour fractional et regional_lp_gain, after pour
+regional_lp); les métriques oracle restent calculées sans bruit.
+
+Amendements d'implémentation (2026-07-20, consignés avant toute exécution de campagne,
+découverts par les tests unitaires, aucun résultat DC-004 observé):
+
+1. **Troncature à zéro des ancres bruitées**: l'algorithme gelé rejette les erreurs
+   d'ancre négatives (contrainte de domaine de
+   `FractionalInterventionalCuriosity.observe`). Les valeurs bruitées sont donc
+   `max(valeur + σ·ξ, 0)`, identiquement pour toutes les politiques consommant des
+   ancres. La troncature ne concerne en pratique que la zone base (erreurs ~0.04-0.24).
+2. **Fuite structurée résiduelle dans la bande de bruit permutée**: les transitions
+   sigmoïdes (mêmes raideurs que le monde original) laissent jusqu'à ~9 % de poids
+   structuré au centre des bandes de bruit les plus étroites — le layout original
+   présente la même fuite en bordure de sa zone bruit. Le gain d'ancre en zone bruit à
+   σ = 0 est donc quasi nul et non exactement nul; le rapport de biais s'interprète
+   comme la croissance du gain clippé avec σ au-dessus de ce niveau de fuite.
 
 ## Motivation
 

@@ -15,10 +15,25 @@ from learning.paired_stats import (
     cohen_dz,
     exact_sign_flip_pvalue,
     holm_correction,
+    monte_carlo_noninferiority_pvalue,
+    monte_carlo_sign_flip_pvalue,
     noninferiority_sign_flip_pvalue,
     paired_sign_counts,
     rank_biserial,
 )
+
+
+def test_monte_carlo_matches_exact_on_small_case():
+    diffs = [0.5, 1.0, 1.5, -0.2, 0.8]
+    exact = exact_sign_flip_pvalue(diffs, "greater")
+    approx = monte_carlo_sign_flip_pvalue(diffs, "greater", n_resamples=100_000, seed=3)
+    assert approx == pytest.approx(exact, abs=0.01)
+    assert monte_carlo_noninferiority_pvalue(diffs, 0.0, 50_000, 3) == pytest.approx(
+        noninferiority_sign_flip_pvalue(diffs, 0.0), abs=0.01
+    )
+    assert monte_carlo_sign_flip_pvalue(diffs, "less", 50_000, 3) == pytest.approx(
+        exact_sign_flip_pvalue(diffs, "less"), abs=0.01
+    )
 
 
 def test_exact_pvalue_matches_hand_enumeration():

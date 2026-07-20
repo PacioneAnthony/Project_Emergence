@@ -417,3 +417,38 @@ graines vierges avec la porte appariée; les objections de construction de la re
 (oracle de gain sans bruit, géométrie monotone, contrôle informationnel absent) restent
 entières et sont l'objet exclusif de DC-004 (`dc004_preregistration.md`).
 Artefacts: `data/processed/experiments/developmental_curiosity_003R/`.
+
+## Résultats DC-004 — durcissement, 2026-07-20
+
+Pré-enregistrement gelé dans `dc004_preregistration.md` (amendements de troncature et de
+fuite consignés avant exécution). Quarante mondes 7301..7340, vingt à layout permuté
+(bruit entre base et structuré), ancres bruitées σ ∈ {0, 0.02, 0.05}, contrôle
+informationnel `regional_lp_gain`. Portes évaluées à σ = 0.05.
+
+| condition | erreur (σ=0.05) | erreur (σ=0.02) | erreur (σ=0) | bruit (σ=0.05) |
+|---|---:|---:|---:|---:|
+| fractional | `0.3859 +/- 0.2283` | `0.2579 +/- 0.1634` | `0.1069 +/- 0.0158` | `1.82%` |
+| babbling | `0.1213 +/- 0.0322` | idem | idem | `21.22%` |
+| learning progress régional | `0.1051 +/- 0.0109` | `0.1050` | `0.1054` | `12.13%` |
+| regional_lp_gain | `0.1105 +/- 0.0239` | `0.1073` | `0.1071` | `13.99%` |
+
+- **D4-H1 REJETÉE**: réduction relative `-205.94%` face au babbling à σ = 0.05, signes
+  `0/40`, p MC `1.0` — l'ordonnanceur fractionnel s'effondre sous bruit d'ancre;
+- **D4-H2 REJETÉE**: `+0.2755` d'erreur face à `regional_lp_gain` (marge `0.0055`);
+  le contrôle informationnel, lui, est quasi immunisé au bruit (`0.1105` à σ = 0.05);
+- **D4-H3 REJETÉE**: `0/20` sur les mondes permutés à σ = 0.05 — mais la décomposition
+  montre que la géométrie seule est indolore: à σ = 0, erreur `0.1065` sur les mondes
+  permutés contre `0.1073` sur les standards. **L'échec est entièrement imputable au
+  bruit d'ancre, pas à la géométrie**;
+- **Biais du clip confirmé**, tel que prédit par la revue: gain clippé moyen en zone
+  bruit `0.0102` (σ=0, niveau de fuite) → `0.0198` (σ=0.02) → `0.0279` (σ=0.05).
+
+**Décision pré-enregistrée: retour en conception, pas de simulation visuelle.** La
+lecture combinée DC-003R + DC-004 est exactement la conclusion anticipée par la revue:
+DC-003/DC-003R ont validé la **mesure interventionnelle** (l'information before/after a
+de la valeur: `regional_lp_gain` l'exploite robustement), pas l'**ordonnanceur** à gain
+fractionnel, dont le clip `max(gain, 0)` et la normalisation absolue amplifient le bruit
+d'évaluation en signal fantôme. Premiers suspects gelés pour la revue de conception: le
+clip (biais positif systématique sous bruit) et l'absence de moyennage fenêtré du gain
+(le contrôle `regional_lp_gain`, qui moyenne sur 40 observations par bin, survit).
+Artefacts: `data/processed/experiments/developmental_curiosity_004/`.

@@ -8,20 +8,22 @@ Ce fichier est le point d'entrée humain du projet. Il indique qui doit agir mai
 
 | Élément | État |
 |---|---|
-| Jalon actif | DC-004 (durcissement) après réplication DC-003R réussie |
-| État logiciel | DC-003R validée intégralement: R-H1 20/20 (p 9.5e-07, Holm, IC BCa positifs), non-infériorité vs regional_lp, bruit 4.97%, signatures 20/20 — promotion pré-enregistrée vers DC-004 |
-| Responsable de l'action courante | Session Claude du 2026-07-20 (implémentation et campagne DC-004 selon `docs/research/dc004_preregistration.md`) |
-| Action attendue d'Anthony maintenant | Aucune action matérielle (D-008); laisser les campagnes de simulation s'exécuter |
-| Action attendue de Claude maintenant | Exécuter DC-004: geler le pré-enregistrement, implémenter les nouveaux fichiers, lancer les 40 mondes |
-| Blocage actuel | Aucun |
+| Jalon actif | Revue de conception de l'ordonnanceur après rejet DC-004 |
+| État logiciel | DC-003R validée (20/20, portes appariées) puis DC-004 rejetée: l'ordonnanceur fractionnel s'effondre sous bruit d'ancre (0/40 à σ=0.05), biais du clip confirmé; la géométrie permutée seule est indolore; `regional_lp_gain` robuste |
+| Responsable de l'action courante | Codex ou Claude pour la revue de conception (clip et normalisation du gain, moyennage fenêtré); aucune campagne avant nouveau pré-enregistrement |
+| Action attendue d'Anthony maintenant | Aucune action matérielle (D-008); arbitrer la suite si la revue de conception propose plusieurs pistes |
+| Action attendue de Claude maintenant | Aucune; la décision pré-enregistrée DC-004 (retour en conception) est exécutoire |
+| Blocage actuel | Pas de simulation visuelle tant qu'un ordonnanceur n'a pas survécu à des ancres bruitées sur protocole pré-enregistré |
 
 ## Prochaine action exacte
 
-**Prochaine action:** exécuter DC-004 tel que pré-enregistré dans
-`docs/research/dc004_preregistration.md` (ancres bruitées, layout permuté, contrôle
-informationnel `regional_lp_gain`), sans toucher à l'algorithme gelé. La revue
-contradictoire DC-003 (`docs/research/dc003_statistical_review.md`) et la réplication
-DC-003R (`data/processed/experiments/developmental_curiosity_003R/`) sont terminées.
+**Prochaine action:** revue de conception de l'ordonnanceur, à partir des deux constats
+gelés de DC-004: le clip `max(gain, 0)` transforme le bruit d'évaluation en signal
+fantôme (biais mesuré croissant avec σ), et le moyennage fenêtré du gain
+(`regional_lp_gain`) est robuste là où le gain fractionnel instantané s'effondre. Toute
+nouvelle variante repart d'un pré-enregistrement neuf (graines vierges), sans retuning
+sur les mondes 7301..7340. La lecture d'ensemble: DC-003/DC-003R valident la mesure
+interventionnelle, pas l'ordonnanceur.
 
 **Anthony n'a aucune action physique à effectuer.** Le banc v1.0, le flash et les achats
 sont différés sous D-008. Les interdictions de sécurité de D-005 restent applicables au
