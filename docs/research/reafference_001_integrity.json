@@ -1,0 +1,1702 @@
+{
+  "reserved_seeds": [
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "6416674b713a3842581173852ae93f2afd774160d85f0256560dca2ffdeb4e55",
+            "learner_validation": "1f0cbbff6ed7a34e24a0460873b2d16bf5e19e634d5c0ea85ee627794401d8bd",
+            "mixed": "f0b9e2ab1a01d3c24d5bba3f2cf4f390f6ea06826bc33407a1fa24f8ab81b789",
+            "self_calibration": "5753077d4bee16b20dbedb867dc4fc2ebea7f8c0fc166525233293b5d9cec4c1",
+            "self_test": "612a0ed831d273d8a3bb131d5f687db7778e4e6fee6dfd23ef7538118206a647"
+          },
+          "batch_order_digest": "0ba8f68d0b74301be8ed4987396cc06bc24b7d57ac5e2cef8db2cff7eb234885",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "b278861d98b32a694cbefe205ecbb6fe4b09f47b9380d45346be3c968743e1aa",
+          "elapsed_seconds": 34.37906519999888,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "0d47842d8047da3f733521b6b4b143908299cc96d2490590e3c159d331027e5c",
+          "learner_relative_reduction": 0.5725026929103759,
+          "learner_validation_final": 0.4273284416800986,
+          "learner_validation_initial": 0.9996049907058477,
+          "mean_train_loss": 1.1003009330034257,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12301,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "6416674b713a3842581173852ae93f2afd774160d85f0256560dca2ffdeb4e55",
+            "learner_validation": "1f0cbbff6ed7a34e24a0460873b2d16bf5e19e634d5c0ea85ee627794401d8bd",
+            "mixed": "f0b9e2ab1a01d3c24d5bba3f2cf4f390f6ea06826bc33407a1fa24f8ab81b789",
+            "self_calibration": "5753077d4bee16b20dbedb867dc4fc2ebea7f8c0fc166525233293b5d9cec4c1",
+            "self_test": "612a0ed831d273d8a3bb131d5f687db7778e4e6fee6dfd23ef7538118206a647"
+          },
+          "batch_order_digest": "0ba8f68d0b74301be8ed4987396cc06bc24b7d57ac5e2cef8db2cff7eb234885",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "b278861d98b32a694cbefe205ecbb6fe4b09f47b9380d45346be3c968743e1aa",
+          "elapsed_seconds": 35.050044999999955,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "0d47842d8047da3f733521b6b4b143908299cc96d2490590e3c159d331027e5c",
+          "learner_relative_reduction": 0.5888647255365599,
+          "learner_validation_final": 0.4109674187299485,
+          "learner_validation_initial": 0.9995917262664685,
+          "mean_train_loss": 1.0874189890093273,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12301,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12301\\external_only.npz",
+            "sha256": "6416674b713a3842581173852ae93f2afd774160d85f0256560dca2ffdeb4e55"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12301\\learner_validation.npz",
+            "sha256": "1f0cbbff6ed7a34e24a0460873b2d16bf5e19e634d5c0ea85ee627794401d8bd"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12301\\mixed.npz",
+            "sha256": "f0b9e2ab1a01d3c24d5bba3f2cf4f390f6ea06826bc33407a1fa24f8ab81b789"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12301\\self_calibration.npz",
+            "sha256": "5753077d4bee16b20dbedb867dc4fc2ebea7f8c0fc166525233293b5d9cec4c1"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12301\\self_test.npz",
+            "sha256": "612a0ed831d273d8a3bb131d5f687db7778e4e6fee6dfd23ef7538118206a647"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12301.npz",
+          "sha256": "b278861d98b32a694cbefe205ecbb6fe4b09f47b9380d45346be3c968743e1aa"
+        },
+        "elapsed_seconds": 48.33754330000011,
+        "seed": 12301,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12301
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "654936fb9a38681e9c10b4ce83dd6bc02b2d3150f1f8288120fb199933be888b",
+            "learner_validation": "7512af9d3e3971668d1dc52c3d3b2a7b36b7e3450e93546466f9786296be5991",
+            "mixed": "e122008f8906496874a2fe9a85339098f97d832f8ed3a1cf8d08555731c59de1",
+            "self_calibration": "a705ad17df7cd75e29a15938f97b0daaf6046e92dc63254d47aac3d03a4cc1be",
+            "self_test": "c035cc1d96adb9ffb1cf5bc330520b9caf633bc9bcd2e07225bbabc00111ab8a"
+          },
+          "batch_order_digest": "8b3de03db9b1deb987f49391bb5a8961175c0ac308d62fbbc2a65f881ee3aa60",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "616335777f7dc22dfe8171d7c937008c7fe7f515c86d11ca22bdd6f83cd8601e",
+          "elapsed_seconds": 35.5140336000004,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "7720cf8ac9bd4ef7f515905f0f28abab49ac33c09782e519221b274d00d56a5d",
+          "learner_relative_reduction": 0.5682448300247426,
+          "learner_validation_final": 0.4315661065823709,
+          "learner_validation_initial": 0.9995621050863216,
+          "mean_train_loss": 1.1174354024860593,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12302,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "654936fb9a38681e9c10b4ce83dd6bc02b2d3150f1f8288120fb199933be888b",
+            "learner_validation": "7512af9d3e3971668d1dc52c3d3b2a7b36b7e3450e93546466f9786296be5991",
+            "mixed": "e122008f8906496874a2fe9a85339098f97d832f8ed3a1cf8d08555731c59de1",
+            "self_calibration": "a705ad17df7cd75e29a15938f97b0daaf6046e92dc63254d47aac3d03a4cc1be",
+            "self_test": "c035cc1d96adb9ffb1cf5bc330520b9caf633bc9bcd2e07225bbabc00111ab8a"
+          },
+          "batch_order_digest": "8b3de03db9b1deb987f49391bb5a8961175c0ac308d62fbbc2a65f881ee3aa60",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "616335777f7dc22dfe8171d7c937008c7fe7f515c86d11ca22bdd6f83cd8601e",
+          "elapsed_seconds": 35.33429609999985,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "7720cf8ac9bd4ef7f515905f0f28abab49ac33c09782e519221b274d00d56a5d",
+          "learner_relative_reduction": 0.5789020337624039,
+          "learner_validation_final": 0.4209153922274709,
+          "learner_validation_initial": 0.9995664334079871,
+          "mean_train_loss": 1.1042197408411238,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12302,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12302\\external_only.npz",
+            "sha256": "654936fb9a38681e9c10b4ce83dd6bc02b2d3150f1f8288120fb199933be888b"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12302\\learner_validation.npz",
+            "sha256": "7512af9d3e3971668d1dc52c3d3b2a7b36b7e3450e93546466f9786296be5991"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12302\\mixed.npz",
+            "sha256": "e122008f8906496874a2fe9a85339098f97d832f8ed3a1cf8d08555731c59de1"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12302\\self_calibration.npz",
+            "sha256": "a705ad17df7cd75e29a15938f97b0daaf6046e92dc63254d47aac3d03a4cc1be"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12302\\self_test.npz",
+            "sha256": "c035cc1d96adb9ffb1cf5bc330520b9caf633bc9bcd2e07225bbabc00111ab8a"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12302.npz",
+          "sha256": "616335777f7dc22dfe8171d7c937008c7fe7f515c86d11ca22bdd6f83cd8601e"
+        },
+        "elapsed_seconds": 48.33520360000148,
+        "seed": 12302,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12302
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "5d3cbfd80f73ca3d09e1dfc0e3613a295fc3ca4fd1e9e8204d63a391c501864f",
+            "learner_validation": "dfe02464ee00f8bf22fe09b451f2fd160a3b6187600a85d507a814723e88b13e",
+            "mixed": "2eee87fc9cee14431c303047434f8e054813dd0dfcc4cf79f6fca7164f09ae30",
+            "self_calibration": "3dbf9f55f1110f4c2415fbcf3025044f24b62472c31b44c0d864742867ef5dac",
+            "self_test": "fe6f5a4bb6a9b207ec8b9b41d59bc22ec8c0ed3a4de38301be4c7cf4a1b2ee0d"
+          },
+          "batch_order_digest": "afe93fb8124520a6a5798b69d3e558a89d682872dff6d78e04f20501aa390249",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "59568d701b9f9d0fe741a2a1142c25d1955e6e3cf2d28469f19cda6d0b786eef",
+          "elapsed_seconds": 35.77467390000129,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "cc6edbfbb59636c96a4544494855e665d9bd7269b65eba6b0f9fe4ee2c28aca4",
+          "learner_relative_reduction": 0.5666821296097307,
+          "learner_validation_final": 0.4330625313256557,
+          "learner_validation_initial": 0.9994107349775732,
+          "mean_train_loss": 1.2079360975159539,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12303,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "5d3cbfd80f73ca3d09e1dfc0e3613a295fc3ca4fd1e9e8204d63a391c501864f",
+            "learner_validation": "dfe02464ee00f8bf22fe09b451f2fd160a3b6187600a85d507a814723e88b13e",
+            "mixed": "2eee87fc9cee14431c303047434f8e054813dd0dfcc4cf79f6fca7164f09ae30",
+            "self_calibration": "3dbf9f55f1110f4c2415fbcf3025044f24b62472c31b44c0d864742867ef5dac",
+            "self_test": "fe6f5a4bb6a9b207ec8b9b41d59bc22ec8c0ed3a4de38301be4c7cf4a1b2ee0d"
+          },
+          "batch_order_digest": "afe93fb8124520a6a5798b69d3e558a89d682872dff6d78e04f20501aa390249",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "59568d701b9f9d0fe741a2a1142c25d1955e6e3cf2d28469f19cda6d0b786eef",
+          "elapsed_seconds": 36.09470660000079,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "cc6edbfbb59636c96a4544494855e665d9bd7269b65eba6b0f9fe4ee2c28aca4",
+          "learner_relative_reduction": 0.573725322714422,
+          "learner_validation_final": 0.4260219106217846,
+          "learner_validation_initial": 0.9994070333583901,
+          "mean_train_loss": 1.1469026086992689,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12303,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12303\\external_only.npz",
+            "sha256": "5d3cbfd80f73ca3d09e1dfc0e3613a295fc3ca4fd1e9e8204d63a391c501864f"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12303\\learner_validation.npz",
+            "sha256": "dfe02464ee00f8bf22fe09b451f2fd160a3b6187600a85d507a814723e88b13e"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12303\\mixed.npz",
+            "sha256": "2eee87fc9cee14431c303047434f8e054813dd0dfcc4cf79f6fca7164f09ae30"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12303\\self_calibration.npz",
+            "sha256": "3dbf9f55f1110f4c2415fbcf3025044f24b62472c31b44c0d864742867ef5dac"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12303\\self_test.npz",
+            "sha256": "fe6f5a4bb6a9b207ec8b9b41d59bc22ec8c0ed3a4de38301be4c7cf4a1b2ee0d"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12303.npz",
+          "sha256": "59568d701b9f9d0fe741a2a1142c25d1955e6e3cf2d28469f19cda6d0b786eef"
+        },
+        "elapsed_seconds": 48.28085550000105,
+        "seed": 12303,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12303
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "d17233ce3774cffa4f1ce610e910699a86908206e9be530c7bc6e8c1936e2c2d",
+            "learner_validation": "458adb64cbdc3f43c7ac46deadb571bf583d3a57ef84784ec278fab756d60769",
+            "mixed": "a1058f9396e68a0775a38c51b76cda30c34813db2a194a1f079232e486906753",
+            "self_calibration": "e450b8cb557907bb6251cc6acf2d4f40962cf940c030f6d3ffe2b0c4c91f4774",
+            "self_test": "a58827b837701760b8ff6fc75bd427238305b6610c15deeb3f7c1484abc60da1"
+          },
+          "batch_order_digest": "38606b99f379a9450fcd421bf15643e168cc06050d11b88f362ff8b9db4c4629",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "ec276f01f77f158a4dab88da12bfeb7b19bec844998542288e5da5591eb83467",
+          "elapsed_seconds": 36.026692499999626,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "7fcefbd6aaf503f45f56451bcc4487d560ffda1be050be5707c37a8f317cdafc",
+          "learner_relative_reduction": 0.587384052512375,
+          "learner_validation_final": 0.412399367778562,
+          "learner_validation_initial": 0.9994751058208445,
+          "mean_train_loss": 1.0540869060622322,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12304,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "d17233ce3774cffa4f1ce610e910699a86908206e9be530c7bc6e8c1936e2c2d",
+            "learner_validation": "458adb64cbdc3f43c7ac46deadb571bf583d3a57ef84784ec278fab756d60769",
+            "mixed": "a1058f9396e68a0775a38c51b76cda30c34813db2a194a1f079232e486906753",
+            "self_calibration": "e450b8cb557907bb6251cc6acf2d4f40962cf940c030f6d3ffe2b0c4c91f4774",
+            "self_test": "a58827b837701760b8ff6fc75bd427238305b6610c15deeb3f7c1484abc60da1"
+          },
+          "batch_order_digest": "38606b99f379a9450fcd421bf15643e168cc06050d11b88f362ff8b9db4c4629",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "ec276f01f77f158a4dab88da12bfeb7b19bec844998542288e5da5591eb83467",
+          "elapsed_seconds": 36.21777479999946,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "7fcefbd6aaf503f45f56451bcc4487d560ffda1be050be5707c37a8f317cdafc",
+          "learner_relative_reduction": 0.5800876597833923,
+          "learner_validation_final": 0.4196939430742835,
+          "learner_validation_initial": 0.9994798982515931,
+          "mean_train_loss": 1.0176446046829224,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12304,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12304\\external_only.npz",
+            "sha256": "d17233ce3774cffa4f1ce610e910699a86908206e9be530c7bc6e8c1936e2c2d"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12304\\learner_validation.npz",
+            "sha256": "458adb64cbdc3f43c7ac46deadb571bf583d3a57ef84784ec278fab756d60769"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12304\\mixed.npz",
+            "sha256": "a1058f9396e68a0775a38c51b76cda30c34813db2a194a1f079232e486906753"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12304\\self_calibration.npz",
+            "sha256": "e450b8cb557907bb6251cc6acf2d4f40962cf940c030f6d3ffe2b0c4c91f4774"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12304\\self_test.npz",
+            "sha256": "a58827b837701760b8ff6fc75bd427238305b6610c15deeb3f7c1484abc60da1"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12304.npz",
+          "sha256": "ec276f01f77f158a4dab88da12bfeb7b19bec844998542288e5da5591eb83467"
+        },
+        "elapsed_seconds": 47.57615789999909,
+        "seed": 12304,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12304
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "2f0ab154019fec922c5adbe605766262c4d6769644307edf5f696a05381bbf40",
+            "learner_validation": "5fcdc190943353c08812fcaf5b07008659c559b2ee34a57d44f9d842c718dd94",
+            "mixed": "33a9fd045e3adfa63108c40193b633aad6c4a6149be857a058d3904f4f66ef2c",
+            "self_calibration": "96c5f0d7c76bf2511278ef79590c3559f5e5356e7da3c9ef06e024e0e99a3147",
+            "self_test": "b251e61218c9e2438f8d5df30654752a1c4211c887b9e8596354f22e8471b98c"
+          },
+          "batch_order_digest": "136f91bb5b4e259ec4c2f27ac7a80d0a3f16e209c879dca629c9d3776e269b80",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "4e0de4dc71d99a31813cec66007d05532237ee9e222e87e0f2693efdeac848ad",
+          "elapsed_seconds": 36.08083179999994,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "4b836227731b64134575476a320601d2777ad56e51aa41449c80863449afebe3",
+          "learner_relative_reduction": 0.5808198768945142,
+          "learner_validation_final": 0.41907552497771877,
+          "learner_validation_initial": 0.9997504697336504,
+          "mean_train_loss": 1.2178709196647008,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12305,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "2f0ab154019fec922c5adbe605766262c4d6769644307edf5f696a05381bbf40",
+            "learner_validation": "5fcdc190943353c08812fcaf5b07008659c559b2ee34a57d44f9d842c718dd94",
+            "mixed": "33a9fd045e3adfa63108c40193b633aad6c4a6149be857a058d3904f4f66ef2c",
+            "self_calibration": "96c5f0d7c76bf2511278ef79590c3559f5e5356e7da3c9ef06e024e0e99a3147",
+            "self_test": "b251e61218c9e2438f8d5df30654752a1c4211c887b9e8596354f22e8471b98c"
+          },
+          "batch_order_digest": "136f91bb5b4e259ec4c2f27ac7a80d0a3f16e209c879dca629c9d3776e269b80",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "4e0de4dc71d99a31813cec66007d05532237ee9e222e87e0f2693efdeac848ad",
+          "elapsed_seconds": 36.053718400000434,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "4b836227731b64134575476a320601d2777ad56e51aa41449c80863449afebe3",
+          "learner_relative_reduction": 0.5785712337190748,
+          "learner_validation_final": 0.42132147673207027,
+          "learner_validation_initial": 0.9997454147475461,
+          "mean_train_loss": 1.1695895980728996,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12305,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12305\\external_only.npz",
+            "sha256": "2f0ab154019fec922c5adbe605766262c4d6769644307edf5f696a05381bbf40"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12305\\learner_validation.npz",
+            "sha256": "5fcdc190943353c08812fcaf5b07008659c559b2ee34a57d44f9d842c718dd94"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12305\\mixed.npz",
+            "sha256": "33a9fd045e3adfa63108c40193b633aad6c4a6149be857a058d3904f4f66ef2c"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12305\\self_calibration.npz",
+            "sha256": "96c5f0d7c76bf2511278ef79590c3559f5e5356e7da3c9ef06e024e0e99a3147"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12305\\self_test.npz",
+            "sha256": "b251e61218c9e2438f8d5df30654752a1c4211c887b9e8596354f22e8471b98c"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12305.npz",
+          "sha256": "4e0de4dc71d99a31813cec66007d05532237ee9e222e87e0f2693efdeac848ad"
+        },
+        "elapsed_seconds": 47.73007730000063,
+        "seed": 12305,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12305
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "8e7f4445812e3f628afb323d483ab359010e67d1b8a5ecda757cde07a4cd9326",
+            "learner_validation": "d42a15eb874837a2d497b3efb1dd495f505e3776d3b91746a7a3b778eb2d62e2",
+            "mixed": "f01088565c5792e90a7f2b9887b9db83c1c0f7944818c4c32f4f54f5bb0ddd67",
+            "self_calibration": "01aea474db67cffc15a36c33b2e594f01c6183f56b3b12e92a5ea37146190db8",
+            "self_test": "e34bfea47133d11538303417d8b24351288dad436128c33a363f236f8aed6a4c"
+          },
+          "batch_order_digest": "181f9d7f84acc9adc5310fe94cf7813820f5bedd5927e49be142fc6a7bb6c634",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "4dbb70a518d0cc0f95a92c87c7a99cf03fcc1430a81e92f3f49e6da84d532545",
+          "elapsed_seconds": 35.50978039999973,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "f96de886b7d2e87c53aaafff3134951b92b76c0722440138f506891b7a640351",
+          "learner_relative_reduction": 0.5320682347281102,
+          "learner_validation_final": 0.46769686151916784,
+          "learner_validation_initial": 0.999497995711863,
+          "mean_train_loss": 1.1648465036683613,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12306,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "8e7f4445812e3f628afb323d483ab359010e67d1b8a5ecda757cde07a4cd9326",
+            "learner_validation": "d42a15eb874837a2d497b3efb1dd495f505e3776d3b91746a7a3b778eb2d62e2",
+            "mixed": "f01088565c5792e90a7f2b9887b9db83c1c0f7944818c4c32f4f54f5bb0ddd67",
+            "self_calibration": "01aea474db67cffc15a36c33b2e594f01c6183f56b3b12e92a5ea37146190db8",
+            "self_test": "e34bfea47133d11538303417d8b24351288dad436128c33a363f236f8aed6a4c"
+          },
+          "batch_order_digest": "181f9d7f84acc9adc5310fe94cf7813820f5bedd5927e49be142fc6a7bb6c634",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "4dbb70a518d0cc0f95a92c87c7a99cf03fcc1430a81e92f3f49e6da84d532545",
+          "elapsed_seconds": 35.81643950000034,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "f96de886b7d2e87c53aaafff3134951b92b76c0722440138f506891b7a640351",
+          "learner_relative_reduction": 0.5375330427804549,
+          "learner_validation_final": 0.4622282881755382,
+          "learner_validation_initial": 0.9994839219531665,
+          "mean_train_loss": 1.1601515374183655,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12306,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12306\\external_only.npz",
+            "sha256": "8e7f4445812e3f628afb323d483ab359010e67d1b8a5ecda757cde07a4cd9326"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12306\\learner_validation.npz",
+            "sha256": "d42a15eb874837a2d497b3efb1dd495f505e3776d3b91746a7a3b778eb2d62e2"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12306\\mixed.npz",
+            "sha256": "f01088565c5792e90a7f2b9887b9db83c1c0f7944818c4c32f4f54f5bb0ddd67"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12306\\self_calibration.npz",
+            "sha256": "01aea474db67cffc15a36c33b2e594f01c6183f56b3b12e92a5ea37146190db8"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12306\\self_test.npz",
+            "sha256": "e34bfea47133d11538303417d8b24351288dad436128c33a363f236f8aed6a4c"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12306.npz",
+          "sha256": "4dbb70a518d0cc0f95a92c87c7a99cf03fcc1430a81e92f3f49e6da84d532545"
+        },
+        "elapsed_seconds": 49.224455900000976,
+        "seed": 12306,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12306
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "14585da62f1217a638339e3fe1e7c1f7664539df5fd61587f10940051cb070f9",
+            "learner_validation": "297b2cadc071e2bdf3b4895fabf31c018eb507288d66b1b5b3c7cb0740be71b4",
+            "mixed": "d89cbd9551142c4fe5fab77529ac8907be7174dc376b2ce90c8c84de5bb91b93",
+            "self_calibration": "209154ddd0719a12c16d8f58d0c229182628816914a3dd5bb20d0daf92375f15",
+            "self_test": "51574b5566f3cbef054b9835b714df37798546522a8abfd8fda72bcbf12da425"
+          },
+          "batch_order_digest": "442016a82baba80e4fae7b5cb798452806d1aca08b8cb25fe2c0e5c265d39230",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "65521cd9d21b04ad4e766145cf932f2a30eeeae8e5e3ff2eed8f3711fec0f7f5",
+          "elapsed_seconds": 35.64934709999943,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "fc1b9c83664c193259a20ffdf2c5f47d02db2bc5590d3bf59fa66220d54d387a",
+          "learner_relative_reduction": 0.6010733867646008,
+          "learner_validation_final": 0.39876993113042164,
+          "learner_validation_initial": 0.999607240781188,
+          "mean_train_loss": 1.2771898199982112,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12307,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "14585da62f1217a638339e3fe1e7c1f7664539df5fd61587f10940051cb070f9",
+            "learner_validation": "297b2cadc071e2bdf3b4895fabf31c018eb507288d66b1b5b3c7cb0740be71b4",
+            "mixed": "d89cbd9551142c4fe5fab77529ac8907be7174dc376b2ce90c8c84de5bb91b93",
+            "self_calibration": "209154ddd0719a12c16d8f58d0c229182628816914a3dd5bb20d0daf92375f15",
+            "self_test": "51574b5566f3cbef054b9835b714df37798546522a8abfd8fda72bcbf12da425"
+          },
+          "batch_order_digest": "442016a82baba80e4fae7b5cb798452806d1aca08b8cb25fe2c0e5c265d39230",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "65521cd9d21b04ad4e766145cf932f2a30eeeae8e5e3ff2eed8f3711fec0f7f5",
+          "elapsed_seconds": 35.88447669999914,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "fc1b9c83664c193259a20ffdf2c5f47d02db2bc5590d3bf59fa66220d54d387a",
+          "learner_relative_reduction": 0.5925480414812764,
+          "learner_validation_final": 0.4072905088542029,
+          "learner_validation_initial": 0.9996037577899793,
+          "mean_train_loss": 1.2950877329905828,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12307,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12307\\external_only.npz",
+            "sha256": "14585da62f1217a638339e3fe1e7c1f7664539df5fd61587f10940051cb070f9"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12307\\learner_validation.npz",
+            "sha256": "297b2cadc071e2bdf3b4895fabf31c018eb507288d66b1b5b3c7cb0740be71b4"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12307\\mixed.npz",
+            "sha256": "d89cbd9551142c4fe5fab77529ac8907be7174dc376b2ce90c8c84de5bb91b93"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12307\\self_calibration.npz",
+            "sha256": "209154ddd0719a12c16d8f58d0c229182628816914a3dd5bb20d0daf92375f15"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12307\\self_test.npz",
+            "sha256": "51574b5566f3cbef054b9835b714df37798546522a8abfd8fda72bcbf12da425"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12307.npz",
+          "sha256": "65521cd9d21b04ad4e766145cf932f2a30eeeae8e5e3ff2eed8f3711fec0f7f5"
+        },
+        "elapsed_seconds": 47.85146729999906,
+        "seed": 12307,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12307
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "eaca0ae5a31f02fdd95d4a88e0c29e43661f17b22fb905b440a846bee9e59b8f",
+            "learner_validation": "bc1a16e28fd06d87b5eb2e713a4bc0a2238469c1d4388bc1feff1e99e02c90c5",
+            "mixed": "3ce2383b14f10b148cdf2bf22ec1f755557232c1ce62a9d0b3ed6037ed85fd6b",
+            "self_calibration": "cbd43c931bc0b4597cb8f510edf3f45c5e03871506832b619f5e3c35d331c237",
+            "self_test": "fd032a47302da57e4e8483cbfcb3d579a46dbd89c2fb1abfd1d40a4ae6ea9ba6"
+          },
+          "batch_order_digest": "b77312227d4adcbad4c11bbe21d0a957b364612789a7d52639b6938d6d8e8fb2",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "2ec8dde4591978b0c984fd465248e0f23d1ceb93748f2889ca91f2b712345eeb",
+          "elapsed_seconds": 35.9941017000001,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "2fd6e7bdd3a4a1916b00db481227100b9a5271f00c592c64069bbef4c5640ab0",
+          "learner_relative_reduction": 0.5891633487572621,
+          "learner_validation_final": 0.4106402101072793,
+          "learner_validation_initial": 0.9995218509963403,
+          "mean_train_loss": 1.142406120326784,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12308,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "eaca0ae5a31f02fdd95d4a88e0c29e43661f17b22fb905b440a846bee9e59b8f",
+            "learner_validation": "bc1a16e28fd06d87b5eb2e713a4bc0a2238469c1d4388bc1feff1e99e02c90c5",
+            "mixed": "3ce2383b14f10b148cdf2bf22ec1f755557232c1ce62a9d0b3ed6037ed85fd6b",
+            "self_calibration": "cbd43c931bc0b4597cb8f510edf3f45c5e03871506832b619f5e3c35d331c237",
+            "self_test": "fd032a47302da57e4e8483cbfcb3d579a46dbd89c2fb1abfd1d40a4ae6ea9ba6"
+          },
+          "batch_order_digest": "b77312227d4adcbad4c11bbe21d0a957b364612789a7d52639b6938d6d8e8fb2",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "2ec8dde4591978b0c984fd465248e0f23d1ceb93748f2889ca91f2b712345eeb",
+          "elapsed_seconds": 35.774890499998946,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "2fd6e7bdd3a4a1916b00db481227100b9a5271f00c592c64069bbef4c5640ab0",
+          "learner_relative_reduction": 0.6020221582988673,
+          "learner_validation_final": 0.3977840059281637,
+          "learner_validation_initial": 0.9995129483286291,
+          "mean_train_loss": 1.2452465338044696,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12308,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12308\\external_only.npz",
+            "sha256": "eaca0ae5a31f02fdd95d4a88e0c29e43661f17b22fb905b440a846bee9e59b8f"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12308\\learner_validation.npz",
+            "sha256": "bc1a16e28fd06d87b5eb2e713a4bc0a2238469c1d4388bc1feff1e99e02c90c5"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12308\\mixed.npz",
+            "sha256": "3ce2383b14f10b148cdf2bf22ec1f755557232c1ce62a9d0b3ed6037ed85fd6b"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12308\\self_calibration.npz",
+            "sha256": "cbd43c931bc0b4597cb8f510edf3f45c5e03871506832b619f5e3c35d331c237"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12308\\self_test.npz",
+            "sha256": "fd032a47302da57e4e8483cbfcb3d579a46dbd89c2fb1abfd1d40a4ae6ea9ba6"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12308.npz",
+          "sha256": "2ec8dde4591978b0c984fd465248e0f23d1ceb93748f2889ca91f2b712345eeb"
+        },
+        "elapsed_seconds": 47.76727009999922,
+        "seed": 12308,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12308
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "9d0199fd8d1d148c53a8aa1947b0f5e75d8a423bb227917498a79aafd1c0c8bb",
+            "learner_validation": "cb598b2da02fd31bc92e98b32c15bedd3719e329bcf5e0b239c6a059d5b5b9c4",
+            "mixed": "9682c1e7f2461d2a68efc40919e4edff2254a0c997c1e9d99414cc9bcb8dc057",
+            "self_calibration": "b0b5a3f87d1bc6fff4fceea452f0e7c363aca1a427250d3f124e989c0bf7a4fe",
+            "self_test": "6c5766ffe760a9bdfe8a6952ee3ec4b69150d7ab8d28bf9a5cf882df69517e0e"
+          },
+          "batch_order_digest": "3de1871a4d83a60cc71a6bafec6425ff9d1c92f296d65e12f6b1db0c4a276747",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "787622d3a376d66725261dc6838e72b725f6b1adc9f2c1b9f34719fa93bfdfd3",
+          "elapsed_seconds": 35.62019770000006,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "583d2438feda0ff979ee8e9a87d3494f0c935bab948b0d1b79cff564765f352d",
+          "learner_relative_reduction": 0.5959692280518375,
+          "learner_validation_final": 0.40381889437170077,
+          "learner_validation_initial": 0.9994755904966345,
+          "mean_train_loss": 1.1756515516440074,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12309,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "9d0199fd8d1d148c53a8aa1947b0f5e75d8a423bb227917498a79aafd1c0c8bb",
+            "learner_validation": "cb598b2da02fd31bc92e98b32c15bedd3719e329bcf5e0b239c6a059d5b5b9c4",
+            "mixed": "9682c1e7f2461d2a68efc40919e4edff2254a0c997c1e9d99414cc9bcb8dc057",
+            "self_calibration": "b0b5a3f87d1bc6fff4fceea452f0e7c363aca1a427250d3f124e989c0bf7a4fe",
+            "self_test": "6c5766ffe760a9bdfe8a6952ee3ec4b69150d7ab8d28bf9a5cf882df69517e0e"
+          },
+          "batch_order_digest": "3de1871a4d83a60cc71a6bafec6425ff9d1c92f296d65e12f6b1db0c4a276747",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "787622d3a376d66725261dc6838e72b725f6b1adc9f2c1b9f34719fa93bfdfd3",
+          "elapsed_seconds": 35.836458500001754,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "583d2438feda0ff979ee8e9a87d3494f0c935bab948b0d1b79cff564765f352d",
+          "learner_relative_reduction": 0.6018944985306016,
+          "learner_validation_final": 0.39789542427752167,
+          "learner_validation_initial": 0.9994723077397794,
+          "mean_train_loss": 1.3257898577451706,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12309,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12309\\external_only.npz",
+            "sha256": "9d0199fd8d1d148c53a8aa1947b0f5e75d8a423bb227917498a79aafd1c0c8bb"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12309\\learner_validation.npz",
+            "sha256": "cb598b2da02fd31bc92e98b32c15bedd3719e329bcf5e0b239c6a059d5b5b9c4"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12309\\mixed.npz",
+            "sha256": "9682c1e7f2461d2a68efc40919e4edff2254a0c997c1e9d99414cc9bcb8dc057"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12309\\self_calibration.npz",
+            "sha256": "b0b5a3f87d1bc6fff4fceea452f0e7c363aca1a427250d3f124e989c0bf7a4fe"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12309\\self_test.npz",
+            "sha256": "6c5766ffe760a9bdfe8a6952ee3ec4b69150d7ab8d28bf9a5cf882df69517e0e"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12309.npz",
+          "sha256": "787622d3a376d66725261dc6838e72b725f6b1adc9f2c1b9f34719fa93bfdfd3"
+        },
+        "elapsed_seconds": 47.525528199999826,
+        "seed": 12309,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12309
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "5aea801e8964ec9d97fe60c10c5a360d978d5660caaf0552b3e26df7fc8004ad",
+            "learner_validation": "5286bed8a82e21ebdee7670ab27db765a3eb4b1b169f4f348eef57666c156969",
+            "mixed": "0655e589c962f8ca3c6ad55936178771d9365cf4a90215927194a675e62266d1",
+            "self_calibration": "13ed71788542df26fdc4069a294aa0fa8403c4f8beea0fa9b89525b960055c7d",
+            "self_test": "6b0fde7668acdd13ea715568b5aaf7cde3f4dad4e8a8d2c6d7225e45d9ca316e"
+          },
+          "batch_order_digest": "cafd1900578308021f630857a9e42c1217f28bf623823598fe317d086354472b",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "7dcd9372a9f24971d06903c9eaada2573d1aa7a539404a8f283dc39a5bd43549",
+          "elapsed_seconds": 35.63207159999911,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "06755e755241cacb577e56cee3745a4b3142dcb2cc7bdf7e1295f25d72625a05",
+          "learner_relative_reduction": 0.5562409031595834,
+          "learner_validation_final": 0.4436313823098317,
+          "learner_validation_initial": 0.9997121985070407,
+          "mean_train_loss": 1.1040439649952782,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12310,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "5aea801e8964ec9d97fe60c10c5a360d978d5660caaf0552b3e26df7fc8004ad",
+            "learner_validation": "5286bed8a82e21ebdee7670ab27db765a3eb4b1b169f4f348eef57666c156969",
+            "mixed": "0655e589c962f8ca3c6ad55936178771d9365cf4a90215927194a675e62266d1",
+            "self_calibration": "13ed71788542df26fdc4069a294aa0fa8403c4f8beea0fa9b89525b960055c7d",
+            "self_test": "6b0fde7668acdd13ea715568b5aaf7cde3f4dad4e8a8d2c6d7225e45d9ca316e"
+          },
+          "batch_order_digest": "cafd1900578308021f630857a9e42c1217f28bf623823598fe317d086354472b",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "7dcd9372a9f24971d06903c9eaada2573d1aa7a539404a8f283dc39a5bd43549",
+          "elapsed_seconds": 36.2431445000002,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "06755e755241cacb577e56cee3745a4b3142dcb2cc7bdf7e1295f25d72625a05",
+          "learner_relative_reduction": 0.5601564202129183,
+          "learner_validation_final": 0.43971412353372824,
+          "learner_validation_initial": 0.9997056766102711,
+          "mean_train_loss": 1.1440250185595617,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12310,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12310\\external_only.npz",
+            "sha256": "5aea801e8964ec9d97fe60c10c5a360d978d5660caaf0552b3e26df7fc8004ad"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12310\\learner_validation.npz",
+            "sha256": "5286bed8a82e21ebdee7670ab27db765a3eb4b1b169f4f348eef57666c156969"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12310\\mixed.npz",
+            "sha256": "0655e589c962f8ca3c6ad55936178771d9365cf4a90215927194a675e62266d1"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12310\\self_calibration.npz",
+            "sha256": "13ed71788542df26fdc4069a294aa0fa8403c4f8beea0fa9b89525b960055c7d"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12310\\self_test.npz",
+            "sha256": "6b0fde7668acdd13ea715568b5aaf7cde3f4dad4e8a8d2c6d7225e45d9ca316e"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12310.npz",
+          "sha256": "7dcd9372a9f24971d06903c9eaada2573d1aa7a539404a8f283dc39a5bd43549"
+        },
+        "elapsed_seconds": 47.43267360000027,
+        "seed": 12310,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12310
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "0eb92985e3d8f05c12976baa480ae82beaf2fbfe39ae404f355c463b019d0e8f",
+            "learner_validation": "f84063b255de23206ccbe1431830f322983aed19d025d23a9e4725fde47e9d76",
+            "mixed": "bd1fa263402786ae54134617ca1020b57fafb97160aa9653cc665153a12e0a0f",
+            "self_calibration": "528e27bd9cdd668d1f6e260859cc80ac118a2846c33af7715f573d0003cfe075",
+            "self_test": "b183fa9c86acb3d506ce91f3e3f4cc07351b3a7790539362d55657143c1fc1e2"
+          },
+          "batch_order_digest": "7eea4020125ec618e99691165fc851c9e3419329e3e7f06e379ed1a58c348426",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "5d86974627aa513d7d34cc381ad2fcdb0ddf9c9358617684d07bc1dfb2c9954b",
+          "elapsed_seconds": 35.807130099999995,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "4832c105548bc50c2d9a06b7fec59afad0d1db3ef90a0368817b5c9c07e3e4c1",
+          "learner_relative_reduction": 0.5773762965240289,
+          "learner_validation_final": 0.42243698821403086,
+          "learner_validation_initial": 0.9995581997403254,
+          "mean_train_loss": 1.0944516341023975,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12311,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "0eb92985e3d8f05c12976baa480ae82beaf2fbfe39ae404f355c463b019d0e8f",
+            "learner_validation": "f84063b255de23206ccbe1431830f322983aed19d025d23a9e4725fde47e9d76",
+            "mixed": "bd1fa263402786ae54134617ca1020b57fafb97160aa9653cc665153a12e0a0f",
+            "self_calibration": "528e27bd9cdd668d1f6e260859cc80ac118a2846c33af7715f573d0003cfe075",
+            "self_test": "b183fa9c86acb3d506ce91f3e3f4cc07351b3a7790539362d55657143c1fc1e2"
+          },
+          "batch_order_digest": "7eea4020125ec618e99691165fc851c9e3419329e3e7f06e379ed1a58c348426",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "5d86974627aa513d7d34cc381ad2fcdb0ddf9c9358617684d07bc1dfb2c9954b",
+          "elapsed_seconds": 36.03336599999966,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "4832c105548bc50c2d9a06b7fec59afad0d1db3ef90a0368817b5c9c07e3e4c1",
+          "learner_relative_reduction": 0.6015469187222391,
+          "learner_validation_final": 0.39827447283702594,
+          "learner_validation_initial": 0.9995517453644425,
+          "mean_train_loss": 1.1190410887002944,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12311,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12311\\external_only.npz",
+            "sha256": "0eb92985e3d8f05c12976baa480ae82beaf2fbfe39ae404f355c463b019d0e8f"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12311\\learner_validation.npz",
+            "sha256": "f84063b255de23206ccbe1431830f322983aed19d025d23a9e4725fde47e9d76"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12311\\mixed.npz",
+            "sha256": "bd1fa263402786ae54134617ca1020b57fafb97160aa9653cc665153a12e0a0f"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12311\\self_calibration.npz",
+            "sha256": "528e27bd9cdd668d1f6e260859cc80ac118a2846c33af7715f573d0003cfe075"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12311\\self_test.npz",
+            "sha256": "b183fa9c86acb3d506ce91f3e3f4cc07351b3a7790539362d55657143c1fc1e2"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12311.npz",
+          "sha256": "5d86974627aa513d7d34cc381ad2fcdb0ddf9c9358617684d07bc1dfb2c9954b"
+        },
+        "elapsed_seconds": 48.69599290000042,
+        "seed": 12311,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12311
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "07e01b22fe51ea77055690b5fd23e33a7dfa846edcb04a1ca2084cfffb1ca946",
+            "learner_validation": "6c24e57c9e356513c0cc81492bbbc53fa7470e5867dc8b3d146a03b81ba8748e",
+            "mixed": "a2c47e8101225b4f83e9a83b4877dec8b25d631c2789ea5238edb04bbb46e193",
+            "self_calibration": "717da473f0180e0a4ad8fd79917b8003cbd27f7f8adee1404120b38516e546ba",
+            "self_test": "92f58be145909c7c7b7fd873576ea73640fc853f252c7b310e22b8e001a474f3"
+          },
+          "batch_order_digest": "f4d987b77ec9a7f5906a86992b87aced987dee798e977337639d5e48486f00a2",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "5549a8190d4cdebcad4074129bd8dd230d604d9f045c0aec8f3b25399863d56e",
+          "elapsed_seconds": 35.56330160000107,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "c8adb97abaa595015ce7e614f04f748a1536c6c47c42c9414c4ba57007a2e68d",
+          "learner_relative_reduction": 0.5817918090631147,
+          "learner_validation_final": 0.41790301084984094,
+          "learner_validation_initial": 0.9992702675517648,
+          "mean_train_loss": 1.2449554455677667,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12312,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "07e01b22fe51ea77055690b5fd23e33a7dfa846edcb04a1ca2084cfffb1ca946",
+            "learner_validation": "6c24e57c9e356513c0cc81492bbbc53fa7470e5867dc8b3d146a03b81ba8748e",
+            "mixed": "a2c47e8101225b4f83e9a83b4877dec8b25d631c2789ea5238edb04bbb46e193",
+            "self_calibration": "717da473f0180e0a4ad8fd79917b8003cbd27f7f8adee1404120b38516e546ba",
+            "self_test": "92f58be145909c7c7b7fd873576ea73640fc853f252c7b310e22b8e001a474f3"
+          },
+          "batch_order_digest": "f4d987b77ec9a7f5906a86992b87aced987dee798e977337639d5e48486f00a2",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "5549a8190d4cdebcad4074129bd8dd230d604d9f045c0aec8f3b25399863d56e",
+          "elapsed_seconds": 35.8172756999993,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "c8adb97abaa595015ce7e614f04f748a1536c6c47c42c9414c4ba57007a2e68d",
+          "learner_relative_reduction": 0.5766913492467449,
+          "learner_validation_final": 0.42298255996623385,
+          "learner_validation_initial": 0.9992296618875116,
+          "mean_train_loss": 1.165803866479132,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12312,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12312\\external_only.npz",
+            "sha256": "07e01b22fe51ea77055690b5fd23e33a7dfa846edcb04a1ca2084cfffb1ca946"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12312\\learner_validation.npz",
+            "sha256": "6c24e57c9e356513c0cc81492bbbc53fa7470e5867dc8b3d146a03b81ba8748e"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12312\\mixed.npz",
+            "sha256": "a2c47e8101225b4f83e9a83b4877dec8b25d631c2789ea5238edb04bbb46e193"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12312\\self_calibration.npz",
+            "sha256": "717da473f0180e0a4ad8fd79917b8003cbd27f7f8adee1404120b38516e546ba"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12312\\self_test.npz",
+            "sha256": "92f58be145909c7c7b7fd873576ea73640fc853f252c7b310e22b8e001a474f3"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12312.npz",
+          "sha256": "5549a8190d4cdebcad4074129bd8dd230d604d9f045c0aec8f3b25399863d56e"
+        },
+        "elapsed_seconds": 47.47636169999896,
+        "seed": 12312,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12312
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "52fd4273e10282c16a189e16354702c242fc35c2e6abef919b53517b0f685dd5",
+            "learner_validation": "a21c4a7a30f5f7797740ca40ea40fb13dbb75aa4041b26ef63e172868a0fdb15",
+            "mixed": "b423aff50a8b0507b19058446d6e306f0f686302b05d0ebc5f04c6ea4b8be112",
+            "self_calibration": "cb7ff3826715836a48e9b090b8f4188cb873e293eb09fe822748588a96676362",
+            "self_test": "9b514d5cb58cfbde0681ce1f51fd0d4b2a2b26aced7fd04b9bf8474a035e74f6"
+          },
+          "batch_order_digest": "9d1606a16afcf9d40bf92d5c62e2c5f5b8454175eff68b0556d77305375da954",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "f25c0b956d214fd3d0de5050aa0d1df9d8a152e27d688ff9119732c75a4a124e",
+          "elapsed_seconds": 35.64027869999882,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "8d1f2d0f9ae5749f93b104e4ab4e8f4e305f25fe92250308d42565eae1e840d6",
+          "learner_relative_reduction": 0.5695000707267174,
+          "learner_validation_final": 0.43037199661678943,
+          "learner_validation_initial": 0.9997028276945154,
+          "mean_train_loss": 1.1800566809309854,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12313,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "52fd4273e10282c16a189e16354702c242fc35c2e6abef919b53517b0f685dd5",
+            "learner_validation": "a21c4a7a30f5f7797740ca40ea40fb13dbb75aa4041b26ef63e172868a0fdb15",
+            "mixed": "b423aff50a8b0507b19058446d6e306f0f686302b05d0ebc5f04c6ea4b8be112",
+            "self_calibration": "cb7ff3826715836a48e9b090b8f4188cb873e293eb09fe822748588a96676362",
+            "self_test": "9b514d5cb58cfbde0681ce1f51fd0d4b2a2b26aced7fd04b9bf8474a035e74f6"
+          },
+          "batch_order_digest": "9d1606a16afcf9d40bf92d5c62e2c5f5b8454175eff68b0556d77305375da954",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "f25c0b956d214fd3d0de5050aa0d1df9d8a152e27d688ff9119732c75a4a124e",
+          "elapsed_seconds": 35.68648059999941,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "8d1f2d0f9ae5749f93b104e4ab4e8f4e305f25fe92250308d42565eae1e840d6",
+          "learner_relative_reduction": 0.5796299895758916,
+          "learner_validation_final": 0.42024227282187593,
+          "learner_validation_initial": 0.9996961305538813,
+          "mean_train_loss": 1.130939020368788,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12313,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12313\\external_only.npz",
+            "sha256": "52fd4273e10282c16a189e16354702c242fc35c2e6abef919b53517b0f685dd5"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12313\\learner_validation.npz",
+            "sha256": "a21c4a7a30f5f7797740ca40ea40fb13dbb75aa4041b26ef63e172868a0fdb15"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12313\\mixed.npz",
+            "sha256": "b423aff50a8b0507b19058446d6e306f0f686302b05d0ebc5f04c6ea4b8be112"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12313\\self_calibration.npz",
+            "sha256": "cb7ff3826715836a48e9b090b8f4188cb873e293eb09fe822748588a96676362"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12313\\self_test.npz",
+            "sha256": "9b514d5cb58cfbde0681ce1f51fd0d4b2a2b26aced7fd04b9bf8474a035e74f6"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12313.npz",
+          "sha256": "f25c0b956d214fd3d0de5050aa0d1df9d8a152e27d688ff9119732c75a4a124e"
+        },
+        "elapsed_seconds": 45.944136099999014,
+        "seed": 12313,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12313
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "4929adc243db10647dbd0afeb2423d5bb8b27d07f981627df51250160dee58cb",
+            "learner_validation": "4f0c489b1de1e315941ec175c05c1ef1a128830446519d93467d9485962a5e6e",
+            "mixed": "256fbc05de1f9955630c40d68f5e874354c3be46d8333770e44c09a10cf7a8e1",
+            "self_calibration": "2f0ef7bc406344dcb47a6166a650b5d112e93222dd4317db16410bccef7db9e2",
+            "self_test": "e728ab521e49e18e3b0701d583eb602ce127736b9d77736149bdf45f66b86853"
+          },
+          "batch_order_digest": "62f6e16153effe85640a2eee2e6f855e919c0f15ce398379b04d4695f69db197",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "26b855424af6a3f3c7e665d56ee80c90e37d35d1437fd4fe229a8260e99199c7",
+          "elapsed_seconds": 35.84371640000063,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "de47c575c0b61df848916d0c7dfd3ed3e1c25a2806e888473a0fd41dec167ba7",
+          "learner_relative_reduction": 0.6006024731609615,
+          "learner_validation_final": 0.3991894692104931,
+          "learner_validation_initial": 0.9994790713147571,
+          "mean_train_loss": 1.1143938041263157,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12314,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "4929adc243db10647dbd0afeb2423d5bb8b27d07f981627df51250160dee58cb",
+            "learner_validation": "4f0c489b1de1e315941ec175c05c1ef1a128830446519d93467d9485962a5e6e",
+            "mixed": "256fbc05de1f9955630c40d68f5e874354c3be46d8333770e44c09a10cf7a8e1",
+            "self_calibration": "2f0ef7bc406344dcb47a6166a650b5d112e93222dd4317db16410bccef7db9e2",
+            "self_test": "e728ab521e49e18e3b0701d583eb602ce127736b9d77736149bdf45f66b86853"
+          },
+          "batch_order_digest": "62f6e16153effe85640a2eee2e6f855e919c0f15ce398379b04d4695f69db197",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "26b855424af6a3f3c7e665d56ee80c90e37d35d1437fd4fe229a8260e99199c7",
+          "elapsed_seconds": 35.78334519999953,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "de47c575c0b61df848916d0c7dfd3ed3e1c25a2806e888473a0fd41dec167ba7",
+          "learner_relative_reduction": 0.5757252058028556,
+          "learner_validation_final": 0.42404783245486516,
+          "learner_validation_initial": 0.999465059566622,
+          "mean_train_loss": 1.0904655663039948,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12314,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12314\\external_only.npz",
+            "sha256": "4929adc243db10647dbd0afeb2423d5bb8b27d07f981627df51250160dee58cb"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12314\\learner_validation.npz",
+            "sha256": "4f0c489b1de1e315941ec175c05c1ef1a128830446519d93467d9485962a5e6e"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12314\\mixed.npz",
+            "sha256": "256fbc05de1f9955630c40d68f5e874354c3be46d8333770e44c09a10cf7a8e1"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12314\\self_calibration.npz",
+            "sha256": "2f0ef7bc406344dcb47a6166a650b5d112e93222dd4317db16410bccef7db9e2"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12314\\self_test.npz",
+            "sha256": "e728ab521e49e18e3b0701d583eb602ce127736b9d77736149bdf45f66b86853"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12314.npz",
+          "sha256": "26b855424af6a3f3c7e665d56ee80c90e37d35d1437fd4fe229a8260e99199c7"
+        },
+        "elapsed_seconds": 46.62955099999999,
+        "seed": 12314,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12314
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "b91e32afcd06a2ed0f0c6c32ac7566a760dbbad4ae666cbae9f402fcd6ff30d8",
+            "learner_validation": "c23f1d6733634261f24f021cd2a319f432a367adbd939c65a0f5d8178aff1bdd",
+            "mixed": "d767e4770ee2c38554cb4031177533891f8449c7084c62d7e0d9d392d40c3f25",
+            "self_calibration": "080d3fa6d46a7e6e6361e586993b8d1a3cee150c3b7747dec397a9e270cfb495",
+            "self_test": "6229d8d6d4ea19dbd8b30e143c76029502bbacaa0934ad17093afeae75096d49"
+          },
+          "batch_order_digest": "52cd394b5160f0ccb8f7461d0a374a2737fef2e3c6613aaf44c7c7b80b1dd998",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "b4b44752ab354da43bc9206c04268bd52fb13f98119b994a1eaa15bd7658fec3",
+          "elapsed_seconds": 35.72353330000078,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "6e20bbd9fc304f9d2f950f8a6508275df124300b13e7611ad64ce7d71a3d3d64",
+          "learner_relative_reduction": 0.5520049263815869,
+          "learner_validation_final": 0.4477522077116494,
+          "learner_validation_initial": 0.9994578826396415,
+          "mean_train_loss": 1.304304873029391,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12315,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "b91e32afcd06a2ed0f0c6c32ac7566a760dbbad4ae666cbae9f402fcd6ff30d8",
+            "learner_validation": "c23f1d6733634261f24f021cd2a319f432a367adbd939c65a0f5d8178aff1bdd",
+            "mixed": "d767e4770ee2c38554cb4031177533891f8449c7084c62d7e0d9d392d40c3f25",
+            "self_calibration": "080d3fa6d46a7e6e6361e586993b8d1a3cee150c3b7747dec397a9e270cfb495",
+            "self_test": "6229d8d6d4ea19dbd8b30e143c76029502bbacaa0934ad17093afeae75096d49"
+          },
+          "batch_order_digest": "52cd394b5160f0ccb8f7461d0a374a2737fef2e3c6613aaf44c7c7b80b1dd998",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "b4b44752ab354da43bc9206c04268bd52fb13f98119b994a1eaa15bd7658fec3",
+          "elapsed_seconds": 36.2576810999999,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "6e20bbd9fc304f9d2f950f8a6508275df124300b13e7611ad64ce7d71a3d3d64",
+          "learner_relative_reduction": 0.5897119366540061,
+          "learner_validation_final": 0.410059854388237,
+          "learner_validation_initial": 0.9994437835800151,
+          "mean_train_loss": 1.2305723688469992,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12315,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12315\\external_only.npz",
+            "sha256": "b91e32afcd06a2ed0f0c6c32ac7566a760dbbad4ae666cbae9f402fcd6ff30d8"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12315\\learner_validation.npz",
+            "sha256": "c23f1d6733634261f24f021cd2a319f432a367adbd939c65a0f5d8178aff1bdd"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12315\\mixed.npz",
+            "sha256": "d767e4770ee2c38554cb4031177533891f8449c7084c62d7e0d9d392d40c3f25"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12315\\self_calibration.npz",
+            "sha256": "080d3fa6d46a7e6e6361e586993b8d1a3cee150c3b7747dec397a9e270cfb495"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12315\\self_test.npz",
+            "sha256": "6229d8d6d4ea19dbd8b30e143c76029502bbacaa0934ad17093afeae75096d49"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12315.npz",
+          "sha256": "b4b44752ab354da43bc9206c04268bd52fb13f98119b994a1eaa15bd7658fec3"
+        },
+        "elapsed_seconds": 46.98422919999939,
+        "seed": 12315,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12315
+    },
+    {
+      "conditions": {
+        "action_jepa": {
+          "bank_sha256": {
+            "external_only": "cb6c368661d4a98e2570bcf20b2973af2b89a9e4f97688072739a653f27066cf",
+            "learner_validation": "c4de14f8498712e88e492b26248a91b16647a2ac1c7a0c4b9d3098a2415e53f5",
+            "mixed": "eb53eef0c0b99edf80fa1c2fadd061a532f60ce4ca20e42a5ee80942b9a605b0",
+            "self_calibration": "24b1637b2af39ab2670aa36078180f2f1413fa8c4725ddaa52f08b65dbaad419",
+            "self_test": "6c89741dc686a8dbb1acd50227206eafc158810d0a9426e17345cb20f105aa1d"
+          },
+          "batch_order_digest": "3b37bd1eef52ee08532742b3ddd2a27706fb33ebb0d9084db87feda5cabbdd7f",
+          "batch_size": 256,
+          "condition": "action_jepa",
+          "corpus_sha256": "e9abdef43d2f0ee3ae120e8a79e11fd5055a971bddfc61ea07d1e94997d5b076",
+          "elapsed_seconds": 35.69385500000135,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "2e10c43a6d198b3004afb0e9b526424e7941a8b520553728a07554993b1bd874",
+          "learner_relative_reduction": 0.5824189538454244,
+          "learner_validation_final": 0.4174185097993662,
+          "learner_validation_initial": 0.9996107669236759,
+          "mean_train_loss": 1.1056048269006942,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12316,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        },
+        "no_action_jepa": {
+          "bank_sha256": {
+            "external_only": "cb6c368661d4a98e2570bcf20b2973af2b89a9e4f97688072739a653f27066cf",
+            "learner_validation": "c4de14f8498712e88e492b26248a91b16647a2ac1c7a0c4b9d3098a2415e53f5",
+            "mixed": "eb53eef0c0b99edf80fa1c2fadd061a532f60ce4ca20e42a5ee80942b9a605b0",
+            "self_calibration": "24b1637b2af39ab2670aa36078180f2f1413fa8c4725ddaa52f08b65dbaad419",
+            "self_test": "6c89741dc686a8dbb1acd50227206eafc158810d0a9426e17345cb20f105aa1d"
+          },
+          "batch_order_digest": "3b37bd1eef52ee08532742b3ddd2a27706fb33ebb0d9084db87feda5cabbdd7f",
+          "batch_size": 256,
+          "condition": "no_action_jepa",
+          "corpus_sha256": "e9abdef43d2f0ee3ae120e8a79e11fd5055a971bddfc61ea07d1e94997d5b076",
+          "elapsed_seconds": 35.58614850000049,
+          "examples_gradient": 1152000,
+          "initial_state_digest": "2e10c43a6d198b3004afb0e9b526424e7941a8b520553728a07554993b1bd874",
+          "learner_relative_reduction": 0.6055938359031511,
+          "learner_validation_final": 0.3942502409142132,
+          "learner_validation_initial": 0.999604663423573,
+          "mean_train_loss": 1.1356498593754238,
+          "optimizer_steps": 4500,
+          "parameter_count": 1219171,
+          "seed": 12316,
+          "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+          "status": "complete"
+        }
+      },
+      "manifest": {
+        "banks": {
+          "external_only": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12316\\external_only.npz",
+            "sha256": "cb6c368661d4a98e2570bcf20b2973af2b89a9e4f97688072739a653f27066cf"
+          },
+          "learner_validation": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12316\\learner_validation.npz",
+            "sha256": "c4de14f8498712e88e492b26248a91b16647a2ac1c7a0c4b9d3098a2415e53f5"
+          },
+          "mixed": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12316\\mixed.npz",
+            "sha256": "eb53eef0c0b99edf80fa1c2fadd061a532f60ce4ca20e42a5ee80942b9a605b0"
+          },
+          "self_calibration": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12316\\self_calibration.npz",
+            "sha256": "24b1637b2af39ab2670aa36078180f2f1413fa8c4725ddaa52f08b65dbaad419"
+          },
+          "self_test": {
+            "pairs": 768,
+            "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\banks\\seed_12316\\self_test.npz",
+            "sha256": "6c89741dc686a8dbb1acd50227206eafc158810d0a9426e17345cb20f105aa1d"
+          }
+        },
+        "corpus": {
+          "decisions": 2400,
+          "images": 12000,
+          "path": "C:\\Users\\antho\\Documents\\Programmation\\Emergence\\Project_Emergence\\data\\processed\\experiments\\reafference_001\\corpora\\seed_12316.npz",
+          "sha256": "e9abdef43d2f0ee3ae120e8a79e11fd5055a971bddfc61ea07d1e94997d5b076"
+        },
+        "elapsed_seconds": 48.326830699999846,
+        "seed": 12316,
+        "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14"
+      },
+      "paired_integrity": {
+        "batch_order_identical": true,
+        "capacity_identical": true,
+        "corpus_and_banks_identical": true,
+        "initialization_identical": true
+      },
+      "seed": 12316
+    }
+  ],
+  "smoke": {
+    "checks": {
+      "data": {
+        "budgets": {
+          "batch_size": 256,
+          "decisions": 2400,
+          "examples_gradient_per_condition": 1152000,
+          "images": 12000,
+          "optimizer_steps_per_condition": 4500,
+          "pairs_per_bank_bin": 128
+        },
+        "corpus_action_object_correlation": 0.0050005129726779065,
+        "external_only_constant_head_and_disjoint_rng": true,
+        "image_spaces_disjoint": {
+          "external_only": true,
+          "learner_validation": true,
+          "mixed": true,
+          "self_calibration": true,
+          "self_test": true
+        },
+        "mixed_action_object_correlation": 0.012346634204370807,
+        "model_batch_keys": [
+          "as5600_deg",
+          "episode",
+          "frames",
+          "requested_deg"
+        ],
+        "object_and_labels_absent_from_model_batches": true,
+        "self_pairs_nonzero_motion": true
+      },
+      "manipulations": {
+        "counterfactual_visibility_by_bin": [
+          0.2191275403390523,
+          0.22350324244281045,
+          0.21095601000816994,
+          0.2220505259395425,
+          0.21234489889705882,
+          0.2152196946486928
+        ],
+        "real_geom_and_joint": true
+      },
+      "results": {
+        "exact_training_budgets": true,
+        "identical_capacity": true,
+        "identical_initialization_and_batch_order": true,
+        "shared_corpus_and_banks": true,
+        "thresholds_exactly_recomputable": {
+          "action_jepa": [
+            0.5296125411987305,
+            0.5429725646972656,
+            0.46316733956336975,
+            0.49871745705604553,
+            0.4698180854320526,
+            0.5367473363876343
+          ],
+          "no_action_jepa": [
+            0.4684065282344818,
+            0.4859895706176758,
+            0.45301392674446106,
+            0.45300087332725525,
+            0.46666157245635986,
+            0.4310481548309326
+          ],
+          "pixel_change": [
+            0.2583151424632353,
+            0.258047704758987,
+            0.2931640625,
+            0.29702244178921566,
+            0.30483143127042484,
+            0.2890976051879085
+          ],
+          "pixel_change_action": [
+            0.029249697813858055,
+            0.03284654962252301,
+            0.029071651321113723,
+            0.04029171374907048,
+            0.03039487378524197,
+            0.037129348065169876
+          ]
+        }
+      },
+      "zero_action_parity": {
+        "parameter_count": 1219171,
+        "state_digest": "e62fecdb9a918042108f514e2ce3c93a4ab0dfe27c0e894d489d00bf87574909",
+        "zero_action_forward_bit_identical": true
+      }
+    },
+    "elapsed_seconds": 120.84376590000102,
+    "passed": true,
+    "preregistration_sha256": "d4b864c81a50be27b2b20aac6086dac94e86766db5ebaa69f341a2cea0dc7c5b",
+    "seed": 12991,
+    "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+    "time_gate": {
+      "amended": false,
+      "condition_smoke_seconds": [
+        35.184714499999245,
+        34.71056940000017
+      ],
+      "effective_cap_seconds": 3600,
+      "formula": "32 * (shared_smoke_seconds / 2 + mean_condition_seconds)",
+      "margin_fraction_if_amended": 0.0,
+      "mean_condition_seconds": 34.947641949999706,
+      "original_cap_seconds": 3600,
+      "projected_seconds": 1888.646071999974,
+      "shared_smoke_seconds": 48.14509559999897
+    }
+  },
+  "spec_digest": "4813a3776c8edf295a68a6ddd0d69852178b420236a459f373c7f7dde7137a14",
+  "totals": {
+    "effective_cap_seconds": 3600,
+    "learner_runs": 32,
+    "paired_seeds": 16,
+    "recorded_seconds": 1908.0411925999997
+  }
+}

@@ -79,6 +79,10 @@ class BenchRoomConfig:
     sector_belt_pattern: str | None = None
     sector_belt_primary_rgba: tuple[float, float, float, float] = (0.85, 0.08, 0.08, 1.0)
     sector_belt_secondary_rgba: tuple[float, float, float, float] = (0.92, 0.92, 0.92, 1.0)
+    reafference_object: bool = False
+    reafference_bearing_deg: float = 90.0
+    reafference_distance_m: float = 1.15
+    reafference_travel_m: float = 0.36
 
 
 @dataclass
@@ -101,6 +105,8 @@ SENSOR_RANGE = "ultrasonic"
 SENSOR_GYRO = "imu_gyro"
 SENSOR_ACCEL = "imu_accel"
 CAMERA_HEAD = "head_cam"
+JOINT_EXTERNAL = "ref_external_slide"
+GEOM_EXTERNAL = "ref_external_object"
 
 # Bench frame constants (meters, from BENCH_DESIGN.md).
 Z_PLATE_TOP = 0.006
@@ -274,6 +280,43 @@ def _sector_belt_geoms(config: BenchRoomConfig) -> str:
     return "".join(geoms)
 
 
+def _reafference_geoms(config: BenchRoomConfig) -> str:
+    """A real high-contrast body on a horizontal slide, centered on one camera bin."""
+
+    if not config.reafference_object:
+        return ""
+    bx, by = config.bench_position
+    heading = math.radians(config.reafference_bearing_deg - 180.0)
+    direction = np.array([math.cos(heading), math.sin(heading)])
+    tangent = np.array([-direction[1], direction[0]])
+    center = np.array([bx, by]) + config.reafference_distance_m * direction
+    rotation = heading - math.pi / 2.0
+    half_travel = config.reafference_travel_m / 2.0
+    parts = [
+        f'    <geom name="ref_external_rail" type="box" pos="{center[0]:.4f} {center[1]:.4f} 0.7600" '
+        f'size="{half_travel + 0.08:.4f} 0.012 0.012" euler="0 0 {rotation:.6f}" '
+        'rgba="0.12 0.12 0.14 1" contype="0" conaffinity="0"/>\n',
+        f'    <body name="ref_external_body" pos="{center[0]:.4f} {center[1]:.4f} 0">\n',
+        f'      <joint name="{JOINT_EXTERNAL}" type="slide" axis="{tangent[0]:.6f} {tangent[1]:.6f} 0" '
+        f'range="{-half_travel:.6f} {half_travel:.6f}" limited="true" damping="0.02"/>\n',
+        f'      <geom name="{GEOM_EXTERNAL}" type="box" pos="0 0 1.0000" size="0.235 0.018 0.235" '
+        f'euler="0 0 {rotation:.6f}" rgba="0.025 0.025 0.025 1" mass="0.25"/>\n',
+    ]
+    for row in range(4):
+        for column in range(4):
+            offset = (column - 1.5) * 0.105
+            local = offset * tangent - 0.020 * direction
+            z = 1.0 + (row - 1.5) * 0.105
+            color = "0.95 0.08 0.06 1" if (row + column) % 2 == 0 else "0.95 0.95 0.90 1"
+            parts.append(
+                f'      <geom name="ref_external_patch_{row}_{column}" type="box" '
+                f'pos="{local[0]:.4f} {local[1]:.4f} {z:.4f}" size="0.048 0.006 0.048" '
+                f'euler="0 0 {rotation:.6f}" rgba="{color}" contype="0" conaffinity="0"/>\n'
+            )
+    parts.append("    </body>\n")
+    return "".join(parts)
+
+
 def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels: str = "") -> str:
     room = config.room
     servo = config.servo
@@ -287,6 +330,7 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
     object_geoms = "".join(_object_geom(i, obj) for i, obj in enumerate(objects))
     landmark_geoms = _landmark_geoms(room)
     belt_geoms = _sector_belt_geoms(room)
+    reafference_geoms = _reafference_geoms(room)
     primary_light = " ".join(f"{value:.3f}" for value in room.primary_light_rgb)
     secondary_light = " ".join(f"{value:.3f}" for value in room.secondary_light_rgb)
     headlight_ambient = " ".join(f"{value:.3f}" for value in room.headlight_ambient_rgb)
@@ -316,7 +360,7 @@ def build_bench_mjcf(config: BenchConfig, objects: list[RoomObject], wall_panels
     <geom name="room_wall_back" type="box" pos="{room.width / 2:.3f} {room.depth + 0.05:.3f} {room.wall_height / 2:.3f}" size="{room.width / 2 + 0.1:.3f} 0.05 {room.wall_height / 2:.3f}" material="wall_mat"/>
     <geom name="room_wall_left" type="box" pos="-0.05 {room.depth / 2:.3f} {room.wall_height / 2:.3f}" size="0.05 {room.depth / 2 + 0.1:.3f} {room.wall_height / 2:.3f}" rgba="0.75 0.82 0.9 1"/>
     <geom name="room_wall_right" type="box" pos="{room.width + 0.05:.3f} {room.depth / 2:.3f} {room.wall_height / 2:.3f}" size="0.05 {room.depth / 2 + 0.1:.3f} {room.wall_height / 2:.3f}" rgba="0.9 0.82 0.75 1"/>
-{object_geoms}{wall_panels}{landmark_geoms}{belt_geoms}
+{object_geoms}{wall_panels}{landmark_geoms}{belt_geoms}{reafference_geoms}
     <geom name="bench_table" type="box" pos="{bx:.4f} {by:.4f} {table_h / 2:.4f}" size="{table_lx / 2:.4f} {table_ly / 2:.4f} {table_h / 2:.4f}" rgba="0.5 0.36 0.25 1"/>
     <geom name="bench_plate" type="box" pos="{bx:.4f} {by:.4f} {table_h + Z_PLATE_TOP / 2:.4f}" size="0.110 0.105 {Z_PLATE_TOP / 2:.4f}" rgba="0.2 0.2 0.22 1"/>
     <geom name="bench_tower" type="cylinder" pos="{bx:.4f} {by:.4f} {base_z + Z_TRACK / 2:.4f}" size="0.035 {Z_TRACK / 2:.4f}" rgba="0.25 0.25 0.3 1"/>

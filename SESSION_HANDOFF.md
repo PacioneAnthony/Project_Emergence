@@ -1,6 +1,6 @@
 # Émergence — Handoff de session
 
-Date: 2026-07-20
+Date: 2026-07-26
 
 ## Instruction de reprise impérative
 
@@ -14,13 +14,17 @@ Lire dans cet ordre:
 6. `docs/research/j6_adaptive_replay_001_review.md`
 7. `docs/research/j6_adaptive_replay_001_technical_stop.md`
 8. `docs/research/reafference_001_preregistration.md`
-9. `CLAUDE_REVIEW_REQUEST.md`
-10. `docs/research/reafference_001_review.md`, si disponible
+9. `docs/research/reafference_001_review.md`
+10. `docs/research/reafference_001_results.md`
+11. `docs/research/reafference_001_analysis.json`
+12. `docs/research/reafference_001_integrity.json`
+13. `CLAUDE_REVIEW_REQUEST.md`
+14. `DECISIONS.md` — D-014 et D-015
 
-Si la revue REF-001 existe, appliquer immédiatement son verdict. Sinon, maintenir la
-porte: ne pas implémenter REF-001, ne pas lancer le smoke 12991 et ne jamais ouvrir les
-graines 12301..12316. D-004 délègue à Codex les choix techniques; D-008 interdit toute
-action physique, tout flash et tout achat.
+REF-001 est maintenant close sous D-015. Ne relancer aucun run, ne modifier aucun seuil
+et ne réutiliser aucune graine 12301..12316. La revue contradictoire des résultats est
+préparée dans `CLAUDE_REVIEW_REQUEST.md`. D-004 délègue à Codex les choix techniques;
+D-008 interdit toute action physique, tout flash et tout achat.
 
 ## J6-AR001 — clôture technique
 
@@ -41,7 +45,7 @@ D-012 interdit l'extension du plafond, la reprise et toute analyse partielle. Au
 porte B1/H1/H2/H3 n'a été calculée. L'hypothèse adaptative reste **non testée**, et non
 rejetée. Les artefacts sont conservés uniquement pour audit technique.
 
-## Direction active — REF-001
+## REF-001 — clôture expérimentale
 
 D-013 passe à l'étape 3 du brief. La question est de savoir si le résidu d'un JEPA
 conditionné par l'action explique le mouvement propre tout en détectant un objet dont le
@@ -52,9 +56,9 @@ implémentation:
 
 - monde REF neuf avec vrai objet geom/joint MJCF sur rail horizontal;
 - RNG objet distinct et corrélation absolue action–déplacement `≤0,05`;
-- smoke 12991; campagne vierge 12301..12316, n=16;
+- smoke 12991; campagne 12301..12316, n=16, maintenant complète;
 - `action_jepa` contre `no_action_jepa` à capacité/calcul identiques;
-- baseline simple obligatoire `pixel_change`;
+- baselines simples obligatoires `pixel_change` et `pixel_change_action`;
 - 12 000 images, 2 400 décisions, 4 500 pas AdamW par condition, batch 256;
 - cinq banques disjointes de 128 paires par bin: calibration, self-test, externe pur,
   mixte et validation apprenant;
@@ -62,19 +66,28 @@ implémentation:
 - H1: avantage d'erreur propre `≥0,05`;
 - H2/H3: TPR action absolue `≥0,75/0,70` et avantage `≥0,10` face à chaque baseline;
 - H4: FPR self-test globale `≤0,07`, aucun bin `>0,10`;
-- quatre tests de supériorité sous Holm commun, IC BCa et tests exacts appariés;
+- six tests de supériorité sous Holm commun, IC BCa et tests exacts appariés;
 - plafond 32 runs / 60 minutes, sans analyse partielle en cas d'arrêt.
 
-La revendication possible reste limitée à un détecteur opérationnel de changement
-externe. Elle ne vaut ni segmentation, ni inférence générale de causalité ou d'agentivité.
+La campagne complète a rendu un verdict mécanique négatif:
 
-## Porte Claude préparée
+- smoke 12991 vert, 193 tests, projection 31,48 minutes;
+- 16 paires / 32 runs complets en 31,80 minutes;
+- H1 faux: `−0,00182`, IC BCa `[−0,00666; 0,00287]`, p `0,757`, 2/6 bins;
+- H2 faux: TPR externe action `0,37077`; action bat les pixels mais pas no-action;
+- H3 faux: TPR mixte action `0,14266`, aucune supériorité robuste;
+- H4 faux: FPR globale `0,06372`, mais max bin `0,11865`;
+- gardes apprenant et indépendance vraies.
 
-`CLAUDE_REVIEW_REQUEST.md` contient le contexte et le prompt exact. Claude doit écrire
-uniquement `docs/research/reafference_001_review.md`, sans lancer de calcul ni modifier
-un autre fichier. La revue doit auditer la clôture intègre de J6-AR001, la nouveauté des
-graines/mondes, l'indépendance de l'objet, l'équité des baselines, les banques et fuites,
-les seuils, métriques, statistiques, budgets et règles de promotion.
+La revendication de réafférence n'est donc pas établie. REF-001 est close sans
+promotion et sans retuning. Les résultats restent à auditer contradictoirement.
+
+## Porte Claude des résultats préparée
+
+`CLAUDE_REVIEW_REQUEST.md` demande de recalculer H1, les six comparaisons H2/H3 sous
+Holm, les TPR absolues et H4, puis d'auditer les gardes, budgets, fuites, seuils,
+diagnostics et plafond depuis l'export d'intégrité versionné. Aucune promotion n'est
+proposée et aucun retuning sur les graines réservées n'est permis.
 
 ## Contexte durable
 
@@ -83,14 +96,14 @@ les seuils, métriques, statistiques, budgets et règles de promotion.
 - TV-001 et `regional_lp_gain` restent gelés par D-009.
 - J0/J1 physiques restent suspendus sous D-008; D-005 interdit tout nouvel essai moteur
   sur le banc v0.1.
-- Toute promotion REF-001 exigera une seconde revue contradictoire des résultats.
+- La clôture REF-001 doit encore être auditée contradictoirement; aucune promotion
+  n'est possible d'après les portes mécaniques.
 
 ## Actions par acteur
 
-Action Codex: après dépôt de `docs/research/reafference_001_review.md`, intégrer le
-verdict puis implémenter, tester et exécuter uniquement ce qu'il autorise.
+Action Codex: intégrer la revue contradictoire des résultats puis choisir la prochaine
+hypothèse; ne jamais reprendre REF-001.
 Action Anthony: aucune.
-Action Claude: exécuter le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et écrire
-`docs/research/reafference_001_review.md`.
-Blocage: revue contradictoire pré-calcul requise avant implémentation, smoke 12991 et
-campagne 12301..12316.
+Action Claude: exécuter le prompt exact de `CLAUDE_REVIEW_REQUEST.md`.
+Blocage: revue contradictoire requise avant la prochaine direction; aucun calcul
+REF-001 supplémentaire n'est autorisé.

@@ -1,8 +1,11 @@
 # Pré-enregistrement REF-001 — réafférence visuelle et changement externe
 
-Date de gel: 2026-07-20, avant implémentation et tout calcul. Filiation: étape 3 de
-`CODEX_TASK_BRIEF.md`, D-012 et D-013. Aucun monde, artefact ou graine décisionnelle de
-TV-001, J6-R001 ou J6-AR001 n'est réutilisé pour régler ce protocole.
+Date de gel initial: 2026-07-20, avant implémentation et tout calcul. Amendements
+pré-calcul C1–C5 intégrés le 2026-07-26 après la revue contradictoire
+`reafference_001_review.md` et avant toute implémentation, smoke ou graine réservée.
+Filiation: étape 3 de `CODEX_TASK_BRIEF.md`, D-012, D-013 et D-014. Aucun monde,
+artefact ou graine décisionnelle de TV-001, J6-R001 ou J6-AR001 n'est réutilisé pour
+régler ce protocole.
 
 ## Question
 
@@ -197,3 +200,93 @@ construction, sans être réutilisée comme test.
 4. Analyse complète, export auditable et seconde revue Claude avant promotion.
 
 Simulation uniquement sous D-008; aucune action physique, aucun achat, aucun flash.
+
+## Amendements pré-calcul issus de la revue contradictoire
+
+Les amendements ci-dessous sont additifs et prévalent sur toute formulation antérieure
+plus étroite. Ils ont été intégrés sans consulter ni produire de donnée scientifique
+réservée.
+
+### C1 — baseline analytique action-consciente
+
+Une seconde baseline analytique obligatoire, `pixel_change_action`, reçoit la même
+amplitude d'action appliquée que les JEPA. Pour chaque graine et bin, une régression par
+moindres carrés
+
+```text
+pixel_change = intercept + slope * action_amplitude
+```
+
+est ajustée exclusivement sur `self_calibration`. Son score externe est le résidu
+positif `max(pixel_change − prediction_regression, 0)`, calibré et seuillé par la même
+procédure que les autres méthodes. L'amplitude est la variation absolue d'angle réel de
+la tête entre les deux trames, divisée par 160 degrés; aucune information objet ou label
+n'entre dans la régression.
+
+REF-H2 et REF-H3 comparent désormais `action_jepa` séparément à
+`no_action_jepa`, `pixel_change` **et** `pixel_change_action`. Il y a donc six tests de
+supériorité sous une correction Holm commune. Chaque différence doit rester `≥0,10`,
+avec borne BCa basse positive, p corrigée `≤0,05` et `≥5/6` bins favorables. Si l'une
+des deux baselines pixel égale ou bat `action_jepa`, aucune promotion n'est possible.
+
+### C2 — domaine calculable de la garde d'indépendance
+
+La corrélation absolue action–déplacement objet `≤0,05` est calculée uniquement sur le
+corpus et `mixed`, où les deux variances sont non nulles. Pour `external_only`, la
+garde devient structurelle: commande de tête constante conforme au protocole et flux
+RNG objet disjoint du flux RNG d'actions. Une variance nulle là où la corrélation est
+requise rend la campagne non interprétable.
+
+### C3 — exclusion du régime petit-changement
+
+Les paires `self_calibration` et `self_test` proviennent exclusivement de transitions
+où une commande de mouvement non nulle est appliquée. Le critère est structurel:
+l'angle réel final diffère de l'angle réel initial et la commande cible diffère de la
+commande initiale; aucun seuil appris ou réglé sur les scores n'est introduit.
+
+L'export d'audit consigne, par banque, méthode et bin, la distribution de
+`MSE(copie)` ainsi que la relation descriptive score–`MSE(copie)`. Ces diagnostics ne
+participent à aucune porte et ne peuvent déclencher de réglage.
+
+### C4 — équité, recomputabilité et agrégations gelées
+
+Le smoke 12991 doit en plus asserter:
+
+1. des digests identiques d'initialisation et d'ordre de batchs entre les deux JEPA;
+2. un nombre de paramètres identique et une sortie bit-identique, à l'initialisation,
+   entre `action_jepa` alimenté par des actions nulles et `no_action_jepa`;
+3. la recomputabilité au chiffre près de chaque seuil depuis les scores bruts
+   `self_calibration` exportés;
+4. l'absence de colonnes objet ou label dans tout batch modèle.
+
+Pour H1, H2 et H3, un « bin favorable » signifie que la différence moyenne de ce bin
+sur les 16 graines est strictement positive. Pour H4, le plafond par bin porte sur la
+FPR moyenne inter-graines de ce bin. La graine BCa `2026072002` est toujours passée
+explicitement. Les trames de `pixel_change` sont des `uint8` converties une seule fois
+par division par 255.
+
+### C5 — faisabilité temporelle avant graines réservées
+
+Le smoke 12991 exécute une répétition temporelle complète par condition: préparation
+du corpus partagé, entraînement de 4 500 pas et évaluation des cinq banques. Il consigne
+séparément le temps partagé et le temps de chaque condition. Le temps projeté de la
+campagne est:
+
+```text
+32 × (temps_partagé_du_smoke / 2 + moyenne_des_temps_condition)
+```
+
+Si cette projection dépasse 60 minutes, le runner fixe **avant toute ouverture de
+12301..12316** un plafond effectif arrondi au multiple supérieur de cinq minutes avec
+10 % de marge, jamais inférieur à la projection. La projection, la marge, le plafond
+effectif et le digest du présent protocole sont gelés dans le manifeste du smoke.
+Aucune graine réservée ne peut être ouverte tant que ce manifeste n'est pas concordant.
+Le plafond effectif ne peut plus être modifié après ouverture de la première graine.
+
+### Recommandations intégrées sans effet sur les portes
+
+- L'AUC est aussi rapportée par bin.
+- REF-001 clôt cette variante quel que soit son verdict; toute reprise exige une
+  hypothèse, un fichier et des graines neufs.
+- Le rapport final distingue explicitement l'explication de l'ego-motion (H1) de la
+  détection externe (H2–H4). La revendication de réafférence exige les deux.

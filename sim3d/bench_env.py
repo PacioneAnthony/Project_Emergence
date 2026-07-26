@@ -80,6 +80,11 @@ class BenchHeadEnv:
 
         self._qpos_servo = self.model.joint(bench_model.JOINT_SERVO).qposadr[0]
         self._qvel_servo = self.model.joint(bench_model.JOINT_SERVO).dofadr[0]
+        if self.config.room.reafference_object:
+            external_joint = self.model.joint(bench_model.JOINT_EXTERNAL)
+            self._qpos_external = external_joint.qposadr[0]
+        else:
+            self._qpos_external = None
         self._ctrl_servo = self.model.actuator(bench_model.ACT_SERVO).id
         self._adr_range = self.model.sensor(bench_model.SENSOR_RANGE).adr[0]
         self._adr_gyro = self.model.sensor(bench_model.SENSOR_GYRO).adr[0]
@@ -100,6 +105,8 @@ class BenchHeadEnv:
         self._limited_deg = self.config.servo.neutral_deg
 
         self.data.qpos[self._qpos_servo] = 0.0
+        if self._qpos_external is not None:
+            self.data.qpos[self._qpos_external] = 0.0
         self.data.qvel[:] = 0.0
         mujoco.mj_forward(self.model, self.data)
         return self._read_observation()
@@ -153,6 +160,21 @@ class BenchHeadEnv:
 
     def servo_angle_deg(self) -> float:
         return self.config.servo.neutral_deg + math.degrees(float(self.data.qpos[self._qpos_servo]))
+
+    def set_external_object_displacement(self, displacement_m: float) -> None:
+        """Move the REF slide body without exposing it through the observation contract."""
+
+        if self._qpos_external is None:
+            raise RuntimeError("this bench world has no reafference object")
+        half = self.config.room.reafference_travel_m / 2.0
+        self.data.qpos[self._qpos_external] = clamp(float(displacement_m), -half, half)
+        self.data.qvel[self.model.joint(bench_model.JOINT_EXTERNAL).dofadr[0]] = 0.0
+        mujoco.mj_forward(self.model, self.data)
+
+    def external_object_displacement(self) -> float:
+        if self._qpos_external is None:
+            raise RuntimeError("this bench world has no reafference object")
+        return float(self.data.qpos[self._qpos_external])
 
     def _as5600_deg(self) -> float:
         return round(self.servo_angle_deg() / self._as5600_step_deg) * self._as5600_step_deg

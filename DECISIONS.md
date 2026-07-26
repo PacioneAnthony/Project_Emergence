@@ -271,3 +271,59 @@ Conséquences: graines 12301..12316 et smoke 12991 interdits avant revue favorab
 promotion exige une seconde revue des résultats.
 Condition de réouverture: critère tenu à part non identifiable sans oracle d'entraînement,
 baseline simple inadéquate ou revue pré-calcul défavorable.
+
+## D-014 - Autorisation amendée de REF-001
+
+Date: 2026-07-26
+Décision: accepter le verdict contradictoire « AUTORISER AVEC CORRECTIONS BLOQUANTES »
+et intégrer C1–C5 au pré-enregistrement avant code ou calcul.
+Statut: porte pré-calcul franchie sous réserve d'un smoke 12991 entièrement vert.
+Motif: la revue confirme la clôture intègre de J6-AR001 et la validité du contraste de
+réafférence, mais exige une baseline pixel action-consciente, des gardes calculables,
+l'exclusion des paires propres dégénérées, des preuves d'équité/recomputabilité et une
+porte de faisabilité temporelle.
+Données utilisées: documents pré-calcul uniquement; aucune graine 12301..12316, aucun
+smoke et aucune donnée scientifique REF-001.
+Baseline: `no_action_jepa`, `pixel_change` et `pixel_change_action`, chacune comparée
+séparément à `action_jepa` selon les amendements gelés.
+Avis Codex: accepter les cinq corrections; elles ferment des ambiguïtés réelles sans
+changer l'hypothèse après observation de résultats.
+Avis Claude: autoriser l'implémentation et le smoke après intégration additive de C1–C5.
+Arbitrage Anthony: non requis; application de la délégation D-004.
+Conséquences: implémentation et smoke 12991 autorisés; graines 12301..12316 toujours
+interdites avant smoke vert, projection temporelle concordante et manifeste gelé.
+Toute promotion reste interdite avant revue contradictoire des résultats.
+Condition de réouverture: smoke rouge, projection/plafond non concordants, ou violation
+d'une garde; aucune correction n'est alors permise sur les graines réservées.
+
+## D-015 - Clôture expérimentale de REF-001 sans promotion
+
+Date: 2026-07-26
+Décision: clore la variante REF-001 après la campagne complète 12301..12316, sans
+promotion du résidu `action_jepa` comme détecteur de réafférence.
+Statut: verdict mécanique négatif, interprétable, soumis à revue contradictoire des
+résultats pour audit; aucune reprise ou correction sur ces graines.
+Motif: les 32 runs sont complets sous le plafond, mais H1–H4 échouent. L'avantage
+d'erreur propre `no_action − action` vaut `−0,00182` au lieu de `≥0,05`; la TPR action
+vaut `0,37077` en externe pur et `0,14266` en mixte au lieu de `0,75` et `0,70`.
+L'action bat les deux baselines pixel en externe pur, mais ne bat pas le JEPA sans
+action et aucune comparaison mixte n'est robuste. La FPR globale `0,06372` respecte
+le plafond, mais un bin atteint `0,11865 > 0,10`.
+Données utilisées: smoke 12991, 16 paires / 32 runs 12301..12316, cinq banques de
+128 paires par bin et exports complets `reafference_001_analysis.json` /
+`reafference_001_evaluations.json`.
+Baseline: `no_action_jepa`, `pixel_change` et `pixel_change_action`, correction Holm
+commune aux six comparaisons.
+Avis Codex: résultat négatif mais informatif; l'action conditionnée n'explique pas
+mieux l'ego-motion dans ce contraste et ne justifie pas sa complexité face au contrôle
+de même capacité. Aucun retuning de REF-001.
+Avis Claude: revue contradictoire des résultats demandée dans
+`CLAUDE_REVIEW_REQUEST.md`, avec sortie réservée
+`docs/research/reafference_001_results_review.md`; verdict non encore reçu.
+Arbitrage Anthony: non requis pour appliquer les portes gelées.
+Conséquences: aucune promotion; REF-001 est close. Toute nouvelle tentative de
+réafférence exige une hypothèse, un pré-enregistrement, un monde et des graines neufs.
+La direction scientifique suivante ne sera ouverte qu'après audit contradictoire de la
+clôture.
+Condition de réouverture: aucune pour REF-001; seules une erreur d'intégrité démontrée
+par la revue ou une nouvelle hypothèse séparée peuvent justifier un nouveau dossier.
