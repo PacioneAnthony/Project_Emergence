@@ -18,13 +18,17 @@ Lire dans cet ordre:
 10. `docs/research/reafference_001_results.md`
 11. `docs/research/reafference_001_analysis.json`
 12. `docs/research/reafference_001_integrity.json`
-13. `CLAUDE_REVIEW_REQUEST.md`
-14. `DECISIONS.md` — D-014 et D-015
+13. `docs/research/reafference_001_results_review.md`
+14. `docs/research/reafference_002_preregistration.md`
+15. `docs/research/kernel_001_spec.md`
+16. `docs/research/kernel_001_implementation.md`
+17. `CLAUDE_REVIEW_REQUEST.md`
+18. `DECISIONS.md` — D-014 à D-018
 
-REF-001 est maintenant close sous D-015. Ne relancer aucun run, ne modifier aucun seuil
+REF-001 est maintenant close sous D-015/D-016. Ne relancer aucun run, ne modifier aucun seuil
 et ne réutiliser aucune graine 12301..12316. La revue contradictoire des résultats est
-préparée dans `CLAUDE_REVIEW_REQUEST.md`. D-004 délègue à Codex les choix techniques;
-D-008 interdit toute action physique, tout flash et tout achat.
+intégrée avec cinq corrections documentaires. D-004 délègue à Codex les choix
+techniques; D-008 interdit toute action physique, tout flash et tout achat.
 
 ## J6-AR001 — clôture technique
 
@@ -74,20 +78,36 @@ La campagne complète a rendu un verdict mécanique négatif:
 - smoke 12991 vert, 193 tests, projection 31,48 minutes;
 - 16 paires / 32 runs complets en 31,80 minutes;
 - H1 faux: `−0,00182`, IC BCa `[−0,00666; 0,00287]`, p `0,757`, 2/6 bins;
-- H2 faux: TPR externe action `0,37077`; action bat les pixels mais pas no-action;
+- H2 faux: TPR externe action `0,37077`; les succès face aux pixels sont non
+  informatifs à cause d'un décalage de domaine, et action ne bat pas no-action;
 - H3 faux: TPR mixte action `0,14266`, aucune supériorité robuste;
 - H4 faux: FPR globale `0,06372`, mais max bin `0,11865`;
 - gardes apprenant et indépendance vraies.
 
 La revendication de réafférence n'est donc pas établie. REF-001 est close sans
-promotion et sans retuning. Les résultats restent à auditer contradictoirement.
+promotion et sans retuning. La revue a reproduit tous les calculs au chiffre près.
 
-## Porte Claude des résultats préparée
+Corrections durables: les succès pixel externes sont vides par décalage de domaine;
+H4 est instable (`5/16` graines et `16/96` cellules au-dessus des plafonds); une
+collision de trame sans portée existe entre deux banques sur 12312; la garde d'action
+utile doit désormais être exportée; C5 n'a pas amendé le plafond et le temps consigné
+exclut l'évaluation.
 
-`CLAUDE_REVIEW_REQUEST.md` demande de recalculer H1, les six comparaisons H2/H3 sous
-Holm, les TPR absolues et H4, puis d'auditer les gardes, budgets, fuites, seuils,
-diagnostics et plafond depuis l'export d'intégrité versionné. Aucune promotion n'est
-proposée et aucun retuning sur les graines réservées n'est permis.
+## Direction active — REF-002
+
+D-017 maintient l'étape 3 avec une hypothèse neuve: la copie d'efférence requiert un
+transport explicite de la carte spatiale par une commande **relative**, plutôt qu'une
+concaténation de commande absolue au latent global.
+
+REF-002 compare `transport_jepa` à `concat_relative_jepa`, `no_command_jepa`,
+`pixel_change` et `yaw_warp`. Les banques sont appariées par strate de mouvement afin
+qu'aucune baseline ne subisse le décalage de domaine de REF-001. H5 exige en plus que
+permuter ou inverser les commandes dégrade le modèle gelé, preuve que l'action est
+causalement utilisée.
+
+Smoke hors protocole: 13991. Campagne vierge: 13301..13316, 16 triplets / 48 runs.
+Aucun code, smoke ou calcul ne peut commencer avant revue contradictoire favorable du
+pré-enregistrement et intégration de ses corrections.
 
 ## Contexte durable
 
@@ -96,14 +116,29 @@ proposée et aucun retuning sur les graines réservées n'est permis.
 - TV-001 et `regional_lp_gain` restent gelés par D-009.
 - J0/J1 physiques restent suspendus sous D-008; D-005 interdit tout nouvel essai moteur
   sur le banc v0.1.
-- La clôture REF-001 doit encore être auditée contradictoirement; aucune promotion
-  n'est possible d'après les portes mécaniques.
+- La clôture REF-001 est auditée sous D-016; aucune promotion n'est possible.
+
+## KERNEL-001 — infrastructure cognitive persistante
+
+D-018 ouvre une voie d'infrastructure parallèle à REF-002. Le paquet `cognitive/`
+maintient des croyances incertaines et sourcées, segmente des épisodes sans regarder le
+futur, conserve uniquement des références/digests J0, suit les compétences et produit
+des propositions d'expérience sous gardes explicites.
+
+Le replay J0 est idempotent et reprenable. Sessions, rotations d'épisodes et checkpoints
+associés sont transactionnels. Une proposition ne contient aucun champ d'actionnement.
+Les 22 tests dédiés et les 215 tests complets passent dans `.venv`.
+
+Le premier smoke LIFE-001 traverse deux sessions MuJoCo/J0 et une réouverture de base,
+puis valide avec digest la primitive analytique `bounded_head_orientation`. Il prouve le
+câblage, pas l'apprentissage. La suite doit tester régression/récupération et sélection
+d'expérience sans anticiper REF-002, dont la porte Claude reste fermée.
 
 ## Actions par acteur
 
-Action Codex: intégrer la revue contradictoire des résultats puis choisir la prochaine
-hypothèse; ne jamais reprendre REF-001.
+Action Codex: préparer LIFE-001 sur KERNEL-001 et, après revue REF-002, intégrer le
+verdict avant tout code scientifique REF-002; ne jamais reprendre REF-001.
 Action Anthony: aucune.
-Action Claude: exécuter le prompt exact de `CLAUDE_REVIEW_REQUEST.md`.
-Blocage: revue contradictoire requise avant la prochaine direction; aucun calcul
-REF-001 supplémentaire n'est autorisé.
+Action Claude: exécuter le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et écrire
+uniquement `docs/research/reafference_002_review.md`.
+Blocage: revue contradictoire pré-calcul REF-002.

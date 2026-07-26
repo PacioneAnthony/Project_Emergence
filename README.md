@@ -12,10 +12,17 @@ La vision technique est définie dans [DEVELOPMENTAL_ARCHITECTURE.md](DEVELOPMEN
 
 ## Jalon Actif
 
-La branche active est la simulation développementale. DC-003 fournit un premier résultat
-prometteur mais non promu: gains appariés sur 20/20 mondes, évitement du bruit et
-progression graduelle validés, tandis que la porte min-max pré-enregistrée échoue dans des
-mondes hétérogènes. L'étape suivante est une revue statistique avant toute réplication.
+Deux voies complémentaires sont actives en simulation:
+
+- REF-002 teste, après revue contradictoire pré-calcul, si un transport sensorimoteur
+  spatial explicite permet enfin de séparer changement auto-produit et externe;
+- KERNEL-001 fournit la mémoire cognitive persistante qui manquait entre les événements,
+  modèles, compétences et expériences. La première tranche est implémentée et testée;
+  LIFE-001 devra maintenant la brancher à une boucle de vie simulée multi-session.
+
+REF-001 est close sans promotion: une concaténation de commande absolue au latent global
+n'explique pas mieux le mouvement propre et n'établit pas la réafférence. Aucun calcul
+REF-002 n'est autorisé avant la revue de Claude Opus 5.
 
 Le matériel J0 est conservé mais suspendu:
 
@@ -47,6 +54,7 @@ La capture physique passe uniquement par `windows_client/j0_capture.py` et les c
 ## Arborescence
 
 - `j0/` : acquisition, protocole, recorder, replay et rapports J0 ;
+- `cognitive/` : croyances, mémoire épisodique, compétences, propositions sûres et reprise ;
 - `peripheral/brain_stem/` : firmware Arduino Mega EMG1 unique ;
 - `windows_client/` : flash et point d'entrée de capture Windows ;
 - `tests/` : suite de tests active ;

@@ -1,7 +1,8 @@
 # Résultats REF-001 — réafférence visuelle
 
 Simulation uniquement sous D-008. Variante close après cette campagne.
-Aucune promotion avant revue contradictoire des résultats.
+Revue contradictoire terminée: `AUTORISER AVEC CORRECTIONS` documentaires.
+REF-001 ne peut pas être promu.
 
 ## Intégrité
 
@@ -9,6 +10,9 @@ Aucune promotion avant revue contradictoire des résultats.
 - Smoke 12991 vert; corpus, banques, initialisations, ordres de batchs,
   capacités, budgets et seuils recomputables contrôlés.
 - Temps mural cumulé consigné: `31.80` minutes.
+- C5 non déclenché: `amended=false`, plafond effectif inchangé à 60 minutes.
+- Le temps consigné additionne préparation et entraînements, hors `evaluate_seed`;
+  cette assiette ne peut affecter la décision avec plus de 28 minutes de marge.
 
 ## Portes mécaniques
 
@@ -18,6 +22,27 @@ Aucune promotion avant revue contradictoire des résultats.
 - H4, spécificité: `False`.
 - Gardes apprenant / indépendance: `True` / `True`.
 - Éligible à la revue contradictoire: `False`.
+
+## Corrections documentaires issues de la revue
+
+- Les comparaisons `action_jepa − pixel` qui passent en `external_only` sont
+  **non informatives**. `pixel_change` y obtient une TPR exactement `0,0000` sur
+  12 288 paires parce que son seuil est calibré avec une tête mobile puis appliqué à
+  une banque tête tenue (AUC `0,063`). Ce décalage de domaine favorise le JEPA et ne
+  constitue aucun soutien partiel à la réafférence.
+- En `mixed`, seul régime où la baseline pixel reste dans son domaine,
+  `pixel_change=0,13924` et `action_jepa=0,14266` sont indiscernables. La complexité
+  n'est pas payée indépendamment des portes absolues.
+- H4 passe sa FPR globale (`0,063721`) mais échoue le plafond par bin (`0,118652`).
+  `5/16` graines dépassent `0,07` (maximum `0,1797`) et `16/96` cellules graine×bin
+  dépassent `0,10` (maximum `0,5234`): le seuil ne généralise pas de façon stable.
+- Une collision SHA-256 unique existe sur 12312 entre une trame de départ
+  `external_only` et `learner_validation` (une paire sur 24 576). Elle ne touche pas
+  l'entraînement ni une métrique partagée; la disjonction corpus↔banques tient sur les
+  16 graines.
+- La variance d'action intra-bin était non nulle partout (minimum `10,12 deg²` selon
+  la banque), mais cette garde n'avait pas d'export numérique. Les protocoles suivants
+  devront l'exporter explicitement.
 
 ## Portée
 

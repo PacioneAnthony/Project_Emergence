@@ -306,9 +306,13 @@ résultats pour audit; aucune reprise ou correction sur ces graines.
 Motif: les 32 runs sont complets sous le plafond, mais H1–H4 échouent. L'avantage
 d'erreur propre `no_action − action` vaut `−0,00182` au lieu de `≥0,05`; la TPR action
 vaut `0,37077` en externe pur et `0,14266` en mixte au lieu de `0,75` et `0,70`.
-L'action bat les deux baselines pixel en externe pur, mais ne bat pas le JEPA sans
-action et aucune comparaison mixte n'est robuste. La FPR globale `0,06372` respecte
-le plafond, mais un bin atteint `0,11865 > 0,10`.
+Les deux comparaisons pixel qui passent en externe pur sont non informatives:
+`pixel_change` y a une TPR exactement nulle par décalage de domaine (seuil calibré tête
+mobile, banque tête tenue; AUC `0,063`). Dans le régime mixte, où la baseline reste
+dans son domaine, `pixel_change=0,13924` et `action_jepa=0,14266` sont statistiquement
+indiscernables. La FPR globale `0,06372` respecte le plafond, mais un bin atteint
+`0,11865 > 0,10`; `5/16` graines dépassent `0,07` et `16/96` cellules graine×bin
+dépassent `0,10` (maximum `0,5234`).
 Données utilisées: smoke 12991, 16 paires / 32 runs 12301..12316, cinq banques de
 128 paires par bin et exports complets `reafference_001_analysis.json` /
 `reafference_001_evaluations.json`.
@@ -317,9 +321,8 @@ commune aux six comparaisons.
 Avis Codex: résultat négatif mais informatif; l'action conditionnée n'explique pas
 mieux l'ego-motion dans ce contraste et ne justifie pas sa complexité face au contrôle
 de même capacité. Aucun retuning de REF-001.
-Avis Claude: revue contradictoire des résultats demandée dans
-`CLAUDE_REVIEW_REQUEST.md`, avec sortie réservée
-`docs/research/reafference_001_results_review.md`; verdict non encore reçu.
+Avis Claude: `AUTORISER AVEC CORRECTIONS` documentaires. Le recalcul indépendant est
+identique au chiffre près; REF-001 ne peut pas être promu.
 Arbitrage Anthony: non requis pour appliquer les portes gelées.
 Conséquences: aucune promotion; REF-001 est close. Toute nouvelle tentative de
 réafférence exige une hypothèse, un pré-enregistrement, un monde et des graines neufs.
@@ -327,3 +330,91 @@ La direction scientifique suivante ne sera ouverte qu'après audit contradictoir
 clôture.
 Condition de réouverture: aucune pour REF-001; seules une erreur d'intégrité démontrée
 par la revue ou une nouvelle hypothèse séparée peuvent justifier un nouveau dossier.
+
+## D-016 - Intégration de la revue des résultats REF-001
+
+Date: 2026-07-26
+Décision: accepter le verdict contradictoire et intégrer ses cinq corrections
+documentaires sans rouvrir REF-001.
+Statut: clôture auditée et définitive sous D-004.
+Motif: la revue indépendante reproduit au chiffre près H1–H4, les six tests sous Holm,
+les 384 seuils et les temps; elle confirme l'intégrité et le verdict négatif.
+Données utilisées: exports gelés et artefacts d'audit existants uniquement; aucun
+nouvel entraînement ni calcul décisionnel.
+Corrections intégrées:
+
+1. les succès pixel en externe pur sont déclarés non informatifs à cause du décalage
+   de domaine; le régime mixte montre une égalité avec la baseline pixel;
+2. l'échec H4 est attribué au plafond par bin et à son instabilité inter-graines,
+   malgré une FPR globale conforme;
+3. une collision d'image unique `external_only` / `learner_validation` sur 12312 est
+   consignée; corpus et banques restent parfaitement disjoints;
+4. la garde « action utile » est satisfaite structurellement mais non exportée
+   numériquement; dette de traçabilité imposée aux protocoles suivants;
+5. C5 n'a pas amendé le plafond et les 31,80 minutes consignées excluent l'évaluation.
+
+Avis Codex: accepter sans réserve; aucune correction ne change une porte ou une
+conclusion. La prochaine hypothèse doit être neuve et ne peut citer les comparaisons
+pixel externes comme soutien partiel.
+Avis Claude: `AUTORISER AVEC CORRECTIONS`; aucune promotion, aucun retuning.
+Arbitrage Anthony: non requis.
+Conséquences: REF-001 est définitivement close et la porte vers la conception d'une
+hypothèse neuve est rouverte. Aucune graine 12301..12316 ne peut être réutilisée.
+Condition de réouverture: aucune.
+
+## D-017 - Passage à REF-002, transport sensorimoteur spatial
+
+Date: 2026-07-26
+Décision: rester sur l'étape 3 et pré-enregistrer REF-002 avant tout code ou calcul.
+Statut: hypothèse neuve soumise à revue contradictoire pré-calcul.
+Motif: REF-001 exclut l'idée qu'une commande absolue concaténée à un latent global
+suffise. REF-002 teste un mécanisme distinct: transport explicite d'une carte spatiale
+par une commande relative, avec contrôle de même information sans biais de transport
+et baseline géométrique `yaw_warp`.
+Données utilisées: conclusion qualitative auditée de REF-001 uniquement; aucune valeur
+12301..12316 ne règle un seuil, budget ou hyperparamètre REF-002.
+Baseline: `concat_relative_jepa`, `no_command_jepa`, `pixel_change` et `yaw_warp`, avec
+calibration appariée par strate de mouvement.
+Avis Codex: ne pas avancer au jalon développemental suivant tant que la séparation
+auto-produit/externe n'est pas acquise; tester d'abord l'inductive bias spatial et
+l'utilisation causale de la commande.
+Avis Claude: à obtenir sur `reafference_002_preregistration.md` avant code.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: smoke 13991 et graines 13301..13316 interdits avant revue favorable et
+intégration des corrections bloquantes. REF-001 demeure close.
+Condition de réouverture: revue défavorable, baseline géométrique inéquitable,
+appariement de domaine non démontrable ou budget temporel non faisable.
+
+## D-018 - Mise en place de KERNEL-001
+
+Date: 2026-07-26
+Décision: ajouter un noyau cognitif persistant minimal, indépendant des modèles appris,
+pour relier événements, croyances, épisodes, compétences et propositions d'expérience.
+Statut: infrastructure implémentée et vérifiée; aucune revendication scientifique.
+Motif: J0 garantit une excellente mémoire brute append-only, mais le projet ne possédait
+aucun état cognitif dérivé persistant entre sessions. Continuer à multiplier les
+modèles isolés ne suffisait pas à construire l'organisme développemental visé.
+Données utilisées: contrats J0 existants, architecture développementale et invariants
+de sécurité D-005/D-008; aucun résultat REF-002 et aucune graine réservée.
+Architecture: `BeliefState`, `EpisodicMemory`, `CausalBoundaryPolicy`,
+`SafeExperimentCatalog` et `CognitiveKernel`. SQLite conserve uniquement références,
+digests, états et snapshots; les données sensorielles restent dans J0.
+Sécurité: aucune méthode d'actionnement; les propositions sont bloquées par arrêt
+d'urgence, santé matérielle, mise à jour de modèle, quota, primitive, croyances, risque,
+coût, cadence et quota de session.
+Vérification: 22 tests dédiés couvrent reprise après crash, causalité, retard, domaines
+d'horloge, idempotence du replay, version de schéma, compétences, modèles et gardes. Un
+smoke LIFE-001 traverse deux sessions MuJoCo/J0 et valide une primitive analytique avec
+digest. Les 215 tests complets du dépôt sont verts dans `.venv`.
+Avis Codex: cette couche manquait pour transformer les acquis scientifiques futurs en
+développement cumulatif, réversible et auditable. Elle reste volontairement neutre
+vis-à-vis de JEPA, LNN et LLM.
+Avis Claude: non requis pour l'implémentation infrastructurelle initiale; une revue
+architecturale contradictoire sera utile avant toute délégation d'action ou politique
+apprise.
+Arbitrage Anthony: accord explicite donné pour commencer la mise en place.
+Conséquences: LIFE-001 peut être préparé en simulation avec estimateurs simples. La
+porte pré-calcul REF-002 demeure entièrement inchangée.
+Condition de réouverture: test d'injection de panne révélant une incohérence,
+duplication de données brutes, proposition contournant une garde ou besoin démontré
+d'un changement de schéma.

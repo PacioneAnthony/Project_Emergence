@@ -20,7 +20,14 @@ sous D-008.
 | Campagne REF-001 | Complète: 16 paires / 32 runs, 31,80 min consignées |
 | Résultat REF-001 | H1–H4 échouent; gardes apprenant et indépendance passent |
 | Décision | D-015: variante close sans promotion ni retuning |
-| Porte courante | Revue contradictoire des résultats Claude |
+| Revue résultats REF-001 | `AUTORISER AVEC CORRECTIONS`; recalcul identique |
+| Direction | D-017: REF-002, transport sensorimoteur spatial explicite |
+| Pré-enregistrement REF-002 | Gelé avant code dans `reafference_002_preregistration.md` |
+| Porte courante | Revue contradictoire pré-calcul REF-002 |
+| KERNEL-001 | Noyau cognitif persistant minimal implémenté sous D-018 |
+| Vérification KERNEL-001 | 22 tests dédiés; 215 tests complets verts dans `.venv` |
+| LIFE-001 smoke | Deux sessions MuJoCo/J0 et reprise; primitive analytique validée |
+| Prochaine intégration | LIFE-001: régression/récupération et choix d'expérience |
 
 ## Clôture de J6-AR001
 
@@ -55,23 +62,28 @@ amendé. La campagne 12301..12316 a ensuite terminé 32/32 runs en 31,80 minutes
 H1 échoue (`−0,00182`, 2/6 bins favorables), H2 échoue (TPR externe `0,37077`), H3
 échoue (TPR mixte `0,14266`) et H4 échoue sur le plafond par bin (`0,11865` malgré une
 FPR globale `0,06372`). Les deux apprenants apprennent et les gardes d'indépendance
-passent. L'action bat les baselines pixel en externe pur, mais pas le JEPA de même
-capacité sans action; la complexité n'est donc pas payée.
+passent.
 
-## Prompt court pour Claude
+La revue contradictoire reproduit tous les calculs au chiffre près. Les comparaisons
+pixel « gagnées » en externe pur sont non informatives: `pixel_change` y a une TPR
+exactement nulle à cause d'un décalage de domaine entre calibration tête mobile et test
+tête tenue. En mixte, régime apparié, `pixel_change=0,13924` égale
+`action_jepa=0,14266`. H4 révèle aussi une instabilité réelle: `5/16` graines dépassent
+la FPR globale et `16/96` cellules dépassent `0,10`.
 
-```text
-Effectue la revue des résultats demandée dans CLAUDE_REVIEW_REQUEST.md. Écris
-uniquement docs/research/reafference_001_results_review.md. Ne lance aucun nouvel
-entraînement et ne modifie aucun autre fichier.
-```
+Exception d'audit sans portée décisionnelle: une trame de départ de `external_only`
+entre en collision avec `learner_validation` sur 12312; aucune image du corpus
+d'entraînement ne collisionne avec une banque. La garde « action utile » était
+satisfaite structurellement mais sans export chiffré. C5 n'a pas été déclenché
+(`amended=false`), et les 31,80 minutes excluent le temps d'évaluation.
 
 ## Actions par acteur
 
-Action Codex: maintenir REF-001 close sans promotion; après dépôt de la revue des
-résultats, intégrer son audit et choisir seul la prochaine hypothèse autorisée.
+Action Codex: maintenir REF-001 close; préparer LIFE-001 sans contourner la porte
+REF-002 et sans relier KERNEL-001 à un actionneur physique.
 Action Anthony: aucune.
-Action Claude: exécuter le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et auditer les
-résultats REF-001 sans retuning.
-Blocage: revue contradictoire des résultats requise avant toute nouvelle direction ou
-revendication; REF-001 elle-même est close.
+Action Claude: auditer `docs/research/reafference_002_preregistration.md` avec le prompt
+exact de `CLAUDE_REVIEW_REQUEST.md`.
+Blocage: revue pré-calcul REF-002; aucun code, smoke 13991 ou graine 13301..13316 avant
+verdict favorable et corrections intégrées. Ce blocage ne concerne pas LIFE-001 tant
+qu'il n'implémente, ne calibre ni n'évalue aucun composant REF-002.
