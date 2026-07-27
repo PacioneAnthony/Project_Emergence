@@ -53,8 +53,11 @@ sous D-008.
 | Revue LIFE-010 | `AUTORISER AVEC CORRECTIONS BLOQUANTES`; B1–B7 intégrées sous D-039 |
 | LIFE-010 | Close sous D-040; step_hold devient inéligible à risque 0,75 > 0,50 |
 | Intégrité LIFE-010 | Début 18191 seulement; aucune métrique ou banque réservée |
-| LIFE-011 | Pré-enregistrement prêt sous D-041; plans 30°..150° et préflight de garde |
-| Prochaine porte | Verdict Claude Opus 5 pré-calcul LIFE-011 |
+| Revue LIFE-011 | `AUTORISER AVEC CORRECTIONS BLOQUANTES`; B1–B6 intégrées sous D-042 |
+| LIFE-011 | Close sous D-043; marge settling minimale 4,4039 % < 5 % |
+| Intégrité LIFE-011 | Préflights verts; aucun professeur ni banque 18501+ |
+| LIFE-012 | Pré-enregistrement prêt sous D-044; plateaux réalisés à coût 240° |
+| Prochaine porte | Verdict Claude Opus 5 pré-calcul LIFE-012 |
 
 ## Clôture de J6-AR001
 
@@ -144,8 +147,8 @@ REF-003 reste un non-résultat technique.
 
 ## Actions par acteur
 
-Action Codex: préserver LIFE-009/LIFE-010 closes et attendre le verdict LIFE-011.
-Action Anthony: transmettre `docs/research/life_011_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_011_review.md`, sans calcul.
-Blocage: code, smoke et banques LIFE-011 interdits avant verdict; LIFE-010 reste close.
+Action Codex: préserver LIFE-011 close et attendre le verdict LIFE-012.
+Action Anthony: transmettre `docs/research/life_012_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_012_review.md`, sans calcul.
+Blocage: tout code ou calcul LIFE-012 interdit avant verdict; LIFE-011 reste close.
 Toute suite REF exige protocole, monde et graines neufs.

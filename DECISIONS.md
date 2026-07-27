@@ -1090,3 +1090,59 @@ Conséquences: Codex s'arrête avant code. Toute autorisation future dépend du 
 promotion toujours soumise à revue de résultats.
 Condition de réouverture: corrections Claude, plan encore inéligible, perte de
 complémentarité, baseline insuffisante ou changement d'objectif général.
+
+## D-042 - Intégration de la revue pré-calcul LIFE-011
+
+Date: 2026-07-27
+Décision: accepter `AUTORISER AVEC CORRECTIONS BLOQUANTES` et intégrer B1–B6 avant
+toute exécution LIFE-011.
+Motif: les plans v2 corrigeaient la garde mais perdaient leur complémentarité réalisée
+sous le limiteur. Le triplet v3 conserve 32 pas, 480°, retour 90° et bornes 30°..150°,
+tout en séparant pas mobiles et renversements. La revue impose aussi la plaque de marge
+avant le professeur, l'invariant par essai, la décomposition mobile/inerte et une
+comptabilité statistique non ambiguë.
+Avis Claude: implémentation puis smoke `18491..18496` autorisés après intégration.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: les banques `18501..18532`, `18541..18548` et `18601..18624` restent
+interdites tant que les dix portes smoke et tous les exports obligatoires ne sont pas
+verts.
+Condition de réouverture: aucune métrique réservée avant manifeste smoke vert; aucune
+promotion avant revue contradictoire des résultats.
+
+## D-043 - Arrêt LIFE-011 sur la marge minimale settling
+
+Date: 2026-07-27
+Décision: clore LIFE-011 au terme de sa plaque de marge, sans professeur ni reprise.
+Statut: non-résultat de qualification; aucune banque réservée ouverte.
+Résultat: porte 5 verte; ancrage greedy seule principale; porte 7 verte. La porte 6
+échoue parce que la marge oracle minimale de `settling_dominant` vaut `4,4039 %`,
+contre `5 %` exigés, malgré une médiane globale de `16,8853 %`.
+Intégrité: 18/18 préflights verts, risque `0,0`, coût `0,09375`, complémentarité v3
+verte, aucune violation de garde. Digest de plaque:
+`dd3ce54c7b5380f4fb5d2952e986a5e7869e993259580eabcf9dfc288484bb7d`.
+Avis Claude: le protocole B2 impose l'arrêt avant professeur sur porte 6 rouge.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: 18501..18624 restent vierges. LIFE-011 n'évalue pas la politique apprise.
+Un successeur doit expliquer comment il augmente l'opportunité de sélection dans le
+régime settling sans relâcher post hoc le seuil observé.
+Condition de réouverture: aucune sous LIFE-011.
+
+## D-044 - Pré-enregistrement LIFE-012 avec plateaux réalisés
+
+Date: 2026-07-27
+Décision: proposer un nouvel essai sans relâcher les portes LIFE-011.
+Statut: protocole et demande de revue prêts; aucun code ou calcul LIFE-012.
+Plans: coût commun réduit de 480° à 240° pour permettre des cibles atteintes et des
+maintiens réalisés. Au nominal, step-settle/reversal/micro séparent 20/24/32 pas mobiles,
+2/4/8 renversements et 6/4/0 maintiens hors neutre.
+Motif: 18496 montre que l'oracle reconnaît l'utilité de step-hold mais que son avantage
+reste 4,4039 %. Le plan v3 ne contient que deux maintiens hors neutre. LIFE-012 teste
+si une excitation d'établissement réelle crée une opportunité uniforme, sans transformer
+le seuil observé en succès.
+Graines proposées: 18791..18796, 18801..18832, 18841..18848, 18901..18924;
+statistique 2026072705.
+Avis Claude: revue contradictoire pré-calcul obligatoire.
+Arbitrage Anthony: non requis pour la rédaction sous D-004.
+Conséquences: code et graines LIFE-012 interdits avant verdict.
+Condition de réouverture: correction Claude, complémentarité invalide, dilution
+excessive ou mécanisme settling non plausible.

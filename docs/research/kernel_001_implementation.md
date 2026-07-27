@@ -127,8 +127,10 @@ LIFE-009 a raccordé une compétence et un sélecteur appris, puis s'est arrêt�
 sous D-037: la marge oracle de `2,383 %` reste sous la porte `10 %`. Aucune banque
 réservée n'a été ouverte. LIFE-010 est pré-enregistrée sous D-038 avec une compétence
 résiduelle protégée et trois plans équicûteux, mais son premier smoke s'est arrêté sous
-D-040 lorsque step_hold est devenu inéligible à risque 0,75. LIFE-011 recentre les plans
-sans abaisser la garde et attend une nouvelle revue pré-calcul.
+D-040 lorsque step_hold est devenu inéligible à risque 0,75. LIFE-011 a corrigé la garde
+et obtenu une marge oracle médiane de 16,8853 %, mais D-043 l'a fermée parce que le
+minimum settling reste `4,4039 % < 5 %`. LIFE-012 propose des plateaux d'établissement
+réalisés à coût 240° et attend une nouvelle revue pré-calcul.
 
 Les smokes LIFE certifient le câblage persistant, la régression/récupération et le choix
 à partir d'observations. Ils ne démontrent ni apprentissage d'une nouvelle compétence,

@@ -1,7 +1,7 @@
 # LIFE-011 — curriculum résiduel avec éligibilité persistante
 
 Date: 2026-07-27
-Statut: pré-enregistrement proposé; aucun code, smoke ou calcul LIFE-011 autorisé
+Statut: close au smoke; porte 6 rouge à `4,4039 % < 5 %` dans `settling_dominant`
 Portée: simulation MuJoCo uniquement
 
 ## Origine et séparation
@@ -287,3 +287,103 @@ l'ingénieur, sous régimes mono-facteur et évaluation de même distribution. I
 démontrerait ni découverte de plans/besoins, variation mécanique réaliste, réafférence
 visuelle, transfert physique, curiosité générale ou conscience.
 
+## Amendements pré-calcul issus de la revue LIFE-011
+
+Date d'intégration: 2026-07-27. Ces amendements B1–B6 sont additifs et priment sur toute
+formulation antérieure incompatible. Aucun calcul LIFE-011 n'a été lu avant leur gel.
+
+### B1 — complémentarité de l'excitation réalisée et triplet v3
+
+Les plans v2 sont retirés avant code: sous la rampe interne, ils produisaient tous
+`24` pas mobiles, `8` pas inertes et `288°` de déplacement au nominal. LIFE-011 gèle:
+
+```text
+probe_step_hold_v3 : (150 ×7, 30 ×7, 150 ×7, 30 ×7, 90 ×4)
+probe_reversal_v3  : (60,60,90,90,120,120,90,90) ×4
+probe_micro_v3     : (75,90,105,90) ×8
+```
+
+Leurs primitives portent les mêmes suffixes `_bounded_servo`. Chaque plan fait 32 pas,
+coûte 480° commandés, retourne à 90° et reste dans `[30°,150°]`. Au nominal, les
+indicateurs `(n_mobiles, n_renversements, n_maintiens_hors_neutre,
+déplacement_réalisé)` valent respectivement `(28,4,2,336°)`, `(32,8,0,384°)` et
+`(32,16,0,384°)`.
+
+Avant le smoke, ces quatre indicateurs sont recalculés sur `_limited_deg` aux cadences
+`4,8`, `12,0` et `14,4°/pas`. Pour chaque paire et chaque cadence, au moins un indicateur
+doit différer, avec un ordre relatif qui ne s'inverse pas entre cadences. L'échec de
+cette porte de construction clôt LIFE-011 sans exécution.
+
+### B2 — plaque de marge exécutée en premier
+
+La seule marge oracle antérieure vaut 2,02 % face à round-robin dans LIFE-009, sous un
+banc uniforme, des plans équicûteux et 24 cycles pour trois options. LIFE-011 cherche à
+l'augmenter par la compétence résiduelle protégée et une cadence de renversement
+effectivement distincte, sans garantie que ce mécanisme suffise au seuil de 15 %.
+
+Le smoke est scindé:
+
+1. plaque de marge: préflight, banque privée, `round_robin`,
+   `greedy_public_residual` et oracle, sur les six graines;
+2. décision immédiate des portes 5, 6 et 7;
+3. seulement si elles sont vertes, plaque de chronométrage: professeur `24×3`, ajustement
+   reproductible, trois politiques restantes, politique apprise, 25 évaluations,
+   analyses et digests.
+
+Si la porte 6 est rouge, le manifeste exporte malgré tout, pour les six graines smoke
+seulement, la marge par graine et régime ainsi que la matrice
+`plan préféré par l'oracle × régime`. Aucune banque réservée n'est alors ouverte.
+
+### B3 — décomposition mobile/inerte
+
+Une transition est mobile lorsque `_limited_deg` change au pas correspondant. La fraction
+inerte exacte du banc privé v3 est exportée par plan et globalement. Pour chaque graine,
+la MAE du prior, la MAE finale round-robin et la marge oracle sont calculées sur le banc
+complet, ses transitions mobiles seules et ses transitions inertes seules. Les portes 5
+et 6 restent évaluées sur le banc complet. Une décomposition absente est un arrêt.
+
+### B4 — invariant d'exposition par essai
+
+Chaque essai de LIFE-011, dans tout magasin temporaire ou principal — préflight, banque
+privée, branche, smoke, développement, validation et test — doit vérifier:
+
+```text
+boundary_exposure <= 0.50
+motor_cost <= 0.80
+```
+
+La vérification intervient au résumé de l'essai. Toute violation clôt LIFE-011 sans
+relèvement de seuil ni reprise. Le préflight de profondeur deux reste le test de bout en
+bout proposition→garde.
+
+### B5 — statut d'intégrité de l'éligibilité
+
+Les cibles v3 évitent par construction la zone de marge de 10°. L'éligibilité persistante
+et le préflight sont des assertions d'intégrité, pas une porte scientifique. LIFE-011 ne
+revendiquera pas avoir démontré une compatibilité curriculum–garde.
+
+Pour les trois candidates, `predicted_risk=0,0` et `motor_cost=0,09375`: ces colonnes de
+variance nulle reçoivent l'échelle `1,0`. `life006_transparent_score` n'a plus que quatre
+termes actifs: `epistemic_gain + learning_progress + 0,25·novelty +
+0,5·controllability`. Cette faiblesse accompagne l'interprétation de P2.
+
+### B6 — ancrage dynamique et familles statistiques
+
+La porte 7 s'écrit:
+
+```text
+AUC_moyenne(greedy_public_residual) > AUC_moyenne(round_robin)
+```
+
+L'AUC basse étant meilleure, round-robin devient alors co-principale; sinon greedy reste
+seule principale. La famille Holm P2 contient toujours exactement
+`greedy_uncertainty`, `round_robin`, `life006_transparent_score` et `uniform_random`.
+
+Le plancher d'effet `>=3 %` face à round-robin appartient à P1 et s'applique dans les
+deux cas d'ancrage, en plus de P2. Si round-robin est co-principale, elle doit également
+satisfaire `>=5 %`, `16/24`, le signe favorable dans chaque régime et porte P3 à quatre
+tests.
+
+Le rapport exportera aussi le coefficient final de la feature angle, le tourniquet ASCII
+initial de greedy, les bins de nouveauté v3, l'asymétrie de l'oracle et inclura les 18
+essais de préflight dans la projection.

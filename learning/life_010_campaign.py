@@ -123,21 +123,38 @@ class Life010Run:
         *,
         organism: Life010Organism,
         run_id: str,
+        catalog_builder=build_life010_catalog,
+        activator_builder=build_life010_base_activator,
+        experiments=LIFE010_EXPERIMENTS,
+        plans=LIFE010_PLANS,
+        primitives=LIFE010_PRIMITIVES,
+        motif_by_experiment=EXPERIMENT_MOTIF,
+        seed_namespace: str = "life010-primitive-v1",
+        protocol_name: str = "life-010-protected-curriculum",
+        invariant_limits: tuple[float, float] | None = None,
+        safety_context: SafetyContext = SAFE_CONTEXT,
     ) -> None:
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=False)
         self.organism = organism
         self.run_id = run_id
-        self.catalog = build_life010_catalog()
-        self.base_activator = build_life010_base_activator()
+        self.experiments = tuple(experiments)
+        self.primitives = dict(primitives)
+        self.motif_by_experiment = dict(motif_by_experiment)
+        self.seed_namespace = seed_namespace
+        self.protocol_name = protocol_name
+        self.invariant_limits = invariant_limits
+        self.safety_context = safety_context
+        self.catalog = catalog_builder()
+        self.base_activator = activator_builder()
         self.forced_activator = ForcedChoiceActivator(
             self.base_activator,
-            allowed_experiments=LIFE010_EXPERIMENTS,
+            allowed_experiments=self.experiments,
         )
         self.data_root = self.root / "j0"
         self.executor = BoundedMujocoExecutor(
             self.data_root,
-            plans=LIFE010_PLANS,
+            plans=plans,
             bench_config_factory=life010_config_factory(organism),
         )
         self.supervisor = PersistentDevelopmentSupervisor(
@@ -149,7 +166,7 @@ class Life010Run:
             f"session-{run_id}",
             started_at_ns=1_000_000_000,
             metadata={
-                "purpose": "life-010-protected-curriculum",
+                "purpose": protocol_name,
                 "organism_seed": organism.seed,
                 "organism_digest": organism.digest(),
                 "regime": organism.regime,
@@ -176,7 +193,7 @@ class Life010Run:
             execution_id=f"execution-{label}",
             j0_session_id=f"j0-{label}",
             seed=stable_seed(
-                "life010-primitive-v1",
+                self.seed_namespace,
                 self.organism.seed,
                 cycle_index,
                 experiment_id,
@@ -186,16 +203,28 @@ class Life010Run:
             self.kernel,
             request,
             now_ns=2_000_000_000 + cycle_index * 1_000_000_000,
-            safety=SAFE_CONTEXT,
+            safety=self.safety_context,
         )
         if outcome.status != "complete" or outcome.experiment_id != experiment_id:
-            raise AssertionError("LIFE-010 cycle did not complete with its selected plan")
+            raise AssertionError(
+                f"{self.protocol_name} cycle did not complete with its selected plan"
+            )
         execution = self.kernel.memory.experiment_execution(request.execution_id)
         if execution is None or execution["status"] != "complete":
-            raise AssertionError("LIFE-010 execution is not complete")
+            raise AssertionError(f"{self.protocol_name} execution is not complete")
+        if self.invariant_limits is not None:
+            summary = json.loads(execution["result_summary_json"])
+            max_risk, max_cost = self.invariant_limits
+            if (
+                float(summary["boundary_exposure"]) > max_risk
+                or float(summary["motor_cost"]) > max_cost
+            ):
+                raise AssertionError(
+                    f"{self.protocol_name} per-trial guard invariant failed"
+                )
         transitions = transitions_from_life010_session(
             execution["session_ref"],
-            motif=EXPERIMENT_MOTIF[experiment_id],
+            motif=self.motif_by_experiment[experiment_id],
         )
         previous = 90.0
         realized = 0.0
@@ -291,15 +320,18 @@ def run_life010_branch(
     experiment_id: str,
     cycle_index: int,
     parent: Path,
+    run_options: Mapping[str, Any] | None = None,
+    temporary_prefix: str = "life010",
 ) -> TrialExecution:
     with tempfile.TemporaryDirectory(
-        prefix=f"life010-branch-{cycle_index:02d}-{experiment_id}-",
+        prefix=f"{temporary_prefix}-branch-{cycle_index:02d}-{experiment_id}-",
         dir=parent,
     ) as temporary:
         with Life010Run(
             Path(temporary) / "run",
             organism=organism,
             run_id=f"branch-{cycle_index:02d}-{experiment_id}",
+            **dict(run_options or {}),
         ) as branch:
             result = branch.run_trial(
                 experiment_id,
@@ -328,6 +360,10 @@ def build_life010_teacher(
     organism: Life010Organism,
     private_bank: tuple[DynamicsTransition, ...],
     cycles: int = 24,
+    experiments=LIFE010_EXPERIMENTS,
+    motif_by_experiment=EXPERIMENT_MOTIF,
+    run_options: Mapping[str, Any] | None = None,
+    temporary_prefix: str = "life010",
 ) -> Life010TeacherResult:
     started = time.perf_counter()
     parent = Path(root)
@@ -341,24 +377,29 @@ def build_life010_teacher(
         parent / "main",
         organism=organism,
         run_id=f"teacher-{organism.seed}",
+        **dict(run_options or {}),
     ) as main:
         for cycle_index in range(cycles):
             signals = main.current_signals()
             before = model.mae(private_bank)
             branches: dict[str, TrialExecution] = {}
-            for experiment_id in LIFE010_EXPERIMENTS:
+            for experiment_id in experiments:
                 features = life010_policy_features(
                     model,
                     experiment_id=experiment_id,
                     cycle_index=cycle_index,
                     history=history,
                     signals=signals[experiment_id],
+                    experiments=experiments,
+                    motif_by_experiment=motif_by_experiment,
                 )
                 branch = run_life010_branch(
                     organism,
                     experiment_id=experiment_id,
                     cycle_index=cycle_index,
                     parent=parent,
+                    run_options=run_options,
+                    temporary_prefix=temporary_prefix,
                 )
                 branches[experiment_id] = branch
                 branch_model = model.copy()
@@ -375,8 +416,8 @@ def build_life010_teacher(
                         ),
                     )
                 )
-            selected = LIFE010_EXPERIMENTS[
-                (organism.seed + cycle_index) % len(LIFE010_EXPERIMENTS)
+            selected = experiments[
+                (organism.seed + cycle_index) % len(experiments)
             ]
             replay = main.run_trial(
                 selected,
@@ -431,6 +472,7 @@ class Life010Trajectory:
     realized_displacement_deg: float
     main_counts: Mapping[str, int]
     elapsed_seconds: float
+    diagnostic_curves: Mapping[str, tuple[float, ...]]
 
 
 def _features(
@@ -439,6 +481,8 @@ def _features(
     cycle_index: int,
     history: PolicyHistory,
     signals: Mapping[str, ExperimentSignals],
+    experiments=LIFE010_EXPERIMENTS,
+    motif_by_experiment=EXPERIMENT_MOTIF,
 ) -> dict[str, np.ndarray]:
     return {
         experiment_id: life010_policy_features(
@@ -447,8 +491,10 @@ def _features(
             cycle_index=cycle_index,
             history=history,
             signals=signals[experiment_id],
+            experiments=experiments,
+            motif_by_experiment=motif_by_experiment,
         )
-        for experiment_id in LIFE010_EXPERIMENTS
+        for experiment_id in experiments
     }
 
 
@@ -461,8 +507,11 @@ def _choose_policy(
     signals: Mapping[str, ExperimentSignals],
     learned: ProgressRidgePolicy,
     uniform_rng: np.random.Generator,
+    experiments=LIFE010_EXPERIMENTS,
+    motif_by_experiment=EXPERIMENT_MOTIF,
+    learned_policy_name: str = "learned_protected_progress_ridge_v1",
 ) -> tuple[str, Mapping[str, Any]]:
-    if policy_name == "learned_protected_progress_ridge_v1":
+    if policy_name == learned_policy_name:
         predictions = {
             name: learned.predict(vector)
             for name, vector in _features(
@@ -470,12 +519,18 @@ def _choose_policy(
                 cycle_index=cycle_index,
                 history=history,
                 signals=signals,
+                experiments=experiments,
+                motif_by_experiment=motif_by_experiment,
             ).items()
         }
         choice = sorted(predictions, key=lambda name: (-predictions[name], name))[0]
         return choice, {"policy": policy_name, "predictions": predictions}
     if policy_name == "greedy_public_residual":
-        choice = choose_greedy_public_residual(model)
+        choice = choose_greedy_public_residual(
+            model,
+            experiments=experiments,
+            motif_by_experiment=motif_by_experiment,
+        )
         return choice, {
             "policy": policy_name,
             "public_mae": {
@@ -483,7 +538,11 @@ def _choose_policy(
             },
         }
     if policy_name == "greedy_uncertainty":
-        choice = choose_life010_uncertainty(model)
+        choice = choose_life010_uncertainty(
+            model,
+            experiments=experiments,
+            motif_by_experiment=motif_by_experiment,
+        )
         return choice, {
             "policy": policy_name,
             "uncertainty": {
@@ -491,14 +550,14 @@ def _choose_policy(
             },
         }
     if policy_name == "round_robin":
-        choice = LIFE010_EXPERIMENTS[cycle_index % len(LIFE010_EXPERIMENTS)]
+        choice = experiments[cycle_index % len(experiments)]
         return choice, {"policy": policy_name}
     if policy_name == "life006_transparent_score":
-        scores = {name: transparent_score(signals[name]) for name in LIFE010_EXPERIMENTS}
+        scores = {name: transparent_score(signals[name]) for name in experiments}
         choice = sorted(scores, key=lambda name: (-scores[name], name))[0]
         return choice, {"policy": policy_name, "scores": scores}
     if policy_name == "uniform_random":
-        choice = str(uniform_rng.choice(LIFE010_EXPERIMENTS))
+        choice = str(uniform_rng.choice(experiments))
         return choice, {"policy": policy_name}
     raise KeyError(policy_name)
 
@@ -511,8 +570,17 @@ def run_life010_trajectory(
     policy_name: str,
     learned: ProgressRidgePolicy,
     cycles: int = 24,
+    policy_names=POLICY_NAMES,
+    experiments=LIFE010_EXPERIMENTS,
+    motif_by_experiment=EXPERIMENT_MOTIF,
+    run_options: Mapping[str, Any] | None = None,
+    temporary_prefix: str = "life010",
+    uniform_seed_namespace: str = "life010-uniform-v1",
+    learned_policy_name: str = "learned_protected_progress_ridge_v1",
+    command_cost_deg: float = PLAN_COST_DEG,
+    diagnostic_masks: Mapping[str, tuple[bool, ...]] | None = None,
 ) -> Life010Trajectory:
-    if policy_name not in POLICY_NAMES and policy_name != "oracle":
+    if policy_name not in policy_names and policy_name != "oracle":
         raise KeyError(policy_name)
     started = time.perf_counter()
     model = ProtectedResidualCompetence()
@@ -520,11 +588,22 @@ def run_life010_trajectory(
     choices: list[str] = []
     realized = 0.0
     curve = [model.mae(private_bank)]
+    selected_diagnostics = dict(diagnostic_masks or {})
+    if any(len(mask) != len(private_bank) for mask in selected_diagnostics.values()):
+        raise ValueError("diagnostic masks must match the private bank")
+    diagnostic_curves: dict[str, list[float]] = {
+        name: [
+            model.mae(
+                [item for item, selected in zip(private_bank, mask) if selected]
+            )
+        ]
+        for name, mask in selected_diagnostics.items()
+    }
     public_curve: list[float | None] = [None]
     gaps: list[float] = []
     protection_integrity = True
     uniform_rng = np.random.default_rng(
-        stable_seed("life010-uniform-v1", organism.seed)
+        stable_seed(uniform_seed_namespace, organism.seed)
     )
     run_root = Path(root)
     run_root.parent.mkdir(parents=True, exist_ok=True)
@@ -532,18 +611,21 @@ def run_life010_trajectory(
         run_root,
         organism=organism,
         run_id=f"{policy_name}-{organism.seed}",
+        **dict(run_options or {}),
     ) as main:
         for cycle_index in range(cycles):
             signals = main.current_signals()
             if policy_name == "oracle":
                 progress: dict[str, float] = {}
                 branches: dict[str, TrialExecution] = {}
-                for experiment_id in LIFE010_EXPERIMENTS:
+                for experiment_id in experiments:
                     branch = run_life010_branch(
                         organism,
                         experiment_id=experiment_id,
                         cycle_index=cycle_index,
                         parent=run_root.parent,
+                        run_options=run_options,
+                        temporary_prefix=temporary_prefix,
                     )
                     branches[experiment_id] = branch
                     candidate = model.copy()
@@ -566,6 +648,9 @@ def run_life010_trajectory(
                     signals=signals,
                     learned=learned,
                     uniform_rng=uniform_rng,
+                    experiments=experiments,
+                    motif_by_experiment=motif_by_experiment,
+                    learned_policy_name=learned_policy_name,
                 )
             trial = main.run_trial(
                 selected,
@@ -590,6 +675,16 @@ def run_life010_trajectory(
             if current_public is not None:
                 gaps.append(current_public - current_private)
             curve.append(current_private)
+            for name, mask in selected_diagnostics.items():
+                diagnostic_curves[name].append(
+                    model.mae(
+                        [
+                            item
+                            for item, selected in zip(private_bank, mask)
+                            if selected
+                        ]
+                    )
+                )
             public_curve.append(current_public)
             realized += trial.realized_displacement_deg
             choices.append(selected)
@@ -612,10 +707,13 @@ def run_life010_trajectory(
         rejected_updates=model.rejected_updates,
         protection_integrity=protection_integrity,
         public_private_median_gap=float(np.median(gaps)) if gaps else 0.0,
-        command_cost_deg=cycles * PLAN_COST_DEG,
+        command_cost_deg=cycles * command_cost_deg,
         realized_displacement_deg=realized,
         main_counts=counts,
         elapsed_seconds=time.perf_counter() - started,
+        diagnostic_curves={
+            name: tuple(values) for name, values in diagnostic_curves.items()
+        },
     )
 
 

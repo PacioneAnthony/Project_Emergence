@@ -377,10 +377,13 @@ def execute_direct_plan(
     *,
     experiment_id: str,
     execution_seed: int,
+    plans: Sequence[BoundedPrimitivePlan] = LIFE010_PLANS,
+    primitives: Mapping[str, str] = LIFE010_PRIMITIVES,
+    motif_by_experiment: Mapping[str, str] = EXPERIMENT_MOTIF,
 ) -> tuple[DynamicsTransition, ...]:
     plan = next(
-        plan for plan in LIFE010_PLANS
-        if plan.primitive == LIFE010_PRIMITIVES[experiment_id]
+        plan for plan in plans
+        if plan.primitive == primitives[experiment_id]
     )
     env = BenchHeadEnv(life010_bench_config(organism, execution_seed))
     try:
@@ -400,7 +403,7 @@ def execute_direct_plan(
                     previous_command_delta_deg=previous_target - target_before_previous,
                     next_angle_deg=observation.as5600_deg,
                     sequence_id=sequence_id,
-                    motif=EXPERIMENT_MOTIF[experiment_id],
+                    motif=motif_by_experiment[experiment_id],
                 )
             )
             angle_before_previous = previous_angle
@@ -414,20 +417,29 @@ def execute_direct_plan(
 
 def build_life010_private_bank(
     organism: Life010Organism,
+    *,
+    experiments: Sequence[str] = LIFE010_EXPERIMENTS,
+    plans: Sequence[BoundedPrimitivePlan] = LIFE010_PLANS,
+    primitives: Mapping[str, str] = LIFE010_PRIMITIVES,
+    motif_by_experiment: Mapping[str, str] = EXPERIMENT_MOTIF,
+    seed_namespace: str = "life010-private-bank-v1",
 ) -> tuple[DynamicsTransition, ...]:
     result: list[DynamicsTransition] = []
     for repetition in range(2):
-        for experiment_id in LIFE010_EXPERIMENTS:
+        for experiment_id in experiments:
             result.extend(
                 execute_direct_plan(
                     organism,
                     experiment_id=experiment_id,
                     execution_seed=stable_seed(
-                        "life010-private-bank-v1",
+                        seed_namespace,
                         organism.seed,
                         repetition,
                         experiment_id,
                     ),
+                    plans=plans,
+                    primitives=primitives,
+                    motif_by_experiment=motif_by_experiment,
                 )
             )
     if len(result) != 192:
@@ -442,11 +454,13 @@ def life010_policy_features(
     cycle_index: int,
     history: PolicyHistory,
     signals: ExperimentSignals,
+    experiments: Sequence[str] = LIFE010_EXPERIMENTS,
+    motif_by_experiment: Mapping[str, str] = EXPERIMENT_MOTIF,
 ) -> np.ndarray:
-    motif = EXPERIMENT_MOTIF[experiment_id]
+    motif = motif_by_experiment[experiment_id]
     public_global = model.public_mae()
     values: list[float] = [
-        float(experiment_id == name) for name in LIFE010_EXPERIMENTS
+        float(experiment_id == name) for name in experiments
     ]
     values.extend(
         [
@@ -479,7 +493,7 @@ def life010_policy_features(
             model.motif_uncertainty(motif),
         ]
     )
-    values.extend([float(history.last == name) for name in LIFE010_EXPERIMENTS])
+    values.extend([float(history.last == name) for name in experiments])
     values.append(history.consecutive_last / 24.0)
     values.extend(
         [
@@ -498,28 +512,38 @@ def life010_policy_features(
     return vector
 
 
-def choose_greedy_public_residual(model: ProtectedResidualCompetence) -> str:
+def choose_greedy_public_residual(
+    model: ProtectedResidualCompetence,
+    *,
+    experiments: Sequence[str] = LIFE010_EXPERIMENTS,
+    motif_by_experiment: Mapping[str, str] = EXPERIMENT_MOTIF,
+) -> str:
     missing = [
         experiment_id
-        for experiment_id in LIFE010_EXPERIMENTS
-        if model.public_mae(EXPERIMENT_MOTIF[experiment_id]) is None
+        for experiment_id in experiments
+        if model.public_mae(motif_by_experiment[experiment_id]) is None
     ]
     if missing:
         return sorted(missing)[0]
     return sorted(
-        LIFE010_EXPERIMENTS,
+        experiments,
         key=lambda experiment_id: (
-            -float(model.public_mae(EXPERIMENT_MOTIF[experiment_id])),
+            -float(model.public_mae(motif_by_experiment[experiment_id])),
             experiment_id,
         ),
     )[0]
 
 
-def choose_life010_uncertainty(model: ProtectedResidualCompetence) -> str:
+def choose_life010_uncertainty(
+    model: ProtectedResidualCompetence,
+    *,
+    experiments: Sequence[str] = LIFE010_EXPERIMENTS,
+    motif_by_experiment: Mapping[str, str] = EXPERIMENT_MOTIF,
+) -> str:
     return sorted(
-        LIFE010_EXPERIMENTS,
+        experiments,
         key=lambda experiment_id: (
-            -model.motif_uncertainty(EXPERIMENT_MOTIF[experiment_id]),
+            -model.motif_uncertainty(motif_by_experiment[experiment_id]),
             experiment_id,
         ),
     )[0]

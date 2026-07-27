@@ -45,9 +45,14 @@ six smokes ont été autorisés. Le début de 18191 a toutefois fermé LIFE-010 
 `probe_step_hold` devient inéligible avec un risque observationnel `0,75 > 0,50`.
 Aucune métrique scientifique ou banque réservée n'a été ouverte.
 
-LIFE-011 est maintenant pré-enregistrée sous D-041 avec des plans recentrés, toujours
-équicûteux, et un préflight exigeant leur éligibilité après historique propre. Elle
-attend une nouvelle revue Claude avant toute implémentation.
+La revue LIFE-011 a imposé des plans v3 à excitation réalisée distincte et une plaque de
+marge avant professeur. Les 18 préflights sont verts, mais D-043 ferme LIFE-011:
+l'oracle atteint 16,8853 % en médiane face à greedy, tandis que son minimum settling
+reste `4,4039 % < 5 %`. Aucun professeur ni banque réservée n'a été ouvert.
+
+LIFE-012 est pré-enregistrée sous D-044 sans relâcher ce seuil. Ses plans à coût 240°
+créent de vrais plateaux d'établissement pour distinguer rampe, renversement et maintien.
+Elle attend la revue Claude Opus 5 avant tout code ou calcul.
 
 Le matériel J0 est conservé mais suspendu:
 

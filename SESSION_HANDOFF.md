@@ -372,10 +372,24 @@ restent entre 30° et 150°. Un préflight temporaire doit prouver que chacun re
 éligible après son propre historique sous risque 0.50/coût 0.80. Toutes les graines
 sont nouvelles. Le protocole attend la revue Claude avant code.
 
+La revue LIFE-011 autorise avec B1–B6. D-042 remplace v2 par v3, vérifie la
+complémentarité réellement délivrée, impose l'invariant par essai et exécute une plaque
+de marge avant professeur. L'implémentation passe 10 tests ciblés et 292 tests complets.
+
+Les 18 préflights 18491..18496 sont verts (`risk=0`, `motor_cost=0.09375`). La porte 5
+est verte et greedy reste seule principale. La porte 6 ferme toutefois LIFE-011 sous
+D-043: médiane oracle `16,8853 %`, mais minimum settling `4,4039 % < 5 %` sur 18496.
+Le professeur, la plaque de chronométrage et 18501..18624 n'ont jamais été ouverts.
+
+D-044 propose LIFE-012 sans relâcher les portes. Le coût commun passe à 240° afin que
+step-settle/reversal/micro produisent au nominal 20/24/32 pas mobiles, 2/4/8
+renversements et 6/4/0 maintiens hors neutre. Nouvelles graines 18791+; aucun code ou
+calcul avant Claude.
+
 ## Actions par acteur
 
-Action Codex: préserver REF-003/LIFE-009/LIFE-010 closes et attendre LIFE-011.
-Action Anthony: transmettre `docs/research/life_011_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_011_review.md`, sans calcul.
-Blocage: LIFE-011 interdit avant verdict; toute reprise LIFE-010 reste interdite.
+Action Codex: préserver LIFE-009/010/011 closes et attendre LIFE-012.
+Action Anthony: transmettre `docs/research/life_012_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_012_review.md`, sans calcul.
+Blocage: LIFE-012 interdit avant verdict; toute reprise LIFE-011 reste interdite.
 Toute nouvelle tentative REF exige monde non occlusible, graines neuves et revue pré-calcul.
