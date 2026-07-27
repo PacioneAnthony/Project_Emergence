@@ -592,11 +592,15 @@ def run_life010_trajectory(
     if any(len(mask) != len(private_bank) for mask in selected_diagnostics.values()):
         raise ValueError("diagnostic masks must match the private bank")
     diagnostic_curves: dict[str, list[float]] = {
-        name: [
-            model.mae(
-                [item for item, selected in zip(private_bank, mask) if selected]
-            )
-        ]
+        name: (
+            [
+                model.mae(
+                    [item for item, selected in zip(private_bank, mask) if selected]
+                )
+            ]
+            if any(mask)
+            else []
+        )
         for name, mask in selected_diagnostics.items()
     }
     public_curve: list[float | None] = [None]
@@ -676,15 +680,16 @@ def run_life010_trajectory(
                 gaps.append(current_public - current_private)
             curve.append(current_private)
             for name, mask in selected_diagnostics.items():
-                diagnostic_curves[name].append(
-                    model.mae(
-                        [
-                            item
-                            for item, selected in zip(private_bank, mask)
-                            if selected
-                        ]
+                if any(mask):
+                    diagnostic_curves[name].append(
+                        model.mae(
+                            [
+                                item
+                                for item, selected in zip(private_bank, mask)
+                                if selected
+                            ]
+                        )
                     )
-                )
             public_curve.append(current_public)
             realized += trial.realized_displacement_deg
             choices.append(selected)

@@ -130,7 +130,10 @@ résiduelle protégée et trois plans équicûteux, mais son premier smoke s'est
 D-040 lorsque step_hold est devenu inéligible à risque 0,75. LIFE-011 a corrigé la garde
 et obtenu une marge oracle médiane de 16,8853 %, mais D-043 l'a fermée parce que le
 minimum settling reste `4,4039 % < 5 %`. LIFE-012 propose des plateaux d'établissement
-réalisés à coût 240° et attend une nouvelle revue pré-calcul.
+réalisés à coût 240°, mais sa plaque échoue sous D-046: 18793 refuse 24/24 mises à jour
+et la marge oracle médiane tombe à 4,9404 %. La famille de sélecteurs est close.
+BODY-SCHEMA-001 revient à J1 pour qualifier plasticité, incertitude calibrée et détection
+d'actionneur sans effet avant toute reprise de J5.
 
 Les smokes LIFE certifient le câblage persistant, la régression/récupération et le choix
 à partir d'observations. Ils ne démontrent ni apprentissage d'une nouvelle compétence,

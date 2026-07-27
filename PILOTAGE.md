@@ -56,8 +56,11 @@ sous D-008.
 | Revue LIFE-011 | `AUTORISER AVEC CORRECTIONS BLOQUANTES`; B1–B6 intégrées sous D-042 |
 | LIFE-011 | Close sous D-043; marge settling minimale 4,4039 % < 5 % |
 | Intégrité LIFE-011 | Préflights verts; aucun professeur ni banque 18501+ |
-| LIFE-012 | Pré-enregistrement prêt sous D-044; plateaux réalisés à coût 240° |
-| Prochaine porte | Verdict Claude Opus 5 pré-calcul LIFE-012 |
+| Revue LIFE-012 | Autoriser avec B1–B5; voie B intégrée sous D-045 |
+| LIFE-012 | Close sous D-046; portes 4–6 rouges |
+| Diagnostic LIFE | compétence non plastique partout; oracle myope non majorant |
+| BODY-SCHEMA-001 | Pré-enregistrement J1 prêt sous D-047; aucun code/calcul |
+| Prochaine porte | Verdict Claude Opus 5 pré-calcul BODY-SCHEMA-001 |
 
 ## Clôture de J6-AR001
 
@@ -147,8 +150,8 @@ REF-003 reste un non-résultat technique.
 
 ## Actions par acteur
 
-Action Codex: préserver LIFE-011 close et attendre le verdict LIFE-012.
-Action Anthony: transmettre `docs/research/life_012_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_012_review.md`, sans calcul.
-Blocage: tout code ou calcul LIFE-012 interdit avant verdict; LIFE-011 reste close.
+Action Codex: préserver LIFE close et attendre la revue BODY-SCHEMA-001.
+Action Anthony: transmettre `docs/research/body_schema_001_review_request.md` à Claude.
+Action Claude Opus 5: écrire uniquement `docs/research/body_schema_001_review.md`.
+Blocage: code/calcul BODY-SCHEMA-001 et toute campagne J5 interdits avant verdict.
 Toute suite REF exige protocole, monde et graines neufs.

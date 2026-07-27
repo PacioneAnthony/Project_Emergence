@@ -386,10 +386,22 @@ step-settle/reversal/micro produisent au nominal 20/24/32 pas mobiles, 2/4/8
 renversements et 6/4/0 maintiens hors neutre. Nouvelles graines 18791+; aucun code ou
 calcul avant Claude.
 
+La revue LIFE-012 autorise avec B1–B5. D-045 choisit la voie B, implémente les classes
+vides et la taxonomie rampe/plateau/temps_mort. 14 tests ciblés et 296 tests complets
+sont verts. La plaque 18791..18796 passe les trois portes d'intégrité mais échoue aux
+trois portes scientifiques: 18793 refuse 24/24 mises à jour, marge oracle médiane
+`4,9404 %`, et l'oracle myope perd contre round-robin sur certains organismes. Aucun
+professeur ni 18801+ n'est ouvert. D-046 clôt la famille LIFE.
+
+D-047 revient à J1 avec BODY-SCHEMA-001: excitation fixe identique, baselines
+persistance/prior/ridge LIFE et ensemble probabiliste de ridges ARX bootstrapé par trial.
+Les portes couvrent plasticité, MAE, calibration conformelle et détection d'actionneur
+bloqué. Smoke proposé 19091..19096, test 19201..19224; aucun code avant Claude.
+
 ## Actions par acteur
 
-Action Codex: préserver LIFE-009/010/011 closes et attendre LIFE-012.
-Action Anthony: transmettre `docs/research/life_012_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_012_review.md`, sans calcul.
-Blocage: LIFE-012 interdit avant verdict; toute reprise LIFE-011 reste interdite.
+Action Codex: préserver LIFE-009..012 closes et attendre BODY-SCHEMA-001.
+Action Anthony: transmettre `docs/research/body_schema_001_review_request.md` à Claude.
+Action Claude Opus 5: écrire uniquement `docs/research/body_schema_001_review.md`.
+Blocage: BODY-SCHEMA-001 et tout nouveau J5 interdits avant verdict.
 Toute nouvelle tentative REF exige monde non occlusible, graines neuves et revue pré-calcul.

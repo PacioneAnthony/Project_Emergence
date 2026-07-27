@@ -52,7 +52,13 @@ reste `4,4039 % < 5 %`. Aucun professeur ni banque réservée n'a été ouvert.
 
 LIFE-012 est pré-enregistrée sous D-044 sans relâcher ce seuil. Ses plans à coût 240°
 créent de vrais plateaux d'établissement pour distinguer rampe, renversement et maintien.
-Elle attend la revue Claude Opus 5 avant tout code ou calcul.
+Après intégration de la revue, sa plaque 18791..18796 ferme toutefois la famille sous
+D-046: une graine refuse 24/24 mises à jour et l'oracle myope ne constitue pas une borne
+séquentielle. Aucun professeur ni banque réservée n'a été ouvert.
+
+BODY-SCHEMA-001 revient donc au jalon J1 avant toute reprise de J5. Il pré-enregistre un
+schéma corporel probabiliste à bootstrap de trials entiers, incertitude conformelle et
+détection d'actionneur sans effet. Il attend la revue Claude avant code ou calcul.
 
 Le matériel J0 est conservé mais suspendu:
 

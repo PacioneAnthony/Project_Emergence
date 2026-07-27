@@ -1146,3 +1146,58 @@ Arbitrage Anthony: non requis pour la rédaction sous D-004.
 Conséquences: code et graines LIFE-012 interdits avant verdict.
 Condition de réouverture: correction Claude, complémentarité invalide, dilution
 excessive ou mécanisme settling non plausible.
+
+## D-045 - Intégration de la revue LIFE-012 et choix de la voie B
+
+Date: 2026-07-27
+Décision: intégrer B1–B5 et conserver les plans v4 à 240° selon la voie B.
+Motif: les plateaux ciblent correctement settling/friction à vitesse nominale. La
+dégénérescence sous 375°/s est déclarée pour 28,125 % de speed_dominant et ne donnera
+lieu à aucun filtrage. La voie B conserve en outre la taxonomie gelée `k=3` avec
+`temps_mort=0`; les segments longs de la voie A proposée auraient créé des maintiens
+au-delà de trois pas.
+Corrections: diagnostics vides à `null`, cadence/plateau exportés, taxonomie
+rampe/plateau/temps_mort, masses d'erreur, résidus de plateau, historique de la porte et
+portée causale limitée.
+Avis Claude: implémentation puis plaque de marge 18791..18796 autorisées après intégration.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: banques 18801..18924 interdites avant six portes de marge puis dix portes
+finales vertes.
+Condition de réouverture: porte rouge, temps_mort non nul, garde violée ou correction
+scientifique nouvelle.
+
+## D-046 - Arrêt LIFE-012 et retour au jalon J1
+
+Date: 2026-07-27
+Décision: clore LIFE-012 à la plaque et arrêter la famille de triplets LIFE-009..012.
+Statut: non-résultat de qualification; aucune banque réservée ouverte.
+Résultat: portes d'intégrité 1–3 vertes; portes scientifiques 4–6 rouges. Round-robin
+ne progresse pas sur 18793 (`24/24` mises à jour refusées). Marge oracle médiane face à
+greedy `4,9404 %`; round-robin devient co-principale et l'oracle myope perd jusqu'à
+`−6,4459 %` face à elle.
+Interprétation: le verrou n'est plus le dessin des plans. La compétence n'est pas
+plastique sur tout l'espace et l'oracle à un pas n'est pas une borne séquentielle.
+Avis Claude: le protocole impose l'arrêt avant professeur sur une porte de marge rouge.
+Arbitrage Anthony: non requis sous D-004 et CODEX_TASK_BRIEF.
+Conséquences: 18801..18924 restent vierges. La suite revient à J1 pour qualifier un
+schéma corporel robuste et incertain avant toute nouvelle tentative J5.
+Condition de réouverture: aucune sous LIFE-012; J5 exige une compétence J1 qualifiée.
+
+## D-047 - Pré-enregistrement BODY-SCHEMA-001
+
+Date: 2026-07-27
+Décision: suspendre J5 et qualifier d'abord un schéma corporel probabiliste J1.
+Statut: protocole et demande de revue prêts; aucun code ou calcul.
+Modèle proposé: ensemble de 16 ridges résiduelles ARX, bootstrap de trials entiers,
+variance inter-membres + MAD public et calibration conformelle. Excitation fixe commune,
+aucune allocation ni oracle de curriculum.
+Baselines: persistance, prior physique et ridge LIFE. Portes distinctes pour MAE,
+plasticité, calibration et détection d'un actionneur bloqué.
+Motif: 18793 refuse 24/24 mises à jour sous toutes les allocations; l'architecture manque
+d'un schéma corporel plastique avec incertitude calibrée, en amont du sélecteur.
+Graines proposées: smoke 19091..19096, test 19201..19224; statistique 2026072706.
+Avis Claude: revue contradictoire pré-calcul obligatoire.
+Arbitrage Anthony: non requis; retour conforme à l'ordre J1→J5 de l'architecture.
+Conséquences: aucun nouveau LIFE/J5 avant qualification BODY-SCHEMA-001.
+Condition de réouverture: corrections Claude, défaut d'équité, incertitude invalide ou
+banque faute non attribuable.
