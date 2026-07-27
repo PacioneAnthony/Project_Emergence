@@ -1021,3 +1021,72 @@ explicitement autorisées pourront commencer; une revue des résultats restera o
 avant promotion.
 Condition de réouverture: corrections Claude, définition non implémentable, tâche
 artificiellement favorable, baseline insuffisante ou changement d'objectif général.
+
+## D-039 - Intégration de la revue pré-calcul LIFE-010
+
+Date: 2026-07-27
+Décision: accepter le verdict Claude Opus 5
+`AUTORISER AVEC CORRECTIONS BLOQUANTES` et intégrer B1–B7 avant code ou calcul.
+Statut: implémentation et smoke 18191..18196 autorisés; banques 18201..18248 et
+18301..18324 toujours fermées.
+Corrections: round-robin devient co-principale si greedy residual est moins bonne au
+smoke; plancher 3 % face à round-robin; sens des portes MAE explicite; validation
+publique déclarée autocorrélée et acceptations/refus exportés; smoke étendu aux six
+politiques et oracle; prior aligné sur la rampe interne, pas l'AS5600; limites
+mono-facteur/même distribution déclarées; P3 convertie en tests appariés de
+non-infériorité corrigés par Holm.
+Motif: empêcher une promotion facile contre une baseline greedy verrouillée et éviter
+de présenter des assertions structurelles comme preuves scientifiques.
+Avis Claude: implémentation puis smoke autorisés après intégration; aucune banque avant
+sept portes smoke vertes, ancrage B1 écrit, comptes de protection exportés et projection
+complète sous 90 minutes.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: Codex peut implémenter puis exécuter uniquement les six smokes. Toute
+promotion nécessitera une revue contradictoire des résultats.
+Condition de réouverture: porte smoke rouge, contradiction de code, fuite, projection
+hors budget ou correction scientifique nouvelle.
+
+## D-040 - Arrêt LIFE-010 sur incompatibilité plan–garde
+
+Date: 2026-07-27
+Décision: clore LIFE-010 comme non-résultat technique sans reprendre le smoke.
+Statut: arrêt définitif sous cet identifiant; aucune métrique scientifique.
+Événement: sur le début de 18191, l'historique de `probe_step_hold` produit
+`boundary_exposure=predicted_risk=0.75`. La limite catalogue `0.50` bloque ensuite ce
+plan; le sélecteur choisit `probe_micro`, en contradiction avec le carré latin demandé.
+Interprétation: la garde fonctionne correctement. Les maintiens à `20°/160°` rendent le
+plan structurellement trop exposé selon LIFE-002. Relever le seuil ou écraser le risque
+après observation serait post hoc.
+Intégrité: 18192..18196, développement 18201..18232, validation 18241..18248 et test
+18301..18324 jamais ouverts. Aucune AUC, marge oracle, projection ou porte P0–P4.
+Vérification avant lancement: 18 tests ciblés et 287 tests complets verts.
+Avis Claude: non requis pour appliquer une garde préexistante; une nouvelle revue
+pré-calcul est requise pour le successeur.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: LIFE-010 reste close. Un nouvel identifiant doit éloigner les cibles des
+frontières et geler une porte d'éligibilité après historique propre.
+Condition de réouverture: aucune sous LIFE-010.
+
+## D-041 - Pré-enregistrement LIFE-011 à éligibilité persistante
+
+Date: 2026-07-27
+Décision: proposer LIFE-011 comme nouvel essai, sans modifier ou reprendre LIFE-010.
+Statut: protocole et demande de revue prêts; aucun code, smoke ou calcul LIFE-011.
+Plans: step_hold v2 utilise 30°/150°, reversal v2 50°/130°, micro v2 70°/110°.
+Ils font exactement 32 pas, 480° commandés, retour 90°, avec 5/12/24 changements.
+Sécurité: limites catalogue gelées `predicted_risk<=0.50`, `motor_cost<=0.80`. Un
+préflight temporaire exécute chaque plan une fois et exige qu'il reste éligible à une
+seconde proposition après reconstruction de son propre historique.
+Science: compétence, protection, régimes, professeur, politiques, ancrage dynamique,
+marges, statistiques et limites de LIFE-010 amendée sont conservés. Nouvelles graines:
+18491..18496, 18501..18532, 18541..18548, 18601..18624; statistique 2026072704.
+Motif: corriger le contrat plan–garde sans abaisser la garde. Recentrer les cibles
+supprime l'exposition structurelle aux zones de 10° autour des bornes tout en conservant
+trois structures temporelles et un budget identique.
+Avis Claude: nouvelle revue pré-calcul obligatoire via
+`docs/research/life_011_review_request.md`.
+Arbitrage Anthony: non requis pour la rédaction sous D-004.
+Conséquences: Codex s'arrête avant code. Toute autorisation future dépend du verdict;
+promotion toujours soumise à revue de résultats.
+Condition de réouverture: corrections Claude, plan encore inéligible, perte de
+complémentarité, baseline insuffisante ou changement d'objectif général.

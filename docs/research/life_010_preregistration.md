@@ -1,7 +1,7 @@
 # LIFE-010 — curriculum appris pour une dynamique plastique protégée
 
 Date: 2026-07-27
-Statut: pré-enregistrement proposé; aucun code, smoke ou calcul LIFE-010 autorisé
+Statut: close comme non-résultat technique sous D-040
 Portée: simulation MuJoCo uniquement
 
 ## Origine
@@ -369,3 +369,141 @@ Un succès montrerait qu'une politique apprise alloue mieux des expériences sû
 simulés. Il ne montrerait pas découverte autonome de plans ou besoins, réafférence
 visuelle, transfert physique, curiosité générale ou conscience.
 
+## Amendement pré-calcul après revue Claude Opus 5
+
+Date: 2026-07-27
+Verdict source: `AUTORISER AVEC CORRECTIONS BLOQUANTES` dans
+`docs/research/life_010_review.md`.
+
+Les clauses B1–B7 suivantes sont additives et prévalent sur toute formulation
+antérieure incompatible.
+
+### B1 — ancrage de la taille d'effet
+
+Le smoke rapporte l'AUC de `round_robin` et `greedy_public_residual` pour chaque graine
+et régime, avant toute banque:
+
+1. si l'AUC moyenne de greedy est inférieure ou égale à celle de round-robin, greedy
+   demeure seule baseline principale;
+2. si l'AUC moyenne de greedy est strictement supérieure, round-robin devient
+   co-principale.
+
+Dans le second cas, le plancher relatif `>=5 %`, `16/24` graines favorables et le signe
+favorable par régime de P1 s'appliquent séparément aux deux baselines et toutes les
+conditions doivent passer.
+
+Dans tous les cas, l'amélioration relative moyenne face à round-robin doit aussi être
+`>=3 %`, en plus du test P2 corrigé par Holm. Cette décision d'ancrage est écrite dans le
+manifeste smoke avec le digest du protocole et ne change plus ensuite.
+
+La marge oracle du smoke reste calculée face à `greedy_public_residual`; si round-robin
+devient co-principale, elle est également calculée face à round-robin et doit satisfaire
+les mêmes seuils `15 %` médian et `5 %` minimum par régime.
+
+### B2 — sens exact des portes de MAE
+
+Plus bas est toujours meilleur:
+
+```text
+MAE_finale_apprise
+  <= MAE_finale_baseline_principale + 0.02 × MAE_initiale
+
+pire_MAE_motif_apprise
+  <= 1.10 × pire_MAE_motif_baseline_principale
+```
+
+Si deux baselines sont principales sous B1, les deux comparaisons doivent passer.
+
+### B3 — portée de la validation publique
+
+Le partage pair/impair est fortement autocorrélé. Il constitue une protection grossière
+contre la dégradation, pas une validation de généralisation; seule la banque privée
+mesure la compétence.
+
+Le smoke exporte, pour chaque graine et politique:
+
+- candidats acceptés et refusés sur 24 cycles;
+- écart médian MAE publique–MAE privée;
+- trajectoire des deux MAE.
+
+Si aucun refus n'apparaît sur les six graines, une réussite ultérieure ne peut revendiquer
+une « plasticité protégée exercée »; la règle reste inchangée mais cette propriété est
+retirée de l'interprétation.
+
+La non-dégradation publique à `1e-12` et l'égalité du coût commandé sont reclassées comme
+assertions d'intégrité, hors portes scientifiques. Leur échec reste un arrêt immédiat.
+
+### B4 — assiette complète du smoke
+
+Les six graines smoke exécutent les six politiques test et l'oracle. Sont chronométrés
+séparément:
+
+- banque privée;
+- professeur `24×3`;
+- chacune des six politiques;
+- oracle et ses trois branches;
+- 25 évaluations de courbe;
+- analyse et digests.
+
+La projection applique les multiplicateurs exacts 32 développement, 8 validation et
+24 test. Les trois politiques supplémentaires ne contribuent à aucune porte de
+conception hors décision d'ancrage B1; elles mesurent l'assiette temporelle.
+
+### B5 — alignement exact du prior
+
+Le smoke asserte:
+
+- `control_dt == 0.02 s`;
+- 32 appels `env.step` par plan;
+- `600 × 0.02 == 12°` pour la rampe nominale;
+- le limiteur porte sur `_limited_deg`, pas sur l'angle AS5600.
+
+Aucune assertion `abs(delta_as5600)<=12°` n'est autorisée. `_limited_deg` est un état
+caché non reconstructible exactement depuis les observations publiques; son omission
+induit une erreur irréductible commune, empiriquement bornée par la porte de progrès
+privé `>=20 %`.
+
+### B6 — limites additionnelles
+
+- Chaque régime ne perturbe qu'un groupe de paramètres, les autres restant nominaux.
+  L'inférence est plus facile que sous variation mécanique conjointe; aucun transfert à
+  une population réaliste conjointe n'est revendiqué.
+- La banque privée rejoue les mêmes plans sous d'autres bruits. Elle mesure l'efficacité
+  d'allocation dans le même espace, pas la généralisation à de nouvelles conditions.
+  L'alignement public–privé vient de cette identité de distribution, non d'une garde.
+
+### B7 — non-infériorité statistique de P3
+
+Les comparaisons de MAE finale et pire motif sont deux tests appariés de
+non-infériorité utilisant
+`learning.paired_stats.monte_carlo_noninferiority_pvalue`, `n_resamples=200000`,
+graine `2026072703`.
+
+Marges:
+
+- finale: `0.02 × MAE_initiale` par graine;
+- pire motif: `0.10 × pire_MAE_motif_baseline` par graine.
+
+Chaque test doit donner `p<=0.05` après correction de Holm dans une famille P3 distincte
+de P2. Si B1 crée deux baselines principales, la famille comprend quatre tests et tous
+doivent passer.
+
+### Précisions non bloquantes intégrées
+
+- P0 « même signe par régime » reste une garde descriptive à faible puissance;
+- greedy commence nécessairement par `probe_micro`, `probe_reversal`,
+  `probe_step_hold` sous priorité absence+ASCII;
+- allocations sont exportées par moitié, régime, graine et politique;
+- l'oracle privilégié est un plafond; l'écart appris/oracle mesure la difficulté
+  d'inférence;
+- déplacement réalisé est exporté par plan et régime, sans devenir une porte.
+
+## Résultat d'exécution
+
+Le premier smoke `18191` s'est arrêté avant tout résultat scientifique. Après une
+exécution de `probe_step_hold`, LIFE-002 a produit `predicted_risk=0.75`, supérieur à la
+limite catalogue `0.50`. Le plan est devenu inéligible et le carré latin du professeur
+ne pouvait plus être respecté.
+
+LIFE-010 est close sans reprise, relèvement de seuil, calcul de marge ou ouverture de
+banque. Voir `docs/research/life_010_technical_stop.md`.

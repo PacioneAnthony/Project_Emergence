@@ -40,7 +40,14 @@ LIFE-009 sous D-037: l'oracle ne gagne que 2,383 % sur la baseline principale, s
 10 % exigés. Aucune banque réservée n'a été ouverte. La prochaine tentative devra être
 LIFE-010, avec une tâche plastique et une marge démontrée avant campagne. Son
 pré-enregistrement est prêt sous D-038 et attend la revue Claude Opus 5 avant tout code
-ou calcul.
+ou calcul. Claude l'a autorisé avec B1–B7, intégrées sous D-039; l'implémentation et les
+six smokes ont été autorisés. Le début de 18191 a toutefois fermé LIFE-010 sous D-040:
+`probe_step_hold` devient inéligible avec un risque observationnel `0,75 > 0,50`.
+Aucune métrique scientifique ou banque réservée n'a été ouverte.
+
+LIFE-011 est maintenant pré-enregistrée sous D-041 avec des plans recentrés, toujours
+équicûteux, et un préflight exigeant leur éligibilité après historique propre. Elle
+attend une nouvelle revue Claude avant toute implémentation.
 
 Le matériel J0 est conservé mais suspendu:
 

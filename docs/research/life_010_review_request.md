@@ -1,7 +1,9 @@
 # Demande de revue contradictoire Claude Opus 5 — LIFE-010
 
 Date: 2026-07-27
-Statut: prête; aucun code, smoke, banque ou calcul LIFE-010 lancé
+Statut: revue exécutée; verdict `AUTORISER AVEC CORRECTIONS BLOQUANTES`
+
+Sortie: `docs/research/life_010_review.md`; B1–B7 intégrées sous D-039 avant code.
 
 ## Prompt exact
 
@@ -72,4 +74,3 @@ Sépare les remarques non bloquantes. Écris uniquement
 docs/research/life_010_review.md. Ne modifie aucun autre fichier et ne lance aucun
 calcul.
 ```
-

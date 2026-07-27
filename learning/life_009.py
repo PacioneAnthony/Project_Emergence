@@ -488,7 +488,10 @@ class TeacherExample:
 
 
 class ProgressRidgePolicy:
-    def __init__(self) -> None:
+    def __init__(self, *, alpha: float = RIDGE_ALPHA) -> None:
+        if not math.isfinite(alpha) or alpha <= 0.0:
+            raise ValueError("policy ridge alpha must be positive")
+        self.alpha = float(alpha)
         self.feature_mean: np.ndarray | None = None
         self.feature_scale: np.ndarray | None = None
         self.target_mean: float | None = None
@@ -512,7 +515,7 @@ class ProgressRidgePolicy:
             target_scale = 1.0
         design = np.column_stack([np.ones(len(raw)), (raw - mean) / scale])
         standardized_target = (targets - target_mean) / target_scale
-        penalty = np.eye(design.shape[1], dtype=np.float64) * RIDGE_ALPHA
+        penalty = np.eye(design.shape[1], dtype=np.float64) * self.alpha
         penalty[0, 0] = 0.0
         weights = np.linalg.solve(
             design.T @ design + penalty,
@@ -558,6 +561,7 @@ class ProgressRidgePolicy:
                 "target_mean": self.target_mean,
                 "target_scale": self.target_scale,
                 "weights": self.weights.tolist(),
+                "alpha": self.alpha,
             }
         )
 
@@ -606,8 +610,16 @@ def plan_for_experiment(experiment_id: str) -> BoundedPrimitivePlan:
 class ForcedChoiceActivator:
     """Expose all LIFE-006 candidates while making one audited choice win."""
 
-    def __init__(self, base: PersistentNeedActivator) -> None:
+    def __init__(
+        self,
+        base: PersistentNeedActivator,
+        *,
+        allowed_experiments: Sequence[str] = LIFE009_EXPERIMENTS,
+    ) -> None:
         self.base = base
+        self.allowed_experiments = tuple(sorted(allowed_experiments))
+        if not self.allowed_experiments:
+            raise ValueError("forced activator requires allowed experiments")
         self.experiment_id: str | None = None
         self.decision: Mapping[str, object] = {}
 
@@ -617,7 +629,7 @@ class ForcedChoiceActivator:
         *,
         decision: Mapping[str, object],
     ) -> None:
-        if experiment_id not in LIFE009_EXPERIMENTS:
+        if experiment_id not in self.allowed_experiments:
             raise KeyError(experiment_id)
         self.experiment_id = experiment_id
         self.decision = dict(decision)

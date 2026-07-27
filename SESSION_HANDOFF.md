@@ -357,10 +357,25 @@ temporelles différentes. Six smokes neufs doivent démontrer amélioration du p
 marge oracle stratifiée et budget avant toute banque. Le protocole et sa demande de
 revue sont prêts; aucun code ou calcul LIFE-010 n'est autorisé avant Claude.
 
+Claude Opus 5 a rendu `AUTORISER AVEC CORRECTIONS BLOQUANTES`. D-039 intègre B1–B7:
+ancrage éventuel sur round-robin, plancher 3 %, sens des MAE, portée de la protection,
+assiette complète, alignement de rampe, limites déclarées et P3 statistique.
+L'implémentation et les six smokes sont autorisés; aucune banque réservée ne l'est.
+
+Le début de 18191 a ensuite révélé une incompatibilité de contrat: après son propre
+historique, `probe_step_hold` porte `predicted_risk=0.75`, au-dessus de la limite
+catalogue `0.50`. La garde l'a correctement bloqué et le professeur ne pouvait plus
+rejouer son carré latin. D-040 ferme LIFE-010 sans métrique, reprise ou banque.
+
+D-041 pré-enregistre LIFE-011 sans abaisser la garde: trois plans v2 de 32 pas et 480°
+restent entre 30° et 150°. Un préflight temporaire doit prouver que chacun reste
+éligible après son propre historique sous risque 0.50/coût 0.80. Toutes les graines
+sont nouvelles. Le protocole attend la revue Claude avant code.
+
 ## Actions par acteur
 
-Action Codex: préserver REF-003/LIFE-009 closes et attendre le verdict LIFE-010.
-Action Anthony: transmettre `docs/research/life_010_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_010_review.md`, sans calcul.
-Blocage: LIFE-010 code/smoke/banques interdits avant verdict; LIFE-009 reste close.
+Action Codex: préserver REF-003/LIFE-009/LIFE-010 closes et attendre LIFE-011.
+Action Anthony: transmettre `docs/research/life_011_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_011_review.md`, sans calcul.
+Blocage: LIFE-011 interdit avant verdict; toute reprise LIFE-010 reste interdite.
 Toute nouvelle tentative REF exige monde non occlusible, graines neuves et revue pré-calcul.
