@@ -24,15 +24,31 @@ sous D-008.
 | Direction | D-017: transport sensorimoteur spatial explicite |
 | REF-002 | Close sous D-020 comme **non-résultat technique**; aucune analyse partielle |
 | État REF-002 | Smoke 13991 vert; 12 triplets complets; arrêt d'intégrité avant entraînement 13313 |
-| Cause REF-002 | Une collision fortuite de trame inter-banques; aucune collision corpus↔banques |
+| Cause REF-002 | Manipulation hors champ révélée par collision; aucune collision corpus↔banques |
 | Nouveau jalon | REF-003 — même hypothèse non testée, visibilité externe contrôlée |
 | Pré-enregistrement REF-003 | Gelé dans `docs/research/reafference_003_preregistration.md` sous D-021 |
-| Porte courante | Revue contradictoire Claude Opus 5 avant tout code ou calcul REF-003 |
+| Revue REF-003 | `AUTORISER AVEC CORRECTIONS BLOQUANTES`; C1–C8 intégrées sous D-023 |
+| Porte courante | REF-003 close; aucune reprise ou analyse partielle autorisée |
+| Implémentation REF-003 | Monde paramétrique, contrefactuels, digests et runner protégés en place |
+| Vérification REF-003 | 11 tests dédiés; 247 tests complets verts; banques non réservées vertes |
+| Smoke REF-003 | T3 verte sous D-026; projection 39,93 min; plafond 90 min non amendé |
+| Campagne REF-003 | Arrêtée sur visibilité en préparation 14303 |
+| Résultat REF-003 | Close sous D-027 comme **non-résultat technique**; aucune analyse |
 | KERNEL-001 | Noyau cognitif persistant minimal implémenté sous D-018 |
 | Vérification KERNEL-001 | 22 tests dédiés; 215 tests complets verts dans `.venv` |
 | LIFE-001 | Validation, régression injectée, choix sûr, redémarrage et récupération verts |
-| Vérification KERNEL/LIFE | 26 tests dédiés; 236 tests complets verts |
-| Prochaine intégration | LIFE-002: produire les signaux de choix à partir des observations |
+| LIFE-002 | Signaux recalculés depuis quatre sessions MuJoCo/J0; preuves persistantes et reproductibles |
+| LIFE-003 | Attribution proposition→session J0→résultat, reprise et reconstruction automatiques vertes |
+| LIFE-004 | Boucle observation→choix→exécution MuJoCo→résultat fermée sous registre borné |
+| LIFE-005 | Acquisition→régression→récupération pilotée par résultats J0, replay idempotent |
+| LIFE-006 | Candidates activées par besoins persistants; froid→observé et urgences vérifiés |
+| LIFE-007 | Cycle complet persistant; reprises aux frontières et abandon intra-essai vérifiés |
+| Schéma mémoire | v4; migrations additives v1→v2→v3→v4 vérifiées |
+| LIFE-008 | 64 cycles, 51 reprises, 12 refus sûrs, zéro résidu; toutes portes vertes |
+| Digest LIFE-008 | `3cab7044228bb20ec512f67e32d3de44cac7a292c51d03311c7b815d3ccf2616` |
+| Vérification KERNEL/LIFE | 57 tests ciblés; suite complète actuelle 278 tests verts |
+| LIFE-009 | Pré-enregistrement et demande de revue rédigés sous D-035; aucun calcul ouvert |
+| Prochaine porte | Verdict Claude Opus 5 sur LIFE-009 |
 
 ## Clôture de J6-AR001
 
@@ -90,35 +106,40 @@ La campagne a terminé 13301..13312, soit 12 triplets / 36 runs et 12 évaluatio
 
 La préparation de 13313 s'est arrêtée avant entraînement lorsqu'une trame finale de
 `moving_self_calibration` a collisionné bit à bit avec une trame finale de `mixed`.
-Les provenances, pièces, RNG et états objet étaient distincts; aucune image du corpus
-d'entraînement ne collisionnait avec une banque. La garde C6 interdisait néanmoins
-toute collision de trame inter-banques.
+Les provenances, pièces et RNG étaient distincts; aucune image du corpus d'entraînement
+ne collisionnait avec une banque. La revue REF-003 a montré que l'objet pouvait sortir
+entièrement du champ dans environ `3,06 %` des paires `mixed`: la collision révélait une
+manipulation visuellement nulle, pas une simple coïncidence.
 
 D-020 applique le contrat gelé: pas de reprise, pas de modification post hoc de la
 garde et aucune lecture ou agrégation des scores 13301..13312. REF-002 ne rejette ni ne
 confirme l'hypothèse. Les détails sont dans
 `docs/research/reafference_002_technical_stop.md`.
 
-## Direction active — REF-003
+## Clôture de REF-003
 
-D-021 ouvre un nouveau pré-enregistrement avec monde et graines neufs. Le contraste,
-les modèles et les portes de REF-002 amendé restent inchangés, car l'hypothèse n'a pas
-été testée. La correction porte uniquement sur l'attribuabilité:
+D-021/D-023 ouvrent un nouveau pré-enregistrement avec monde et graines neufs. Le
+contraste, les modèles et les portes de REF-002 amendé restent inchangés, car
+l'hypothèse n'a pas été testée. La correction porte sur l'attribuabilité:
 
 - disjonction bloquante par provenance et digest de paire;
-- collisions de trames isolées exportées comme diagnostic;
-- visibilité contrefactuelle de l'objet vérifiée pour chaque paire externe;
+- collisions corpus↔banques bloquantes et inter-banques descriptives;
+- visibilité garantie sur l'enveloppe avec marge `3°`, puis vérifiée par paire;
 - aucune paire invisible resamplée ou remplacée après observation.
 
-Smoke réservé: 14991. Campagne réservée: 14301..14316. Aucun code, rendu ou calcul
-REF-003 n'est autorisé avant une revue contradictoire favorable de Claude Opus 5.
+Le smoke 14991 était vert, puis 14301..14302 ont terminé. La préparation de 14303 s'est
+arrêtée avant entraînement sur deux paires `external_only` dont l'effet
+contrefactuel valait `0,004453` et `0,006999 < 0,01`. Les objets étaient dans le champ:
+la preuve angulaire ne garantissait pas l'absence d'occlusion ou un contraste local
+minimal.
+
+D-027 applique le contrat: pas de reprise, remplacement ou analyse de 14301..14302.
+REF-003 reste un non-résultat technique.
 
 ## Actions par acteur
 
-Action Codex: préserver REF-002 close; attendre puis intégrer la revue pré-calcul
-REF-003 avant toute implémentation, tout rendu ou smoke 14991.
-Action Anthony: aucune.
-Action Claude Opus 5: revoir `docs/research/reafference_003_preregistration.md` selon
-`CLAUDE_REVIEW_REQUEST.md` et écrire `docs/research/reafference_003_review.md`.
-Blocage: smoke 14991 et graines 14301..14316 interdits avant revue favorable et
-intégration de toutes ses éventuelles corrections bloquantes.
+Action Codex: attendre puis intégrer mécaniquement le verdict LIFE-009.
+Action Anthony: transmettre `docs/research/life_009_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_009_review.md`, sans calcul.
+Blocage: implémentation, smoke, génération de banque, entraînement et calcul LIFE-009
+interdits avant verdict Claude. Toute suite REF exige protocole, monde et graines neufs.

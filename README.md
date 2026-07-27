@@ -12,19 +12,31 @@ La vision technique est définie dans [DEVELOPMENTAL_ARCHITECTURE.md](DEVELOPMEN
 
 ## Jalon Actif
 
-Deux voies complémentaires sont actives en simulation:
-
-- REF-003 prépare un test neuf, sous visibilité externe contrôlée, de l'hypothèse de
-  transport sensorimoteur spatial restée non testée après l'arrêt technique REF-002;
-- KERNEL-001 fournit la mémoire cognitive persistante qui manquait entre les événements,
-  modèles, compétences et expériences. LIFE-001 valide maintenant en simulation la
-  persistance, la régression, le choix sûr d'une expérience et la récupération.
+La voie active est KERNEL/LIFE en simulation. KERNEL-001 fournit la mémoire persistante
+entre événements, croyances, modèles, compétences et expériences. LIFE-001 valide la
+régression, le choix sûr et la récupération; LIFE-002 calcule maintenant les signaux de
+choix depuis des observations MuJoCo/J0 et en persiste les preuves reproductibles.
+LIFE-003 relie chaque proposition à une exécution et à un résultat J0, puis reconstruit
+automatiquement les histoires après redémarrage. LIFE-004 ferme la boucle avec un
+exécuteur exclusivement MuJoCo, limité à des primitives symboliques bornées. LIFE-005
+fait maintenant dépendre acquisition, régression et récupération de compétence des
+résultats J0 vérifiés. LIFE-006 dérive les candidates des besoins inconnus ou régressés
+et remplace automatiquement les priors froids par les signaux observés disponibles.
+LIFE-007 supervise et reprend le cycle complet aux frontières transactionnelles sûres.
+LIFE-008 qualifie 64 cycles avec reprises, refus de sécurité et idempotence globale.
 
 REF-001 est close sans promotion: une concaténation de commande absolue au latent global
 n'explique pas mieux le mouvement propre et n'établit pas la réafférence. REF-002 est
-close comme non-résultat technique après une collision fortuite de trame dans une garde
-d'intégrité; ses 12 triplets complets ne seront pas analysés. Aucun code, rendu ou
-calcul REF-003 n'est autorisé avant la revue pré-calcul de Claude Opus 5.
+close comme non-résultat technique après la découverte d'une manipulation externe
+parfois hors champ; ses 12 triplets complets ne seront pas analysés. La revue pré-calcul
+REF-003 a autorisé l'implémentation après huit corrections bloquantes, mais la campagne
+s'est arrêtée sur deux paires externes photométriquement trop faibles pendant 14303.
+REF-003 est également close sans résultat ni analyse partielle.
+
+Le pré-enregistrement LIFE-009 propose maintenant une première politique adaptative
+reliant expériences et progrès réel d'un modèle sensorimoteur. La prochaine porte est
+la revue contradictoire de Claude Opus 5. Aucun code appris, smoke, génération de
+banque ou entraînement LIFE-009 n'est autorisé avant son verdict.
 
 Le matériel J0 est conservé mais suspendu:
 

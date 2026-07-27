@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 from typing import Any, Mapping
 import uuid
@@ -18,6 +19,7 @@ from cognitive.models import (
     ExperimentSignals,
     SafetyContext,
 )
+from cognitive.observed_signals import ServoTrialSummary, summarize_servo_trial
 from j0.events import Event
 from j0.replay import ReplayStats, SessionReplay
 
@@ -267,6 +269,7 @@ class CognitiveKernel:
         *,
         now_ns: int,
         safety: SafetyContext,
+        signal_evidence: Mapping[str, Mapping[str, Any]] | None = None,
     ) -> ExperimentProposal:
         """Select and persist one eligible proposal from scientific-module signals."""
 
@@ -279,9 +282,121 @@ class CognitiveKernel:
             safety=safety,
             beliefs=self.beliefs,
             memory=self.memory,
+            evidence_by_experiment=signal_evidence,
         )
         self.memory.save_proposal(proposal)
         return proposal
+
+    @staticmethod
+    def _j0_session_identity(session_dir: str | Path) -> tuple[Path, str]:
+        resolved = Path(session_dir).resolve()
+        replay = SessionReplay(resolved)
+        manifest = replay.manifest()
+        session_id = str(manifest.get("session_id", ""))
+        if not session_id:
+            raise ValueError("J0 manifest has no session_id")
+        return resolved, session_id
+
+    @staticmethod
+    def _completed_j0_replay(
+        session_ref: str | Path,
+        *,
+        expected_session_id: str,
+    ) -> SessionReplay:
+        replay = SessionReplay(session_ref)
+        manifest = replay.manifest()
+        if str(manifest.get("session_id", "")) != expected_session_id:
+            raise ValueError("J0 manifest session does not match attributed execution")
+        if manifest.get("status") != "complete":
+            raise ValueError("J0 execution log is not complete")
+        stats = replay.stats()
+        if stats.ignored_trailing_bytes:
+            raise ValueError("J0 execution log has a truncated tail")
+        if stats.event_count != int(manifest.get("event_count", -1)):
+            raise ValueError("J0 execution event count does not match its manifest")
+        return replay
+
+    def begin_experiment_execution(
+        self,
+        proposal_id: str,
+        *,
+        execution_id: str,
+        session_dir: str | Path,
+        started_at_ns: int,
+    ) -> None:
+        """Attribute one existing J0 recorder session to an active proposal."""
+
+        if self.session_id is None:
+            raise RuntimeError("an active cognitive session is required")
+        resolved, j0_session_id = self._j0_session_identity(session_dir)
+        self.memory.begin_experiment_execution(
+            execution_id,
+            proposal_id=proposal_id,
+            cognitive_session_id=self.session_id,
+            j0_session_id=j0_session_id,
+            session_ref=str(resolved),
+            started_at_ns=started_at_ns,
+        )
+
+    def complete_observed_execution(
+        self,
+        execution_id: str,
+        *,
+        completed_at_ns: int,
+    ) -> ServoTrialSummary:
+        """Recompute one result from its J0 reference and complete it atomically."""
+
+        execution = self.memory.experiment_execution(execution_id)
+        if execution is None:
+            raise KeyError(f"unknown execution: {execution_id}")
+        replay = self._completed_j0_replay(
+            execution["session_ref"],
+            expected_session_id=str(execution["j0_session_id"]),
+        )
+        summary = summarize_servo_trial(
+            replay.events(),
+            experiment_id=str(execution["experiment_id"]),
+        )
+        if summary.session_id != execution["j0_session_id"]:
+            raise ValueError("J0 events do not match attributed execution session")
+        self.memory.complete_experiment_execution(
+            execution_id,
+            completed_at_ns=completed_at_ns,
+            experiment_id=summary.experiment_id,
+            j0_session_id=summary.session_id,
+            source_digest=summary.source_digest,
+            result_summary=summary.to_dict(),
+        )
+        return summary
+
+    def abort_experiment_execution(self, execution_id: str) -> None:
+        self.memory.abort_experiment_execution(execution_id)
+
+    def recompute_observed_history(
+        self,
+        experiment_id: str,
+    ) -> tuple[ServoTrialSummary, ...]:
+        """Rebuild and verify a complete experiment history from immutable J0 logs."""
+
+        history: list[ServoTrialSummary] = []
+        for execution in self.memory.completed_experiment_executions(experiment_id):
+            replay = self._completed_j0_replay(
+                execution["session_ref"],
+                expected_session_id=str(execution["j0_session_id"]),
+            )
+            summary = summarize_servo_trial(
+                replay.events(),
+                experiment_id=experiment_id,
+            )
+            persisted = json.loads(execution["result_summary_json"])
+            if summary.session_id != execution["j0_session_id"]:
+                raise ValueError("J0 event session changed after execution")
+            if summary.source_digest != execution["source_digest"]:
+                raise ValueError("J0 execution source digest changed")
+            if summary.to_dict() != persisted:
+                raise ValueError("J0 execution summary changed")
+            history.append(summary)
+        return tuple(history)
 
     def transition_competence(
         self,
@@ -306,6 +421,10 @@ class CognitiveKernel:
         if self.session_id is None:
             raise RuntimeError("no active session")
         session_id = self.session_id
+        if self.memory.running_execution_count(session_id):
+            raise RuntimeError("cannot end a cognitive session with a running execution")
+        if self.memory.active_development_cycle_count(session_id):
+            raise RuntimeError("cannot end a cognitive session with an active development cycle")
         if self.last_event_at_ns is not None and ended_at_ns < self.last_event_at_ns:
             raise ValueError("session end precedes the last observed event")
         terminal_snapshot = {

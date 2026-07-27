@@ -12,7 +12,7 @@ import uuid
 from cognitive.models import CompetenceStatus, ExperimentProposal
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 4
 
 
 class SchemaVersionError(RuntimeError):
@@ -79,12 +79,21 @@ class EpisodicMemory:
         if table is not None:
             row = self.connection.execute("SELECT version FROM schema_meta WHERE singleton = 1").fetchone()
             version = None if row is None else int(row["version"])
-            if version != SCHEMA_VERSION:
-                self.connection.close()
-                raise SchemaVersionError(
-                    f"unsupported cognitive memory schema version: {version}; expected {SCHEMA_VERSION}"
-                )
-            return
+            if version == 1:
+                self._migrate_v1_to_v2()
+                version = 2
+            if version == 2:
+                self._migrate_v2_to_v3()
+                version = 3
+            if version == 3:
+                self._migrate_v3_to_v4()
+                version = 4
+            if version == SCHEMA_VERSION:
+                return
+            self.connection.close()
+            raise SchemaVersionError(
+                f"unsupported cognitive memory schema version: {version}; expected {SCHEMA_VERSION}"
+            )
 
         with self.transaction() as db:
             db.executescript(
@@ -93,7 +102,7 @@ class EpisodicMemory:
                     singleton INTEGER PRIMARY KEY CHECK(singleton = 1),
                     version INTEGER NOT NULL
                 );
-                INSERT INTO schema_meta(singleton, version) VALUES (1, 1);
+                INSERT INTO schema_meta(singleton, version) VALUES (1, 4);
 
                 CREATE TABLE sessions (
                     session_id TEXT PRIMARY KEY,
@@ -157,6 +166,24 @@ class EpisodicMemory:
                 CREATE INDEX idx_competence_history_name
                     ON competence_history(name, transition_id);
 
+                CREATE TABLE competence_assessments (
+                    competence_name TEXT NOT NULL,
+                    assessment_digest TEXT NOT NULL,
+                    experiment_id TEXT NOT NULL,
+                    outcome TEXT NOT NULL CHECK(
+                        outcome IN ('validated', 'regressed', 'inconclusive')
+                    ),
+                    assessed_at_ns INTEGER NOT NULL CHECK(assessed_at_ns >= 0),
+                    from_status TEXT NOT NULL,
+                    to_status TEXT NOT NULL,
+                    transition_path_json TEXT NOT NULL,
+                    evidence_json TEXT NOT NULL,
+                    model_version TEXT,
+                    PRIMARY KEY(competence_name, assessment_digest)
+                );
+                CREATE INDEX idx_competence_assessments_time
+                    ON competence_assessments(competence_name, assessed_at_ns);
+
                 CREATE TABLE model_versions (
                     module TEXT NOT NULL,
                     version TEXT NOT NULL,
@@ -184,6 +211,49 @@ class EpisodicMemory:
                 CREATE INDEX idx_proposals_session_experiment
                     ON experiment_proposals(session_id, experiment_id, created_at_ns);
 
+                CREATE TABLE experiment_executions (
+                    execution_id TEXT PRIMARY KEY,
+                    proposal_id TEXT NOT NULL UNIQUE REFERENCES experiment_proposals(proposal_id),
+                    experiment_id TEXT NOT NULL,
+                    j0_session_id TEXT NOT NULL UNIQUE,
+                    session_ref TEXT NOT NULL,
+                    started_at_ns INTEGER NOT NULL CHECK(started_at_ns >= 0),
+                    completed_at_ns INTEGER CHECK(
+                        completed_at_ns IS NULL OR completed_at_ns >= started_at_ns
+                    ),
+                    status TEXT NOT NULL CHECK(status IN ('running', 'complete', 'aborted')),
+                    source_digest TEXT,
+                    result_summary_json TEXT,
+                    CHECK(
+                        (status = 'complete' AND completed_at_ns IS NOT NULL
+                            AND source_digest IS NOT NULL AND result_summary_json IS NOT NULL)
+                        OR status != 'complete'
+                    )
+                );
+                CREATE INDEX idx_executions_experiment_time
+                    ON experiment_executions(experiment_id, completed_at_ns, execution_id);
+
+                CREATE TABLE development_cycles (
+                    cycle_id TEXT PRIMARY KEY,
+                    proposal_id TEXT NOT NULL UNIQUE REFERENCES experiment_proposals(proposal_id),
+                    execution_id TEXT NOT NULL UNIQUE,
+                    j0_session_id TEXT NOT NULL UNIQUE,
+                    seed INTEGER NOT NULL CHECK(seed >= 0 AND seed <= 4294967295),
+                    experiment_id TEXT NOT NULL,
+                    primitive TEXT NOT NULL,
+                    status TEXT NOT NULL CHECK(
+                        status IN ('selected', 'executed', 'complete', 'aborted')
+                    ),
+                    created_at_ns INTEGER NOT NULL CHECK(created_at_ns >= 0),
+                    executed_at_ns INTEGER,
+                    completed_at_ns INTEGER,
+                    activation_json TEXT NOT NULL,
+                    assessment_digest TEXT,
+                    result_json TEXT NOT NULL
+                );
+                CREATE INDEX idx_development_cycles_status
+                    ON development_cycles(status, created_at_ns);
+
                 CREATE TABLE kernel_state (
                     state_key TEXT PRIMARY KEY,
                     schema_version INTEGER NOT NULL,
@@ -192,6 +262,109 @@ class EpisodicMemory:
                 );
                 """
             )
+
+    def _migrate_v1_to_v2(self) -> None:
+        """Apply the sole supported additive migration."""
+
+        with self.transaction() as db:
+            db.execute(
+                """
+                CREATE TABLE experiment_executions (
+                    execution_id TEXT PRIMARY KEY,
+                    proposal_id TEXT NOT NULL UNIQUE REFERENCES experiment_proposals(proposal_id),
+                    experiment_id TEXT NOT NULL,
+                    j0_session_id TEXT NOT NULL UNIQUE,
+                    session_ref TEXT NOT NULL,
+                    started_at_ns INTEGER NOT NULL CHECK(started_at_ns >= 0),
+                    completed_at_ns INTEGER CHECK(
+                        completed_at_ns IS NULL OR completed_at_ns >= started_at_ns
+                    ),
+                    status TEXT NOT NULL CHECK(status IN ('running', 'complete', 'aborted')),
+                    source_digest TEXT,
+                    result_summary_json TEXT,
+                    CHECK(
+                        (status = 'complete' AND completed_at_ns IS NOT NULL
+                            AND source_digest IS NOT NULL AND result_summary_json IS NOT NULL)
+                        OR status != 'complete'
+                    )
+                )
+                """
+            )
+            db.execute(
+                """
+                CREATE INDEX idx_executions_experiment_time
+                ON experiment_executions(experiment_id, completed_at_ns, execution_id)
+                """
+            )
+            db.execute("UPDATE kernel_state SET schema_version = 2")
+            db.execute("UPDATE schema_meta SET version = 2 WHERE singleton = 1")
+
+    def _migrate_v2_to_v3(self) -> None:
+        """Add idempotent competence assessment applications."""
+
+        with self.transaction() as db:
+            db.execute(
+                """
+                CREATE TABLE competence_assessments (
+                    competence_name TEXT NOT NULL,
+                    assessment_digest TEXT NOT NULL,
+                    experiment_id TEXT NOT NULL,
+                    outcome TEXT NOT NULL CHECK(
+                        outcome IN ('validated', 'regressed', 'inconclusive')
+                    ),
+                    assessed_at_ns INTEGER NOT NULL CHECK(assessed_at_ns >= 0),
+                    from_status TEXT NOT NULL,
+                    to_status TEXT NOT NULL,
+                    transition_path_json TEXT NOT NULL,
+                    evidence_json TEXT NOT NULL,
+                    model_version TEXT,
+                    PRIMARY KEY(competence_name, assessment_digest)
+                )
+                """
+            )
+            db.execute(
+                """
+                CREATE INDEX idx_competence_assessments_time
+                ON competence_assessments(competence_name, assessed_at_ns)
+                """
+            )
+            db.execute("UPDATE kernel_state SET schema_version = 3")
+            db.execute("UPDATE schema_meta SET version = 3 WHERE singleton = 1")
+
+    def _migrate_v3_to_v4(self) -> None:
+        """Add the persistent developmental cycle supervisor journal."""
+
+        with self.transaction() as db:
+            db.execute(
+                """
+                CREATE TABLE development_cycles (
+                    cycle_id TEXT PRIMARY KEY,
+                    proposal_id TEXT NOT NULL UNIQUE REFERENCES experiment_proposals(proposal_id),
+                    execution_id TEXT NOT NULL UNIQUE,
+                    j0_session_id TEXT NOT NULL UNIQUE,
+                    seed INTEGER NOT NULL CHECK(seed >= 0 AND seed <= 4294967295),
+                    experiment_id TEXT NOT NULL,
+                    primitive TEXT NOT NULL,
+                    status TEXT NOT NULL CHECK(
+                        status IN ('selected', 'executed', 'complete', 'aborted')
+                    ),
+                    created_at_ns INTEGER NOT NULL CHECK(created_at_ns >= 0),
+                    executed_at_ns INTEGER,
+                    completed_at_ns INTEGER,
+                    activation_json TEXT NOT NULL,
+                    assessment_digest TEXT,
+                    result_json TEXT NOT NULL
+                )
+                """
+            )
+            db.execute(
+                """
+                CREATE INDEX idx_development_cycles_status
+                ON development_cycles(status, created_at_ns)
+                """
+            )
+            db.execute("UPDATE kernel_state SET schema_version = 4")
+            db.execute("UPDATE schema_meta SET version = 4 WHERE singleton = 1")
 
     def integrity_check(self) -> str:
         row = self.connection.execute("PRAGMA integrity_check").fetchone()
@@ -632,6 +805,215 @@ class EpisodicMemory:
             )
         )
 
+    def apply_competence_assessment(
+        self,
+        name: str,
+        *,
+        experiment_id: str,
+        outcome: str,
+        assessed_at_ns: int,
+        assessment_digest: str,
+        evidence: Mapping[str, Any],
+        model_version: str | None = None,
+    ) -> tuple[bool, CompetenceStatus, CompetenceStatus, tuple[CompetenceStatus, ...]]:
+        """Apply one assessment and its full transition path atomically."""
+
+        if not name or not experiment_id or not assessment_digest:
+            raise ValueError("competence, experiment, and assessment digest are required")
+        if outcome not in {"validated", "regressed", "inconclusive"}:
+            raise ValueError("invalid competence assessment outcome")
+        if assessed_at_ns < 0:
+            raise ValueError("assessment timestamp must be non-negative")
+        evidence_json = _canonical_json(dict(evidence))
+
+        with self.transaction() as db:
+            existing = db.execute(
+                """
+                SELECT * FROM competence_assessments
+                WHERE competence_name = ? AND assessment_digest = ?
+                """,
+                (name, assessment_digest),
+            ).fetchone()
+            if existing is not None:
+                if (
+                    existing["experiment_id"] != experiment_id
+                    or existing["outcome"] != outcome
+                    or existing["evidence_json"] != evidence_json
+                    or existing["model_version"] != model_version
+                ):
+                    raise ValueError("competence assessment digest collision")
+                path = tuple(
+                    CompetenceStatus(value)
+                    for value in json.loads(existing["transition_path_json"])
+                )
+                return (
+                    False,
+                    CompetenceStatus(existing["from_status"]),
+                    CompetenceStatus(existing["to_status"]),
+                    path,
+                )
+
+            last_assessment = db.execute(
+                """
+                SELECT MAX(assessed_at_ns) AS timestamp
+                FROM competence_assessments WHERE competence_name = ?
+                """,
+                (name,),
+            ).fetchone()
+            if (
+                last_assessment["timestamp"] is not None
+                and assessed_at_ns < int(last_assessment["timestamp"])
+            ):
+                raise ValueError("competence assessment is older than persisted evidence")
+            row = db.execute(
+                "SELECT status, updated_at_ns FROM competencies WHERE name = ?",
+                (name,),
+            ).fetchone()
+            if row is not None and assessed_at_ns < int(row["updated_at_ns"]):
+                raise ValueError("competence assessment precedes the current state")
+            from_status = (
+                CompetenceStatus.UNKNOWN
+                if row is None
+                else CompetenceStatus(row["status"])
+            )
+            if from_status is CompetenceStatus.SUSPENDED:
+                raise InvalidCompetenceTransition(
+                    "a suspended competence requires explicit reactivation authority"
+                )
+
+            if outcome == "validated":
+                paths = {
+                    CompetenceStatus.UNKNOWN: (
+                        CompetenceStatus.LEARNING,
+                        CompetenceStatus.CANDIDATE,
+                        CompetenceStatus.VALIDATED,
+                    ),
+                    CompetenceStatus.LEARNING: (
+                        CompetenceStatus.CANDIDATE,
+                        CompetenceStatus.VALIDATED,
+                    ),
+                    CompetenceStatus.CANDIDATE: (CompetenceStatus.VALIDATED,),
+                    CompetenceStatus.VALIDATED: (),
+                    CompetenceStatus.REGRESSED: (
+                        CompetenceStatus.LEARNING,
+                        CompetenceStatus.CANDIDATE,
+                        CompetenceStatus.VALIDATED,
+                    ),
+                }
+            elif outcome == "regressed":
+                paths = {
+                    CompetenceStatus.UNKNOWN: (CompetenceStatus.LEARNING,),
+                    CompetenceStatus.LEARNING: (),
+                    CompetenceStatus.CANDIDATE: (CompetenceStatus.LEARNING,),
+                    CompetenceStatus.VALIDATED: (CompetenceStatus.REGRESSED,),
+                    CompetenceStatus.REGRESSED: (),
+                }
+            else:
+                paths = {
+                    status: ()
+                    for status in (
+                        CompetenceStatus.UNKNOWN,
+                        CompetenceStatus.LEARNING,
+                        CompetenceStatus.CANDIDATE,
+                        CompetenceStatus.VALIDATED,
+                        CompetenceStatus.REGRESSED,
+                    )
+                }
+            path = paths[from_status]
+            current = from_status
+            transition_evidence = {
+                **dict(evidence),
+                "assessment_digest": assessment_digest,
+                "automatic_application": "life_005_v1",
+            }
+            transition_evidence_json = _canonical_json(transition_evidence)
+            for target in path:
+                if target not in _ALLOWED_TRANSITIONS[current]:
+                    raise InvalidCompetenceTransition(
+                        f"invalid automatic competence transition: "
+                        f"{current.value} -> {target.value}"
+                    )
+                validation_digest = (
+                    assessment_digest
+                    if target is CompetenceStatus.VALIDATED
+                    else None
+                )
+                db.execute(
+                    """
+                    INSERT INTO competencies(
+                        name, status, updated_at_ns, model_version,
+                        validation_digest, evidence_json
+                    ) VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(name) DO UPDATE SET
+                        status = excluded.status,
+                        updated_at_ns = excluded.updated_at_ns,
+                        model_version = excluded.model_version,
+                        validation_digest = excluded.validation_digest,
+                        evidence_json = excluded.evidence_json
+                    """,
+                    (
+                        name,
+                        target.value,
+                        assessed_at_ns,
+                        model_version,
+                        validation_digest,
+                        transition_evidence_json,
+                    ),
+                )
+                db.execute(
+                    """
+                    INSERT INTO competence_history(
+                        name, from_status, to_status, changed_at_ns, model_version,
+                        validation_digest, evidence_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        name,
+                        current.value,
+                        target.value,
+                        assessed_at_ns,
+                        model_version,
+                        validation_digest,
+                        transition_evidence_json,
+                    ),
+                )
+                current = target
+
+            db.execute(
+                """
+                INSERT INTO competence_assessments(
+                    competence_name, assessment_digest, experiment_id, outcome,
+                    assessed_at_ns, from_status, to_status, transition_path_json,
+                    evidence_json, model_version
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    name,
+                    assessment_digest,
+                    experiment_id,
+                    outcome,
+                    assessed_at_ns,
+                    from_status.value,
+                    current.value,
+                    _canonical_json([status.value for status in path]),
+                    evidence_json,
+                    model_version,
+                ),
+            )
+            return True, from_status, current, path
+
+    def competence_assessments(self, name: str) -> list[sqlite3.Row]:
+        return list(
+            self.connection.execute(
+                """
+                SELECT * FROM competence_assessments
+                WHERE competence_name = ?
+                ORDER BY assessed_at_ns, assessment_digest
+                """,
+                (name,),
+            )
+        )
+
     def register_model(
         self,
         module: str,
@@ -708,6 +1090,148 @@ class EpisodicMemory:
                 ),
             )
 
+    def proposal(self, proposal_id: str) -> sqlite3.Row | None:
+        return self.connection.execute(
+            "SELECT * FROM experiment_proposals WHERE proposal_id = ?",
+            (proposal_id,),
+        ).fetchone()
+
+    def save_proposal_and_cycle(
+        self,
+        proposal: ExperimentProposal,
+        *,
+        cycle_id: str,
+        execution_id: str,
+        j0_session_id: str,
+        seed: int,
+        activation: Mapping[str, Any],
+    ) -> None:
+        """Persist one supervised proposal and its cycle atomically."""
+
+        if not cycle_id or not execution_id or not j0_session_id:
+            raise ValueError("cycle and execution identities are required")
+        if not 0 <= seed <= 0xFFFFFFFF:
+            raise ValueError("cycle seed must be in [0, 2^32-1]")
+        with self.transaction() as db:
+            db.execute(
+                """
+                INSERT INTO experiment_proposals(
+                    proposal_id, session_id, experiment_id, primitive, created_at_ns,
+                    status, score, belief_revision, rationale_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    proposal.proposal_id,
+                    proposal.session_id,
+                    proposal.experiment_id,
+                    proposal.primitive,
+                    proposal.created_at_ns,
+                    proposal.status,
+                    proposal.score,
+                    proposal.belief_revision,
+                    _canonical_json(dict(proposal.rationale)),
+                ),
+            )
+            db.execute(
+                """
+                INSERT INTO development_cycles(
+                    cycle_id, proposal_id, execution_id, j0_session_id, seed,
+                    experiment_id, primitive, status, created_at_ns,
+                    activation_json, result_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, 'selected', ?, ?, '{}')
+                """,
+                (
+                    cycle_id,
+                    proposal.proposal_id,
+                    execution_id,
+                    j0_session_id,
+                    seed,
+                    proposal.experiment_id,
+                    proposal.primitive,
+                    proposal.created_at_ns,
+                    _canonical_json(dict(activation)),
+                ),
+            )
+
+    def development_cycle(self, cycle_id: str) -> sqlite3.Row | None:
+        return self.connection.execute(
+            "SELECT * FROM development_cycles WHERE cycle_id = ?",
+            (cycle_id,),
+        ).fetchone()
+
+    def active_development_cycle_count(self, cognitive_session_id: str) -> int:
+        row = self.connection.execute(
+            """
+            SELECT COUNT(*) AS count
+            FROM development_cycles AS cycle
+            JOIN experiment_proposals AS proposal
+                ON proposal.proposal_id = cycle.proposal_id
+            WHERE proposal.session_id = ?
+                AND cycle.status IN ('selected', 'executed')
+            """,
+            (cognitive_session_id,),
+        ).fetchone()
+        return int(row["count"])
+
+    def advance_development_cycle(
+        self,
+        cycle_id: str,
+        *,
+        expected_status: str,
+        to_status: str,
+        changed_at_ns: int,
+        result: Mapping[str, Any],
+        assessment_digest: str | None = None,
+    ) -> None:
+        allowed = {
+            "selected": {"executed", "aborted"},
+            "executed": {"complete", "aborted"},
+        }
+        if to_status not in allowed.get(expected_status, set()):
+            raise ValueError("invalid development cycle transition")
+        if changed_at_ns < 0:
+            raise ValueError("cycle transition timestamp must be non-negative")
+        with self.transaction() as db:
+            row = db.execute(
+                "SELECT * FROM development_cycles WHERE cycle_id = ?",
+                (cycle_id,),
+            ).fetchone()
+            if row is None:
+                raise KeyError(f"unknown development cycle: {cycle_id}")
+            if row["status"] != expected_status:
+                raise ValueError(
+                    f"development cycle is {row['status']}, expected {expected_status}"
+                )
+            previous_time = (
+                row["executed_at_ns"]
+                if expected_status == "executed"
+                else row["created_at_ns"]
+            )
+            if changed_at_ns < int(previous_time):
+                raise ValueError("cycle transition precedes its previous phase")
+            executed_at_ns = (
+                changed_at_ns if to_status == "executed" else row["executed_at_ns"]
+            )
+            completed_at_ns = (
+                changed_at_ns if to_status in {"complete", "aborted"} else None
+            )
+            db.execute(
+                """
+                UPDATE development_cycles SET
+                    status = ?, executed_at_ns = ?, completed_at_ns = ?,
+                    assessment_digest = ?, result_json = ?
+                WHERE cycle_id = ?
+                """,
+                (
+                    to_status,
+                    executed_at_ns,
+                    completed_at_ns,
+                    assessment_digest,
+                    _canonical_json(dict(result)),
+                    cycle_id,
+                ),
+            )
+
     def proposal_count(self, session_id: str, experiment_id: str) -> int:
         row = self.connection.execute(
             """
@@ -729,15 +1253,209 @@ class EpisodicMemory:
         return None if row["timestamp"] is None else int(row["timestamp"])
 
     def set_proposal_status(self, proposal_id: str, status: str) -> None:
-        if status not in {"accepted", "rejected", "executed", "cancelled"}:
-            raise ValueError("invalid terminal proposal status")
+        if status not in {"accepted", "rejected", "cancelled"}:
+            raise ValueError("invalid direct proposal status")
         with self.transaction() as db:
+            running = db.execute(
+                """
+                SELECT 1 FROM experiment_executions
+                WHERE proposal_id = ? AND status = 'running'
+                """,
+                (proposal_id,),
+            ).fetchone()
+            if running is not None:
+                raise ValueError("a proposal with a running execution cannot be changed directly")
             cursor = db.execute(
                 "UPDATE experiment_proposals SET status = ? WHERE proposal_id = ?",
                 (status, proposal_id),
             )
             if cursor.rowcount != 1:
                 raise KeyError(f"unknown proposal: {proposal_id}")
+
+    def begin_experiment_execution(
+        self,
+        execution_id: str,
+        *,
+        proposal_id: str,
+        cognitive_session_id: str,
+        j0_session_id: str,
+        session_ref: str,
+        started_at_ns: int,
+    ) -> None:
+        if not execution_id or not proposal_id or not j0_session_id or not session_ref:
+            raise ValueError("execution, proposal, J0 session, and session reference are required")
+        if started_at_ns < 0:
+            raise ValueError("execution start must be non-negative")
+        with self.transaction() as db:
+            proposal = db.execute(
+                """
+                SELECT session_id, experiment_id, status
+                FROM experiment_proposals WHERE proposal_id = ?
+                """,
+                (proposal_id,),
+            ).fetchone()
+            if proposal is None:
+                raise KeyError(f"unknown proposal: {proposal_id}")
+            if proposal["session_id"] != cognitive_session_id:
+                raise ValueError("proposal does not belong to the active cognitive session")
+            existing = db.execute(
+                "SELECT * FROM experiment_executions WHERE execution_id = ?",
+                (execution_id,),
+            ).fetchone()
+            if existing is not None:
+                expected = (
+                    proposal_id,
+                    j0_session_id,
+                    session_ref,
+                    started_at_ns,
+                )
+                actual = (
+                    existing["proposal_id"],
+                    existing["j0_session_id"],
+                    existing["session_ref"],
+                    int(existing["started_at_ns"]),
+                )
+                if actual != expected:
+                    raise ValueError("execution identity collision")
+                return
+
+            if proposal["status"] not in {"proposed", "accepted"}:
+                raise ValueError("proposal is not executable")
+            try:
+                db.execute(
+                    """
+                    INSERT INTO experiment_executions(
+                        execution_id, proposal_id, experiment_id, j0_session_id,
+                        session_ref, started_at_ns, status
+                    ) VALUES (?, ?, ?, ?, ?, ?, 'running')
+                    """,
+                    (
+                        execution_id,
+                        proposal_id,
+                        proposal["experiment_id"],
+                        j0_session_id,
+                        session_ref,
+                        started_at_ns,
+                    ),
+                )
+            except sqlite3.IntegrityError as error:
+                raise ValueError("proposal or J0 session is already attributed") from error
+            db.execute(
+                "UPDATE experiment_proposals SET status = 'accepted' WHERE proposal_id = ?",
+                (proposal_id,),
+            )
+
+    def complete_experiment_execution(
+        self,
+        execution_id: str,
+        *,
+        completed_at_ns: int,
+        experiment_id: str,
+        j0_session_id: str,
+        source_digest: str,
+        result_summary: Mapping[str, Any],
+    ) -> None:
+        if completed_at_ns < 0 or not source_digest:
+            raise ValueError("completion time and source digest are required")
+        summary_json = _canonical_json(dict(result_summary))
+        with self.transaction() as db:
+            execution = db.execute(
+                "SELECT * FROM experiment_executions WHERE execution_id = ?",
+                (execution_id,),
+            ).fetchone()
+            if execution is None:
+                raise KeyError(f"unknown execution: {execution_id}")
+            if execution["status"] == "complete":
+                expected = (
+                    completed_at_ns,
+                    experiment_id,
+                    j0_session_id,
+                    source_digest,
+                    summary_json,
+                )
+                actual = (
+                    int(execution["completed_at_ns"]),
+                    execution["experiment_id"],
+                    execution["j0_session_id"],
+                    execution["source_digest"],
+                    execution["result_summary_json"],
+                )
+                if actual != expected:
+                    raise ValueError("completed execution collision")
+                return
+            if execution["status"] != "running":
+                raise ValueError("execution is not running")
+            if execution["experiment_id"] != experiment_id:
+                raise ValueError("result experiment does not match execution")
+            if execution["j0_session_id"] != j0_session_id:
+                raise ValueError("result J0 session does not match execution")
+            if completed_at_ns < int(execution["started_at_ns"]):
+                raise ValueError("execution completion precedes start")
+            db.execute(
+                """
+                UPDATE experiment_executions SET
+                    completed_at_ns = ?, status = 'complete', source_digest = ?,
+                    result_summary_json = ?
+                WHERE execution_id = ?
+                """,
+                (completed_at_ns, source_digest, summary_json, execution_id),
+            )
+            db.execute(
+                "UPDATE experiment_proposals SET status = 'executed' WHERE proposal_id = ?",
+                (execution["proposal_id"],),
+            )
+
+    def abort_experiment_execution(self, execution_id: str) -> None:
+        with self.transaction() as db:
+            execution = db.execute(
+                "SELECT proposal_id, status FROM experiment_executions WHERE execution_id = ?",
+                (execution_id,),
+            ).fetchone()
+            if execution is None:
+                raise KeyError(f"unknown execution: {execution_id}")
+            if execution["status"] == "aborted":
+                return
+            if execution["status"] != "running":
+                raise ValueError("only a running execution can be aborted")
+            db.execute(
+                "UPDATE experiment_executions SET status = 'aborted' WHERE execution_id = ?",
+                (execution_id,),
+            )
+            db.execute(
+                "UPDATE experiment_proposals SET status = 'cancelled' WHERE proposal_id = ?",
+                (execution["proposal_id"],),
+            )
+
+    def experiment_execution(self, execution_id: str) -> sqlite3.Row | None:
+        return self.connection.execute(
+            "SELECT * FROM experiment_executions WHERE execution_id = ?",
+            (execution_id,),
+        ).fetchone()
+
+    def completed_experiment_executions(self, experiment_id: str) -> list[sqlite3.Row]:
+        return list(
+            self.connection.execute(
+                """
+                SELECT * FROM experiment_executions
+                WHERE experiment_id = ? AND status = 'complete'
+                ORDER BY completed_at_ns, execution_id
+                """,
+                (experiment_id,),
+            ).fetchall()
+        )
+
+    def running_execution_count(self, cognitive_session_id: str) -> int:
+        row = self.connection.execute(
+            """
+            SELECT COUNT(*) AS count
+            FROM experiment_executions AS execution
+            JOIN experiment_proposals AS proposal
+                ON proposal.proposal_id = execution.proposal_id
+            WHERE proposal.session_id = ? AND execution.status = 'running'
+            """,
+            (cognitive_session_id,),
+        ).fetchone()
+        return int(row["count"])
 
     def save_kernel_state(
         self,

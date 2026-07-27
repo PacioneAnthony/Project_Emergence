@@ -66,14 +66,30 @@ la vue finale dans cette configuration. Il n'existe:
 ## Interprétation
 
 La garde C6 interdisait toute collision de **trame**, même lorsque les provenances,
-pièces, RNG et états physiques sont distincts. Elle a donc correctement arrêté la
-campagne selon le contrat, mais elle confond fuite de données et égalité fortuite
-d'observations. Cette égalité ne démontre ni fuite, ni défaut du modèle; elle montre que
-le critère d'intégrité était plus fort que la propriété scientifique recherchée.
+pièces, RNG et états physiques sont distincts. Elle a correctement arrêté la campagne
+selon le contrat. La collision ne démontre pas une fuite de données, mais elle démontre
+qu'une manipulation `mixed` pouvait devenir visuellement nulle.
 
 Modifier la garde ou ignorer cette trame après ouverture de 13301 serait post hoc.
 Les résultats 13301..13312 restent conservés uniquement pour audit technique et ne
 doivent pas être inspectés ni agrégés.
+
+## Rectification après revue REF-003
+
+La revue pré-calcul REF-003 a reconstitué l'enveloppe géométrique depuis le code et les
+distributions gelées, sans lire aucun score réservé. Avec bearing objet `centre+8°`,
+angle de départ `centre+U(−4°,+4°)`, amplitude tête jusqu'à `10°` et demi-champ `15°`:
+
+- le centre de l'objet sortait du champ dans environ `24,9 %` des paires `mixed`;
+- l'objet entier sortait du champ dans environ `3,06 %` des paires;
+- la garde de visibilité REF-002, mesurée uniquement tête pointée vers le centre du bin,
+  était structurellement incapable de détecter ces cas.
+
+Le diagnostic initial « égalité fortuite d'observations » était donc incomplet. La
+cause scientifique sous-jacente est une manipulation externe défaillante à certaines
+poses. La garde de collision a tiré sous une formulation mal ciblée, mais a empêché une
+campagne dont H3 aurait été inattribuable. Cette rectification ne change ni la clôture
+technique, ni l'interdiction d'analyse partielle.
 
 ## Suite autorisée
 
@@ -81,7 +97,8 @@ Toute reprise exige un protocole, un monde et des graines neufs. Le prochain pro
 doit distinguer:
 
 - disjonction de provenance et de paires, réellement nécessaire contre la fuite;
-- collisions de trames individuelles, descriptives si les paires et provenances sont
-  distinctes;
-- visibilité contrefactuelle de l'objet par paire, nécessaire pour que `mixed` mesure
-  effectivement un changement externe.
+- collisions de trames inter-banques descriptives si paires et provenances sont
+  distinctes, mais collisions corpus↔banques toujours bloquantes;
+- visibilité garantie analytiquement sur toute l'enveloppe puis vérifiée
+  contrefactuellement par paire, nécessaire pour que `mixed` mesure effectivement un
+  changement externe.

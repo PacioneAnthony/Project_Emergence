@@ -65,6 +65,40 @@ def generate_session_id(prefix: str = "j0") -> str:
     return f"{prefix}-{stamp}-{uuid.uuid4().hex[:8]}"
 
 
+def abort_abandoned_session(session_dir: str | Path, *, notes: str) -> None:
+    """Mark a recorder left in `recording` by a dead process as aborted."""
+
+    directory = Path(session_dir)
+    manifest_path = directory / "manifest.json"
+    events_path = directory / "events.jsonl"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("status") == "aborted":
+        return
+    if manifest.get("status") != "recording":
+        raise ValueError("only an abandoned recording session can be aborted")
+    event_count = 0
+    with events_path.open("rb") as stream:
+        for line in stream:
+            if not line.endswith(b"\n"):
+                raise ValueError("abandoned J0 session has a truncated event tail")
+            Event.from_json(line.decode("utf-8"))
+            event_count += 1
+    manifest.update(
+        status="aborted",
+        ended_at_utc=datetime.now(timezone.utc).isoformat(),
+        ended_monotonic_ns=host_time_ns(),
+        event_count=event_count,
+        session_size_bytes=directory_size(directory),
+        notes=notes,
+    )
+    temporary = manifest_path.with_suffix(".json.tmp")
+    temporary.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    os.replace(temporary, manifest_path)
+
+
 class SessionRecorder:
     """Write one immutable session directory.
 

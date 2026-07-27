@@ -24,10 +24,12 @@ Lire dans cet ordre:
 16. `docs/research/reafference_002_smoke.md`
 17. `docs/research/reafference_002_technical_stop.md`
 18. `docs/research/reafference_003_preregistration.md`
-19. `docs/research/kernel_001_spec.md`
-20. `docs/research/kernel_001_implementation.md`
-21. `docs/research/life_001_recovery.md`
-22. `DECISIONS.md` — D-014 à D-022
+19. `docs/research/reafference_003_review.md`
+20. `docs/research/reafference_003_technical_stop.md`
+21. `docs/research/kernel_001_spec.md`
+22. `docs/research/kernel_001_implementation.md`
+23. `docs/research/life_001_recovery.md`
+24. `DECISIONS.md` — D-014 à D-027
 
 REF-001 est maintenant close sous D-015/D-016. Ne relancer aucun run, ne modifier aucun seuil
 et ne réutiliser aucune graine 12301..12316. La revue contradictoire des résultats est
@@ -140,20 +142,59 @@ de transport spatial reste non testée.
 ## Direction active — REF-003
 
 D-021 pré-enregistre une nouvelle tentative dans un monde et des espaces de graines
-neufs. Elle conserve les modèles, informations, baselines, budgets, H1/H3/H4/H5 et
-seuils de REF-002 amendé. La correction est limitée à l'intégrité et à la visibilité:
+neufs. D-023 intègre le verdict Claude Opus 5
+`AUTORISER AVEC CORRECTIONS BLOQUANTES`. Elle conserve les modèles, informations,
+baselines, budgets, H1/H3/H4/H5 et seuils de REF-002 amendé. Les corrections portent
+sur l'intégrité et la visibilité:
 
 - disjonction bloquante des provenances, espaces RNG et digests de paires;
-- collisions de trames isolées seulement descriptives lorsque les paires sont
-  distinctes;
+- collisions corpus↔banques bloquantes, collisions inter-banques descriptives;
+- champ garanti analytiquement avec marge `3°` avant mesure;
 - rendu contrefactuel par paire `external_only` et `mixed`, invisible aux modèles;
 - effet objet `≥0,01` pour chaque paire et moyenne par bin `≥0,05`;
-- aucun resampling ou remplacement après observation.
+- aucun resampling ou remplacement après observation;
+- SANITY-EXTERNAL absolue `≥0,70` et digests de l'héritage obligatoires.
 
 Monde `REF3`, smoke 14991, campagne 14301..14316 et graine statistique 2026072701 sont
 réservés et vierges. Le plafond initial de 90 minutes couvre les 1 536 rendus
-contrefactuels par graine. Aucun code, rendu ou calcul REF-003 n'est autorisé avant
-revue favorable de Claude Opus 5 et intégration des corrections éventuelles.
+contrefactuels par graine.
+
+L'implémentation REF-003 conserve les cinq artefacts REF-002 hashés sans modification.
+Elle ajoute le monde `3,6×4,1 m`, un rail `0,36 m`, une demi-largeur objet `0,32 m`,
+un bearing par paire `U(−3°, +3°)`, des trajectoires sans clipping, les audits
+contrefactuels isolés et un runner protégé. Onze tests dédiés et 247 tests complets sont
+verts. Sur la graine d'ingénierie non réservée 14990, les 768 paires `mixed` ont un
+effet minimal `0,04702` et les 768 `external_only` un minimum `0,04290`; toutes les
+moyennes par bin dépassent `0,19`.
+
+La première tentative smoke 14991 a terminé les trois entraînements puis s'est arrêtée
+sur une différence d'une paire dans le multiensemble des masques warp du bin 0. Aucun
+score n'a été interprété. D-024/I1 pose désormais chaque banque à l'état pré-transition
+exact avec vitesse nulle; trois banques mobiles complètes sur 14990 ont ensuite six
+multiensembles identiques. La tentative échouée est archivée sous
+`tmp/ref3_smoke_attempt1_mask_mismatch`.
+
+La seconde tentative s'est arrêtée avant données sur le ratio temporel
+`1,275399 > 1,25`. D-025/I2 conserve seuil, opérations et nombre de mesures, mais
+intercale les conditions en ordre tournant et synchronise CUDA avant/après chaque
+durée. Sur 14990, le ratio devient `1,10978`. La tentative est archivée sous
+`tmp/ref3_smoke_attempt2_timing_ratio`.
+
+La troisième tentative 14991 est entièrement verte sous D-026: ratio temporel
+`1,10334`, champ analytique vert avec marge résiduelle `2,22165°`, visibilité minimale
+`0,15308` en externe pur et `0,05794` en mixte, zéro collision, contrefactuels
+`2,70849 s`. La projection vaut `39,92741 min`; le plafond initial de 90 minutes n'est
+pas amendé. Le manifeste porte les digests concordants et confirme qu'aucune graine
+réservée n'était ouverte.
+
+La campagne a terminé 14301..14302, puis s'est arrêtée pendant la préparation de 14303
+sur deux paires `external_only` sous le seuil contrefactuel individuel: `0,004453` et
+`0,006999 < 0,01`. 14303 n'a reçu aucun entraînement; 14304..14316 n'ont jamais été
+ouvertes. Les objets étaient dans le champ, mais la preuve angulaire ne garantissait ni
+absence d'occlusion ni contraste photométrique local.
+
+D-027 clôt REF-003 comme non-résultat technique. Il est interdit de lire ou agréger les
+scores 14301..14302, de reprendre 14303 ou de remplacer les paires fautives.
 
 ## Contexte durable
 
@@ -173,7 +214,6 @@ des propositions d'expérience sous gardes explicites.
 
 Le replay J0 est idempotent et reprenable. Sessions, rotations d'épisodes et checkpoints
 associés sont transactionnels. Une proposition ne contient aucun champ d'actionnement.
-Les 22 tests dédiés et les 215 tests complets passent dans `.venv`.
 
 Le premier smoke LIFE-001 traverse deux sessions MuJoCo/J0 et une réouverture de base,
 puis valide avec digest la primitive analytique `bounded_head_orientation`.
@@ -183,19 +223,131 @@ régression injectée par réduction de vitesse servo, sélection auditée de
 `recalibrate-servo`, redémarrage, récupération et revalidation tenue à part. Un
 évaluateur à hystérésis produit les preuves sans modifier lui-même l'état; le catalogue
 classe uniquement les candidates qui passent toutes les gardes et persiste l'audit.
-Les 26 tests KERNEL/LIFE et 236 tests complets sont verts.
 
-LIFE-001 prouve désormais le câblage du cycle, pas un apprentissage ou diagnostic causal
-autonome. La suite doit produire les signaux de sélection à partir d'observations
-mesurées, sans anticiper REF-003, dont la porte Claude reste fermée.
+D-028/LIFE-002 ajoute `cognitive/observed_signals.py`. Quatre sessions MuJoCo/J0
+17201..17204 forment deux histoires candidates. Les événements publics
+`requested_deg`/`as5600_deg` sont validés puis réduits en erreur, incertitude,
+couverture, exposition aux butées et coût moteur. Ces résumés produisent les six signaux
+du sélecteur et une preuve SHA-256 par candidate; aucun payload brut n'entre dans
+SQLite.
+
+Le smoke choisit `diagnose-servo`, persiste également la preuve de `wide-scan`, simule
+un redémarrage avec session ouverte puis retrouve exactement les mêmes résumés, signaux
+et digests par replay J0. Les 33 tests KERNEL/LIFE ciblés et les 254 tests complets sont
+verts.
+
+LIFE-002 prouve le raccord sensation→signal→choix sûr→persistance, pas une curiosité
+optimale ou un diagnostic causal. La prochaine lacune est le cycle durable
+proposition→exécution→résultat, aujourd'hui encore assemblé par l'appelant.
+
+D-029/LIFE-003 porte la mémoire SQLite en v2 avec migration additive depuis v1. Une
+exécution relie une proposition unique à une session J0 unique; `begin`, `complete` et
+`abort` mettent à jour exécution et proposition dans une transaction. Seule une
+complétion vérifiée peut poser le statut `executed`.
+
+Le journal doit être clos, non tronqué et cohérent avec son manifeste. Le noyau relit
+sa référence, recalcule le résumé LIFE-002 et refuse toute divergence de session,
+digest ou valeur agrégée. `recompute_observed_history` reconstruit ainsi les histoires
+sans assemblage manuel.
+
+Le smoke 17311..17314 perd le processus pendant une exécution, la reprend, complète
+quatre essais, reconstruit deux histoires, choisit `diagnose-servo`, redémarre encore et
+retrouve les mêmes digests. Les doubles attributions, journaux ouverts, résultats
+étrangers, sources altérées et fermetures avec exécution active sont refusés. Les
+37 tests KERNEL/LIFE ciblés et les 258 tests complets sont verts.
+
+LIFE-003 ne commande toujours rien. La prochaine tranche sûre est LIFE-004: un
+adaptateur MuJoCo extérieur au noyau qui traduit uniquement des primitives autorisées
+et bornées en essais J0.
+
+D-030/LIFE-004 ajoute `sim3d/life_executor.py`, qui ne connaît que deux plans gelés:
+douze pas à 40° pour `diagnose_bounded_servo` et douze pas 40°/140° pour
+`scan_bounded_servo`. Il n'accepte aucune cible libre, revérifie la proposition SQLite
+et le contexte de sécurité, puis crée le journal J0 et utilise LIFE-003 pour
+l'attribution et la complétion.
+
+Les graines 17421..17424 créent deux histoires de deux essais. LIFE-002 sélectionne
+`diagnose-servo` depuis ces seules observations; l'exécuteur produit alors le cinquième
+essai 17425. Après redémarrage, les histoires contiennent bien 3 résultats diagnose et
+2 wide. Arrêt d'urgence, primitive inconnue et proposition falsifiée sont refusés avant
+journal; une panne MuJoCo injectée annule journal, exécution et proposition. Les
+41 tests KERNEL/LIFE ciblés et les 262 tests complets sont verts.
+
+La boucle minimale observation→signal→proposition→simulation→J0→résultat→mémoire est
+donc raccordée. Elle reste déterministe et conçue par l'ingénieur. LIFE-005 doit relier
+les résultats à l'évaluation et aux transitions de compétence; toute politique apprise
+ou génération ouverte de primitives demandera d'abord une revue Claude Opus 5.
+
+D-031/LIFE-005 ajoute une évaluation de `bounded_servo_tracking` sur les deux derniers
+résultats `diagnose-servo`. La métrique couvre tout le plan, transitoire compris:
+erreur moyenne normalisée × 160°. Validation `≤9°`, régression `>15°`. Le seuil initial
+`8°` a été rectifié avant clôture car le nominal déterministe vaut `8,1884765625°`;
+les essais lents valent `47,59765625°`.
+
+Le schéma v3 mémorise chaque application par digest. Évaluation, transitions et état
+final sont atomiques; replay identique, preuve ancienne et compétence suspendue ne
+peuvent pas avancer l'état. Le smoke 17501..17506 produit:
+`unknown→learning→candidate→validated→regressed→learning→candidate→validated`, avec
+redémarrage avant récupération. Les 45 tests KERNEL/LIFE ciblés et les 266 tests
+complets sont verts.
+
+LIFE-006 doit maintenant dériver l'ensemble des candidates depuis les compétences
+inconnues/régressées. Les priorités resteront déclaratives; tout apprentissage du
+curriculum demandera une revue Claude.
+
+D-032/LIFE-006 ajoute `cognitive/needs.py`. Les besoins régressés préemptent les
+inconnus, puis learning, candidate et surveillance validated; une suspension est
+toujours exclue. L'urgence filtre les candidates sans modifier leurs six signaux.
+
+Sans historique, un prior complet est persisté comme `cold_start_prior`. Dès qu'une
+exécution existe, le replay LIFE-003 et l'estimateur LIFE-002 produisent
+`observed_history`. Après 17601 et redémarrage, la preuve diagnose est observée et
+bit-identique; la preuve wide reste froide. Validation servo active uniquement le
+besoin visuel inconnu, exécuté sur 17602; une régression servo préempte ensuite ce
+besoin. Un registre vide ou suspendu ne crée aucune proposition.
+
+LIFE-006 a porté la vérification à 50 tests KERNEL/LIFE ciblés et 271 tests complets,
+avant l'ajout du superviseur.
+
+D-033/LIFE-007 ajoute `cognitive/supervisor.py` et le journal de cycles du schéma v4.
+Proposition et cycle sont écrits atomiquement. Les phases `selected`, `executed`,
+`complete` et `aborted` permettent de reprendre après sélection, après exécution J0 ou
+après application LIFE-005 sans dupliquer les effets.
+
+17701 reprend après sélection; 17702 reprend successivement après exécution et
+évaluation. Ils produisent exactement deux propositions, deux exécutions et une
+évaluation. 17711 reste sélectionné pendant l'arrêt d'urgence puis termine. 17721,
+interrompu en pleine physique avec manifeste `recording`, est explicitement abandonné;
+17731, bloqué avant sélection, ne crée rien. Une session ne peut plus être close avec
+un cycle actif.
+
+À la clôture de LIFE-007, les 55 tests KERNEL/LIFE ciblés et les 276 tests complets
+étaient verts. La porte alors suivante était LIFE-008: éprouver plusieurs cycles et
+pannes dans une campagne d'endurance bornée avant toute évolution vers des politiques
+apprises.
+
+D-034/LIFE-008 exécute réellement 64 cycles 17801..17864 avec cinq régimes périodiques.
+Résultat: 64 propositions/exécutions/J0 complètes, 63 assessments, 51 redémarrages,
+12 arrêts d'urgence refusés, zéro résidu actif. SQLite+WAL vaut `1 609 856` octets, J0
+`356 910`, moyenne `30 730,71875` octets/cycle; intégrité `ok`.
+
+Une seconde invocation saute 64/64 cycles et retrouve le digest
+`3cab7044228bb20ec512f67e32d3de44cac7a292c51d03311c7b815d3ccf2616`
+sans nouvel effet. Les 57 tests KERNEL/LIFE ciblés et les 278 tests complets sont verts.
+
+La plomberie déterministe est désormais qualifiée. D-035 pré-enregistre LIFE-009:
+une compétence ridge prédit l'effet immédiat du cou, tandis qu'une seconde ridge apprend
+sur 32 organismes quel essai fine/medium/wide réduit son erreur. Huit organismes servent
+à la validation et 24 neufs à la comparaison avec quatre baselines. Les banques privées,
+paramètres MuJoCo cachés et métriques test sont interdits à l'inférence.
+
+Le protocole et la demande de revue sont rédigés. Claude Opus 5 doit les revoir avant
+tout code appris, smoke, génération de banque, entraînement ou calcul.
 
 ## Actions par acteur
 
-Action Codex: préserver REF-002 close; après revue favorable seulement, intégrer les
-corrections REF-003 puis implémenter et tester avant d'exécuter uniquement le smoke
-14991.
-Action Anthony: aucune.
-Action Claude Opus 5: produire `docs/research/reafference_003_review.md` à partir de
-`CLAUDE_REVIEW_REQUEST.md`, sans lancer de calcul.
-Blocage: tout code/rendu/calcul REF-003, smoke 14991 et campagne 14301..14316 jusqu'à la
-revue pré-calcul favorable et l'intégration de ses corrections bloquantes.
+Action Codex: préserver REF-003 close, attendre puis intégrer le verdict LIFE-009.
+Action Anthony: transmettre `docs/research/life_009_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_009_review.md`, sans calcul.
+Blocage: code, smoke, banques, entraînement et calcul LIFE-009 interdits avant revue.
+Toute nouvelle tentative REF exige monde non occlusible, graines neuves et revue pré-calcul.

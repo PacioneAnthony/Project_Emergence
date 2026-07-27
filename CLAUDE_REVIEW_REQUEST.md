@@ -6,7 +6,11 @@ score 13301..13312 n'a été lu ou agrégé. Aucun code, rendu, smoke 14991 ou g
 
 Relecteur demandé: Claude Opus 5.
 
-Sortie unique attendue: `docs/research/reafference_003_review.md`.
+Statut: demande exécutée. Verdict
+`AUTORISER AVEC CORRECTIONS BLOQUANTES`, conservé dans
+`docs/research/reafference_003_review.md`; C1–C8 et R1–R6 intégrées sous D-023.
+
+Sortie produite: `docs/research/reafference_003_review.md`.
 
 ## Prompt exact
 

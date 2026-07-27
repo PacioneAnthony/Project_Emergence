@@ -91,8 +91,22 @@ scientifiques. KERNEL-001 ne prétend pas définir une curiosité optimale.
   hors REF et validation auditée d'une primitive analytique bornée.
 - smoke LIFE-001 de récupération: validation, régression injectée, choix audité d'une
   recalibration, redémarrage et revalidation sur six graines hors REF.
+- smoke LIFE-002: quatre sessions MuJoCo/J0, signaux dérivés des observations, preuves
+  de toutes les candidates persistées et recalcul strictement identique après restart.
+- smoke LIFE-003: attribution proposition→exécution→résultat, reprise d'une exécution,
+  reconstruction des histoires depuis J0 et migration mémoire v1→v2.
+- smoke LIFE-004: registre de primitives bornées, exécution MuJoCo automatique d'un
+  choix observationnel, garde fraîche et abandon atomique sur panne.
+- smoke LIFE-005: évaluation depuis résultats exécutés, acquisition, régression,
+  redémarrage, récupération et replay d'assessment idempotent.
+- smoke LIFE-006: activation des candidates depuis les compétences persistantes,
+  prior froid explicite, remplacement par historique observé et préemption de régression.
+- smoke LIFE-007: journal de cycle v4, sélection atomique, reprises après sélection,
+  exécution et évaluation, abandon sûr d'un état MuJoCo perdu.
+- campagne LIFE-008: 64 cycles, matrice de cinq régimes, idempotence globale, quotas,
+  intégrité et croissance disque qualifiés.
 
-Les 26 tests KERNEL/LIFE et les 236 tests complets du dépôt passent avec
+Les 57 tests KERNEL/LIFE et les 278 tests complets du dépôt passent avec
 l'environnement `.venv`.
 
 ## Limites assumées
@@ -100,24 +114,22 @@ l'environnement `.venv`.
 - Les croyances KERNEL-001 sont scalaires; une carte ou distribution structurée devra
   être référencée comme artefact versionné plutôt que sérialisée en blob SQLite.
 - La segmentation est temporelle et événementielle, pas encore apprise.
-- Le score d'expérience est une combinaison transparente de signaux externes, pas une
-  politique intrinsèque validée.
-- Aucun adaptateur ne convertit encore automatiquement les observations du simulateur
-  en croyances; cette sémantique doit venir d'un module mesurable et testé.
+- Le score d'expérience est une combinaison transparente de signaux observationnels,
+  pas une politique intrinsèque validée.
+- LIFE-002 couvre la télémétrie servo; d'autres modalités demanderont leurs propres
+  estimateurs mesurables et testés.
 - La base n'est pas encore soumise à charge longue ni à injection de panne au niveau
   processus/fichier.
 
 ## Suite recommandée
 
-La prochaine tranche utile est LIFE-001: brancher KERNEL-001 à une boucle de simulation
-continue, d'abord avec des estimateurs analytiques simples et des primitives symboliques.
-Elle doit démontrer sur plusieurs sessions: acquisition d'une compétence, reprise après
-arrêt, régression détectée, récupération et choix d'expérience sous contraintes.
+La prochaine tranche utile est LIFE-009. Son pré-enregistrement sous D-035 relie le
+choix d'expérience au progrès réel d'un prédicteur sensorimoteur et attend désormais
+la revue Claude Opus 5 avant toute implémentation ou campagne.
 
-Les deux smokes de câblage multi-session sont désormais verts. Ils certifient une
-primitive analytique existante, la détection d'une régression injectée, la récupération
-et la sélection sûre entre des signaux fournis. Ils ne démontrent ni apprentissage
-d'une nouvelle compétence, ni diagnostic causal autonome, ni curriculum appris.
+Les smokes LIFE certifient le câblage persistant, la régression/récupération et le choix
+à partir d'observations. Ils ne démontrent ni apprentissage d'une nouvelle compétence,
+ni diagnostic causal autonome, ni curriculum appris.
 
-REF-003 reste une voie scientifique séparée. Son code et ses calculs demeurent interdits
-avant la revue pré-calcul de Claude Opus 5.
+REF-003 est close comme non-résultat technique. Toute REF-004 exigerait un protocole,
+un monde, des graines et une revue pré-calcul neufs.

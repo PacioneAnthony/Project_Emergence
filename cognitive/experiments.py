@@ -49,6 +49,9 @@ class SafeExperimentCatalog:
             raise ValueError(f"duplicate experiment: {spec.experiment_id}")
         self._specs[spec.experiment_id] = spec
 
+    def has_experiment(self, experiment_id: str) -> bool:
+        return experiment_id in self._specs
+
     def _spec(self, experiment_id: str) -> ExperimentSpec:
         try:
             return self._specs[experiment_id]
@@ -189,11 +192,21 @@ class SafeExperimentCatalog:
         safety: SafetyContext,
         beliefs: BeliefState,
         memory: EpisodicMemory,
+        evidence_by_experiment: Mapping[str, Mapping[str, Any]] | None = None,
     ) -> ExperimentProposal:
         """Choose the highest-scoring eligible candidate with a stable tie-break."""
 
         if not candidates:
             raise ValueError("at least one experiment candidate is required")
+        if evidence_by_experiment is not None:
+            candidate_ids = set(candidates)
+            evidence_ids = set(evidence_by_experiment)
+            if evidence_ids != candidate_ids:
+                missing = sorted(candidate_ids - evidence_ids)
+                extra = sorted(evidence_ids - candidate_ids)
+                raise ValueError(
+                    f"signal evidence keys must match candidates; missing={missing}, extra={extra}"
+                )
 
         eligible: list[tuple[float, str, ExperimentSpec, dict[str, Any]]] = []
         audit: dict[str, dict[str, Any]] = {}
@@ -215,6 +228,10 @@ class SafeExperimentCatalog:
             else:
                 eligible.append((score, experiment_id, spec, rationale))
                 audit[experiment_id] = {"status": "eligible", "score": score}
+            if evidence_by_experiment is not None:
+                audit[experiment_id]["signal_evidence"] = dict(
+                    evidence_by_experiment[experiment_id]
+                )
 
         if not eligible:
             raise ExperimentSelectionBlockedError(blocked)
