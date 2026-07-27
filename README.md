@@ -33,10 +33,14 @@ REF-003 a autorisé l'implémentation après huit corrections bloquantes, mais l
 s'est arrêtée sur deux paires externes photométriquement trop faibles pendant 14303.
 REF-003 est également close sans résultat ni analyse partielle.
 
-Le pré-enregistrement LIFE-009 propose maintenant une première politique adaptative
-reliant expériences et progrès réel d'un modèle sensorimoteur. La prochaine porte est
-la revue contradictoire de Claude Opus 5. Aucun code appris, smoke, génération de
-banque ou entraînement LIFE-009 n'est autorisé avant son verdict.
+Le pré-enregistrement LIFE-009 propose une première politique adaptative reliant
+expériences et progrès réel d'un modèle sensorimoteur. Claude Opus 5 l'a autorisé avec
+sept corrections bloquantes, intégrées sous D-036. Le smoke 17991 a ensuite fermé
+LIFE-009 sous D-037: l'oracle ne gagne que 2,383 % sur la baseline principale, sous les
+10 % exigés. Aucune banque réservée n'a été ouverte. La prochaine tentative devra être
+LIFE-010, avec une tâche plastique et une marge démontrée avant campagne. Son
+pré-enregistrement est prêt sous D-038 et attend la revue Claude Opus 5 avant tout code
+ou calcul.
 
 Le matériel J0 est conservé mais suspendu:
 

@@ -106,7 +106,7 @@ scientifiques. KERNEL-001 ne prétend pas définir une curiosité optimale.
 - campagne LIFE-008: 64 cycles, matrice de cinq régimes, idempotence globale, quotas,
   intégrité et croissance disque qualifiés.
 
-Les 57 tests KERNEL/LIFE et les 278 tests complets du dépôt passent avec
+Les 61 tests KERNEL/LIFE et les 282 tests complets du dépôt passent avec
 l'environnement `.venv`.
 
 ## Limites assumées
@@ -123,9 +123,11 @@ l'environnement `.venv`.
 
 ## Suite recommandée
 
-La prochaine tranche utile est LIFE-009. Son pré-enregistrement sous D-035 relie le
-choix d'expérience au progrès réel d'un prédicteur sensorimoteur et attend désormais
-la revue Claude Opus 5 avant toute implémentation ou campagne.
+LIFE-009 a raccordé une compétence et un sélecteur appris, puis s'est arrêtée au smoke
+sous D-037: la marge oracle de `2,383 %` reste sous la porte `10 %`. Aucune banque
+réservée n'a été ouverte. LIFE-010 est pré-enregistrée sous D-038 avec une compétence
+résiduelle protégée et trois plans équicûteux; elle attend une nouvelle revue pré-calcul
+avant toute implémentation.
 
 Les smokes LIFE certifient le câblage persistant, la régression/récupération et le choix
 à partir d'observations. Ils ne démontrent ni apprentissage d'une nouvelle compétence,

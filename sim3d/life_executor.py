@@ -7,7 +7,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from typing import Iterable
+from typing import Callable, Iterable
 
 from cognitive.kernel import CognitiveKernel
 from cognitive.models import ExperimentProposal, SafetyContext
@@ -67,9 +67,11 @@ class BoundedMujocoExecutor:
         *,
         plans: Iterable[BoundedPrimitivePlan] = DEFAULT_LIFE_PLANS,
         quota: QuotaPolicy | None = None,
+        bench_config_factory: Callable[[int], BenchConfig] | None = None,
     ) -> None:
         self.data_root = Path(data_root)
         self.quota = quota or QuotaPolicy()
+        self.bench_config_factory = bench_config_factory
         self._plans: dict[str, BoundedPrimitivePlan] = {}
         for plan in plans:
             if plan.primitive in self._plans:
@@ -170,7 +172,13 @@ class BoundedMujocoExecutor:
             )
             execution_begun = True
 
-            bench_config = BenchConfig(seed=int(seed))
+            bench_config = (
+                self.bench_config_factory(int(seed))
+                if self.bench_config_factory is not None
+                else BenchConfig(seed=int(seed))
+            )
+            if bench_config.seed != int(seed):
+                raise ValueError("bench config factory must preserve the execution seed")
             if any(
                 not bench_config.servo.min_deg
                 <= target

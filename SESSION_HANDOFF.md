@@ -341,13 +341,26 @@ sur 32 organismes quel essai fine/medium/wide réduit son erreur. Huit organisme
 à la validation et 24 neufs à la comparaison avec quatre baselines. Les banques privées,
 paramètres MuJoCo cachés et métriques test sont interdits à l'inférence.
 
-Le protocole et la demande de revue sont rédigés. Claude Opus 5 doit les revoir avant
-tout code appris, smoke, génération de banque, entraînement ou calcul.
+Claude Opus 5 a rendu `AUTORISER AVEC CORRECTIONS BLOQUANTES`. D-036 a intégré B1–B7:
+portes sur les amplitudes atteignables, marge oracle au smoke, statistique implémentable,
+branches isolées, projection complète, conventions gelées et validation P0 avant test.
+
+Le smoke 17991 a ensuite passé intégrité, replay, comptes, reproductibilité, progrès
+12→24 et durée (`696,245 s` projetées), mais l'oracle n'améliore greedy que de `2,383 %`
+au lieu des `10 %` exigés. D-037 ferme LIFE-009 comme non-résultat de conception.
+Aucune graine 17901..17940 ou 18001..18024 n'a été ouverte. Les 61 tests KERNEL/LIFE
+ciblés et les 282 tests complets sont verts.
+
+D-038 pré-enregistre LIFE-010 sans retuner LIFE-009. Une compétence résiduelle protégée
+contre la dégradation reçoit trois plans de 32 pas et 560° exactement, aux structures
+temporelles différentes. Six smokes neufs doivent démontrer amélioration du prior,
+marge oracle stratifiée et budget avant toute banque. Le protocole et sa demande de
+revue sont prêts; aucun code ou calcul LIFE-010 n'est autorisé avant Claude.
 
 ## Actions par acteur
 
-Action Codex: préserver REF-003 close, attendre puis intégrer le verdict LIFE-009.
-Action Anthony: transmettre `docs/research/life_009_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_009_review.md`, sans calcul.
-Blocage: code, smoke, banques, entraînement et calcul LIFE-009 interdits avant revue.
+Action Codex: préserver REF-003/LIFE-009 closes et attendre le verdict LIFE-010.
+Action Anthony: transmettre `docs/research/life_010_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_010_review.md`, sans calcul.
+Blocage: LIFE-010 code/smoke/banques interdits avant verdict; LIFE-009 reste close.
 Toute nouvelle tentative REF exige monde non occlusible, graines neuves et revue pré-calcul.

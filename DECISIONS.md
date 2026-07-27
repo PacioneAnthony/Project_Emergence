@@ -933,3 +933,91 @@ Conséquences: Codex n'implémente ni n'exécute LIFE-009 avant verdict. Les gra
 17901..17940, 17991 et 18001..18024 sont réservées et interdites de calcul.
 Condition de réouverture: corrections Claude, changement de l'objectif général, fuite
 entre banques, définition non implémentable ou puissance jugée insuffisante.
+
+## D-036 - Intégration de la revue pré-calcul LIFE-009
+
+Date: 2026-07-27
+Décision: accepter le verdict Claude Opus 5
+`AUTORISER AVEC CORRECTIONS BLOQUANTES` et intégrer B1–B7 comme amendement additif au
+pré-enregistrement avant toute implémentation.
+Statut: corrections intégrées; implémentation et smoke 17991 autorisés. Banques
+17901..17940 et 18001..18024 toujours fermées.
+Corrections: portes restreintes aux amplitudes atteignables 15/40/70; extrapolation
+0/110/160 descriptive; marge oracle `>=10 %` et progrès 12→24 obligatoires au smoke;
+Monte-Carlo des signes gelé à 200 000 rééchantillonnages; magasins contrefactuels
+isolés; copie d'état et RNG exhaustive; projection temporelle couvrant professeur,
+test, évaluations et analyse; conventions numériques/coût/tri fixées; validation P0
+obligatoire avant toute ouverture du test.
+Motif: la version initiale pouvait rendre P1 inatteignable par construction parce que
+68 % de la masse d'erreur portait sur des amplitudes non explorables et que la baseline
+principale approchait le tourniquet sous une garde moteur étroite. Le smoke doit
+maintenant établir qu'une marge réelle existe avant de consommer les banques.
+Remarques intégrées: redondance greedy/round-robin explicitée, colonnes constantes
+standardisées avec échelle 1, allocations détaillées exportées, oracle présenté comme
+plafond privilégié et suite de tests courante exigée.
+Avis Claude: une fois B1–B7 intégrées, l'implémentation puis le smoke sont autorisés.
+Une revue contradictoire des résultats reste obligatoire avant toute promotion.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: Codex peut coder LIFE-009 et lancer 17991. Les banques réservées ne
+s'ouvrent que si smoke, marge et projection sont verts; le test exige en plus P0
+validation vert.
+Condition de réouverture: smoke sans marge, projection >60 minutes, fuite de branche,
+validation rouge, contradiction d'implémentation ou correction scientifique nouvelle.
+
+## D-037 - Arrêt LIFE-009 pour marge oracle insuffisante
+
+Date: 2026-07-27
+Décision: appliquer la porte B2 et clore LIFE-009 comme non-résultat de conception avant
+toute ouverture des banques réservées.
+Statut: arrêt définitif sous cet identifiant; aucune campagne scientifique LIFE-009.
+Smoke: seule graine 17991; banque 48, professeur 72, replay bit-identique, comptes 24/24,
+poids reproductibles et projection `696,2451677 s` sont verts. Round-robin progresse de
+`12,3110770766°` à `12,2867277806°` entre les cycles 12 et 24.
+Porte rouge: oracle AUC `1,510406` contre greedy `1,547281`, soit seulement
+`2,3832203646 %` d'amélioration, sous les `10 %` exigés.
+Digest:
+`26610a6678f5af92aefc7d708256ba8069d5a2d3d1f7621689e2a9b2f52fa7f1`.
+Interprétation: même l'oracle privilégié ne possède pas la marge nécessaire pour que
+l'épreuve puisse attribuer un échec à la politique apprise. Les AUC >1 indiquent aussi
+que le modèle ajusté dégrade le prior sur ce protocole; ce constat smoke ne teste pas
+la généralisation.
+Intégrité: graines 17901..17940 et 18001..18024 jamais ouvertes; aucun P0–P4 de campagne,
+retuning, remplacement ou seconde lecture adaptative. Les 61 tests KERNEL/LIFE ciblés
+et les 282 tests complets sont verts.
+Avis Claude: la correction B2 pré-enregistrée impose mécaniquement cet arrêt; nouvelle
+revue de résultats non requise puisqu'aucune campagne n'a été autorisée.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: une tentative ultérieure exige LIFE-010, de nouvelles graines et une
+nouvelle revue pré-calcul. Elle doit démontrer la plasticité utile et la marge oracle
+avant de réserver ou consommer une banque.
+Condition de réouverture: aucune sous LIFE-009.
+
+## D-038 - Pré-enregistrement LIFE-010 après l'arrêt de conception
+
+Date: 2026-07-27
+Décision: proposer LIFE-010 comme nouvelle tentative de curriculum appris, sans rouvrir
+ou retuner LIFE-009.
+Statut: protocole et demande de revue rédigés; aucun code, smoke ou calcul autorisé avant
+verdict Claude Opus 5.
+Compétence: prédire le résidu d'un prior physique à `12°/pas` plutôt que l'angle complet.
+Chaque essai sépare indices pairs d'ajustement et impairs de validation publique; une
+mise à jour ne peut dégrader cette validation au-delà de `1e-12`.
+Expériences: `step_hold`, `reversal` et `micro` comportent chacune 32 pas, coûtent
+exactement `560°` commandés et reviennent à `90°`, avec 5, 14 et 28 changements. Elles
+varient donc la structure temporelle sans confondre choix et budget moteur.
+Organismes: trois régimes cachés speed/settling/friction. La banque privée exécute deux
+fois chaque plan, soit 192 transitions, exclusivement pour professeur et évaluation.
+Marge précoce: six graines smoke neuves 18191..18196 doivent toutes améliorer le prior
+d'au moins 20 % sous round-robin; l'oracle doit battre la baseline résiduelle de 15 %
+en médiane et 5 % dans chaque régime avant toute banque.
+Banques réservées: développement 18201..18232, validation 18241..18248, test
+18301..18324. Leur ouverture reste interdite avant les portes précédentes et la
+projection complète sous 90 minutes.
+Avis Claude: revue contradictoire pré-calcul obligatoire via
+`docs/research/life_010_review_request.md`.
+Arbitrage Anthony: non requis pour la conception sous D-004.
+Conséquences: Codex s'arrête avant implémentation. Après verdict, seules les opérations
+explicitement autorisées pourront commencer; une revue des résultats restera obligatoire
+avant promotion.
+Condition de réouverture: corrections Claude, définition non implémentable, tâche
+artificiellement favorable, baseline insuffisante ou changement d'objectif général.

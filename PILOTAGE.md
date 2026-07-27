@@ -46,9 +46,12 @@ sous D-008.
 | Schéma mémoire | v4; migrations additives v1→v2→v3→v4 vérifiées |
 | LIFE-008 | 64 cycles, 51 reprises, 12 refus sûrs, zéro résidu; toutes portes vertes |
 | Digest LIFE-008 | `3cab7044228bb20ec512f67e32d3de44cac7a292c51d03311c7b815d3ccf2616` |
-| Vérification KERNEL/LIFE | 57 tests ciblés; suite complète actuelle 278 tests verts |
-| LIFE-009 | Pré-enregistrement et demande de revue rédigés sous D-035; aucun calcul ouvert |
-| Prochaine porte | Verdict Claude Opus 5 sur LIFE-009 |
+| Vérification KERNEL/LIFE | 61 tests ciblés; suite complète actuelle 282 tests verts |
+| Revue LIFE-009 | `AUTORISER AVEC CORRECTIONS BLOQUANTES`; B1–B7 intégrées sous D-036 |
+| LIFE-009 | Close au smoke sous D-037; marge oracle 2,383 % < 10 % |
+| Intégrité LIFE-009 | 17991 seule; banques développement/validation/test jamais ouvertes |
+| LIFE-010 | Pré-enregistrement prêt sous D-038; aucun code ou calcul ouvert |
+| Prochaine porte | Verdict Claude Opus 5 pré-calcul LIFE-010 |
 
 ## Clôture de J6-AR001
 
@@ -138,8 +141,9 @@ REF-003 reste un non-résultat technique.
 
 ## Actions par acteur
 
-Action Codex: attendre puis intégrer mécaniquement le verdict LIFE-009.
-Action Anthony: transmettre `docs/research/life_009_review_request.md` à Claude Opus 5.
-Action Claude Opus 5: écrire uniquement `docs/research/life_009_review.md`, sans calcul.
-Blocage: implémentation, smoke, génération de banque, entraînement et calcul LIFE-009
-interdits avant verdict Claude. Toute suite REF exige protocole, monde et graines neufs.
+Action Codex: attendre puis intégrer le verdict LIFE-010.
+Action Anthony: transmettre `docs/research/life_010_review_request.md` à Claude Opus 5.
+Action Claude Opus 5: écrire uniquement `docs/research/life_010_review.md`, sans calcul.
+Blocage: code, smoke, banque et calcul LIFE-010 interdits avant verdict; toute reprise,
+retuning ou ouverture de banque LIFE-009 reste interdite.
+Toute suite REF exige protocole, monde et graines neufs.

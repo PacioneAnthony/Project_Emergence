@@ -1,7 +1,7 @@
 # LIFE-009 — curriculum appris pour la prédiction sensorimotrice
 
 Date: 2026-07-27  
-Statut: pré-enregistrement proposé pour revue contradictoire; aucun calcul autorisé  
+Statut: close au smoke comme non-résultat de conception sous D-037
 Portée: simulation MuJoCo uniquement
 
 ## Question
@@ -311,3 +311,155 @@ métriques scientifiques.
 - la compétence porte sur la dynamique immédiate du cou, pas encore sur la
   réafférence visuelle ni sur une présence sociale;
 - aucune conclusion physique n'est permise sous D-008.
+
+## Amendement pré-calcul après revue Claude Opus 5
+
+Date: 2026-07-27
+Verdict source: `AUTORISER AVEC CORRECTIONS BLOQUANTES` dans
+`docs/research/life_009_review.md`.
+
+Les clauses B1–B7 ci-dessous sont additives et prévalent sur toute formulation
+antérieure incompatible. Elles ont été intégrées avant code appris, smoke ou ouverture
+d'une banque réservée.
+
+### B1 — domaine atteignable et extrapolation
+
+L'amplitude commandée d'une transition est
+`abs(cible_suivante - cible_précédemment_demandée)`. La base conserve ses six
+charnières `0°,15°,40°,70°,110°,160°`. La banque privée contient exactement huit
+transitions par amplitude, quatre par direction pour les amplitudes non nulles et huit
+maintien-position pour `0°`.
+
+Elle est scindée avant calcul:
+
+- domaine atteignable: `15°,40°,70°`, soit 24 transitions;
+- hors domaine: `0°,110°,160°`, soit 24 transitions.
+
+Toutes les portes P1/P2 et les MAE finale/pire amplitude de P3 utilisent exclusivement
+le domaine atteignable. Les métriques hors domaine sont obligatoirement calculées,
+exportées et rapportées comme extrapolation descriptive; elles ne peuvent franchir ni
+faire échouer une porte.
+
+L'entrée de compétence inclut donc explicitement la cible précédemment demandée, en plus
+de l'angle AS5600 courant, de la cible suivante et de la variation observée précédente.
+Les bases directionnelles portent sur l'amplitude commandée ainsi définie.
+
+### B2 — marge démontrée au smoke
+
+Le smoke non réservé `17991`, avant toute ouverture de `17901..17940` ou
+`18001..18024`, calcule sur le seul domaine atteignable:
+
+1. la courbe MAE de `round_robin` aux instants `0..24`; la réduction
+   `MAE_cycle_12 - MAE_cycle_24` doit être strictement positive;
+2. l'AUC normalisée de l'oracle contrefactuel et de `greedy_uncertainty`;
+3. l'amélioration relative
+   `(AUC_greedy - AUC_oracle) / AUC_greedy`.
+
+Si cette amélioration oracle est `<10 %`, la campagne n'est pas ouverte et LIFE-009 est
+close comme non-résultat de conception dû à une marge insuffisante. Aucun seuil, plafond
+moteur, modèle ou catalogue n'est alors modifié sous LIFE-009.
+
+L'oracle est obligatoire sur le test à titre descriptif. L'écart appris/greedy est
+rapporté relativement à l'écart oracle/greedy; cet oracle privilégié est un plafond
+inatteignable par une politique causale. `greedy_uncertainty` et `round_robin` sont
+attendues quasi redondantes; P2 ne présente pas round-robin comme confirmation
+indépendante.
+
+### B3 — statistique à 24 paires
+
+P1 et P2 utilisent
+`learning.paired_stats.monte_carlo_sign_flip_pvalue`, alternative `"greater"`,
+`n_resamples=200000`, graine explicite `2026072702` et estimateur add-one inchangé.
+P2 utilise `learning.paired_stats.holm_correction`. Aucun second module statistique
+n'est autorisé.
+
+P1 reste hors de la famille Holm de P2 parce que la décision finale est conjonctive.
+P2 n'a pas de plancher d'effet propre: le plancher de 5 % de P1 porte la taille d'effet
+primaire. La sous-porte 16/24 protège contre un effet porté par peu de graines mais
+n'est pas présentée comme un test indépendant.
+
+### B4 — branches contrefactuelles isolées
+
+Chaque branche utilise un SQLite et un magasin J0 temporaires distincts, détruits après
+le label. Aucune écriture de branche n'atteint l'histoire principale. La branche choisie
+par le carré latin est ensuite rejouée dans le magasin principal. Après 24 cycles, celui-ci
+doit contenir exactement 24 propositions, 24 exécutions et 24 sessions J0.
+
+Une copie MuJoCo emploie `mj_copyData` ou son équivalent vérifié sur le `mjData` complet,
+incluant au minimum `qpos`, `qvel`, `act`, `time` et `qacc_warmstart`. Sont aussi copiés
+le modèle de compétence, ses données, sa standardisation et l'état exhaustif des flux:
+
+- bruit capteur;
+- bruit de primitive indexé par `(organisme,cycle,primitive)`;
+- ordre de la banque privée;
+- `uniform_random`.
+
+Le smoke exige qu'une branche et son replay depuis copie produisent des observations
+bit-identiques. Les répertoires temporaires ne peuvent être inclus dans un historique,
+un digest scientifique ou un compte principal.
+
+### B5 — projection temporelle complète
+
+Le smoke chronomètre séparément:
+
+1. banque privée d'un organisme;
+2. professeur complet d'un organisme, `24 × 3` branches, copies et labels inclus;
+3. test complet d'un organisme sous les cinq politiques;
+4. les 25 évaluations de courbe `0..24`;
+5. analyse, portes et digests.
+
+La projection obligatoire est:
+
+```text
+40 × (temps_banque_privée + temps_professeur_organisme)
+ + 24 × (temps_banque_privée + temps_test_organisme + temps_courbe_organisme)
+ + temps_analyse
+```
+
+Une projection `>60 minutes` arrête LIFE-009 avant ouverture des banques. Aucun
+amendement de plafond n'est permis sous ce protocole.
+
+### B6 — conventions gelées
+
+- amplitude sans observation: compte `0`, résidu moyen `0.0`, incertitude à sa valeur
+  a priori;
+- colonne de standardisation à variance nulle: échelle fixée à `1.0`, sans suppression
+  de colonne;
+- aucun `NaN` ou infini admis dans une feature, un poids ou une prédiction;
+- aucun filtrage d'exemple: toute configuration inadmissible arrête la tranche; les
+  comptes exacts restent `2304` et `576`;
+- coût moteur de porte: somme des
+  `abs(cible - cible_précédemment_demandée)` sur 12 pas; déplacement réalisé descriptif;
+- départage: ASCII croissant sur l'identifiant exact, donc
+  `probe_fine < probe_medium < probe_wide`;
+- allocation exportée par primitive, graine, politique et moitié de campagne.
+
+### B7 — ordre des portes
+
+Après développement:
+
+1. ajuster une seule fois standardisation et poids;
+2. geler et digérer les artefacts;
+3. vérifier leur reproduction bit-identique;
+4. ouvrir seulement `17933..17940`;
+5. calculer Spearman et la MAE face à la constante développement;
+6. exiger respectivement `>=0.20` et une réduction `>=10 %`;
+7. ouvrir `18001..18024` seulement si les deux passent.
+
+Un échec de validation clôt LIFE-009 comme non-résultat technique sans ouverture du
+test, réajustement, changement d'hyperparamètre ou seconde lecture adaptative de la
+validation. Le manifeste conserve les deux valeurs et le digest gelé.
+
+La suite complète courante et tous les nouveaux tests LIFE-009 doivent être verts; aucun
+nombre historique de tests ne constitue à lui seul une porte.
+
+## Résultat du smoke
+
+Le smoke `17991` a passé toutes les portes d'intégrité, d'isolation, de reproductibilité,
+de progrès 12→24 et de durée. Sa projection conservatrice vaut `696,2451677 s`.
+
+La porte de marge B2 échoue: l'oracle améliore l'AUC de `greedy_uncertainty` de seulement
+`2,3832203646 %`, sous le minimum gelé de `10 %`. LIFE-009 est donc close sans ouverture
+de `17901..17940` ou `18001..18024`, sans retuning et sans résultat de campagne.
+
+Détails: `docs/research/life_009_technical_stop.md`.
