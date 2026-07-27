@@ -1,6 +1,6 @@
 # Émergence — Tableau de pilotage
 
-Dernière mise à jour: 2026-07-26
+Dernière mise à jour: 2026-07-27
 
 Codex décide des choix logiciels et expérimentaux sous D-004. Simulation uniquement
 sous D-008.
@@ -21,13 +21,18 @@ sous D-008.
 | Résultat REF-001 | H1–H4 échouent; gardes apprenant et indépendance passent |
 | Décision | D-015: variante close sans promotion ni retuning |
 | Revue résultats REF-001 | `AUTORISER AVEC CORRECTIONS`; recalcul identique |
-| Direction | D-017: REF-002, transport sensorimoteur spatial explicite |
-| Pré-enregistrement REF-002 | Gelé avant code dans `reafference_002_preregistration.md` |
-| Porte courante | Revue contradictoire pré-calcul REF-002 |
+| Direction | D-017: transport sensorimoteur spatial explicite |
+| REF-002 | Close sous D-020 comme **non-résultat technique**; aucune analyse partielle |
+| État REF-002 | Smoke 13991 vert; 12 triplets complets; arrêt d'intégrité avant entraînement 13313 |
+| Cause REF-002 | Une collision fortuite de trame inter-banques; aucune collision corpus↔banques |
+| Nouveau jalon | REF-003 — même hypothèse non testée, visibilité externe contrôlée |
+| Pré-enregistrement REF-003 | Gelé dans `docs/research/reafference_003_preregistration.md` sous D-021 |
+| Porte courante | Revue contradictoire Claude Opus 5 avant tout code ou calcul REF-003 |
 | KERNEL-001 | Noyau cognitif persistant minimal implémenté sous D-018 |
 | Vérification KERNEL-001 | 22 tests dédiés; 215 tests complets verts dans `.venv` |
-| LIFE-001 smoke | Deux sessions MuJoCo/J0 et reprise; primitive analytique validée |
-| Prochaine intégration | LIFE-001: régression/récupération et choix d'expérience |
+| LIFE-001 | Validation, régression injectée, choix sûr, redémarrage et récupération verts |
+| Vérification KERNEL/LIFE | 26 tests dédiés; 236 tests complets verts |
+| Prochaine intégration | LIFE-002: produire les signaux de choix à partir des observations |
 
 ## Clôture de J6-AR001
 
@@ -77,13 +82,43 @@ d'entraînement ne collisionne avec une banque. La garde « action utile » éta
 satisfaite structurellement mais sans export chiffré. C5 n'a pas été déclenché
 (`amended=false`), et les 31,80 minutes excluent le temps d'évaluation.
 
+## Clôture de REF-002
+
+Le smoke 13991 complet était vert: projection `48,11896` minutes sous le plafond initial
+de 75 minutes, ratio d'équité temporelle `1,12630` et toutes les gardes satisfaites.
+La campagne a terminé 13301..13312, soit 12 triplets / 36 runs et 12 évaluations.
+
+La préparation de 13313 s'est arrêtée avant entraînement lorsqu'une trame finale de
+`moving_self_calibration` a collisionné bit à bit avec une trame finale de `mixed`.
+Les provenances, pièces, RNG et états objet étaient distincts; aucune image du corpus
+d'entraînement ne collisionnait avec une banque. La garde C6 interdisait néanmoins
+toute collision de trame inter-banques.
+
+D-020 applique le contrat gelé: pas de reprise, pas de modification post hoc de la
+garde et aucune lecture ou agrégation des scores 13301..13312. REF-002 ne rejette ni ne
+confirme l'hypothèse. Les détails sont dans
+`docs/research/reafference_002_technical_stop.md`.
+
+## Direction active — REF-003
+
+D-021 ouvre un nouveau pré-enregistrement avec monde et graines neufs. Le contraste,
+les modèles et les portes de REF-002 amendé restent inchangés, car l'hypothèse n'a pas
+été testée. La correction porte uniquement sur l'attribuabilité:
+
+- disjonction bloquante par provenance et digest de paire;
+- collisions de trames isolées exportées comme diagnostic;
+- visibilité contrefactuelle de l'objet vérifiée pour chaque paire externe;
+- aucune paire invisible resamplée ou remplacée après observation.
+
+Smoke réservé: 14991. Campagne réservée: 14301..14316. Aucun code, rendu ou calcul
+REF-003 n'est autorisé avant une revue contradictoire favorable de Claude Opus 5.
+
 ## Actions par acteur
 
-Action Codex: maintenir REF-001 close; préparer LIFE-001 sans contourner la porte
-REF-002 et sans relier KERNEL-001 à un actionneur physique.
+Action Codex: préserver REF-002 close; attendre puis intégrer la revue pré-calcul
+REF-003 avant toute implémentation, tout rendu ou smoke 14991.
 Action Anthony: aucune.
-Action Claude: auditer `docs/research/reafference_002_preregistration.md` avec le prompt
-exact de `CLAUDE_REVIEW_REQUEST.md`.
-Blocage: revue pré-calcul REF-002; aucun code, smoke 13991 ou graine 13301..13316 avant
-verdict favorable et corrections intégrées. Ce blocage ne concerne pas LIFE-001 tant
-qu'il n'implémente, ne calibre ni n'évalue aucun composant REF-002.
+Action Claude Opus 5: revoir `docs/research/reafference_003_preregistration.md` selon
+`CLAUDE_REVIEW_REQUEST.md` et écrire `docs/research/reafference_003_review.md`.
+Blocage: smoke 14991 et graines 14301..14316 interdits avant revue favorable et
+intégration de toutes ses éventuelles corrections bloquantes.

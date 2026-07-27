@@ -14,15 +14,17 @@ La vision technique est définie dans [DEVELOPMENTAL_ARCHITECTURE.md](DEVELOPMEN
 
 Deux voies complémentaires sont actives en simulation:
 
-- REF-002 teste, après revue contradictoire pré-calcul, si un transport sensorimoteur
-  spatial explicite permet enfin de séparer changement auto-produit et externe;
+- REF-003 prépare un test neuf, sous visibilité externe contrôlée, de l'hypothèse de
+  transport sensorimoteur spatial restée non testée après l'arrêt technique REF-002;
 - KERNEL-001 fournit la mémoire cognitive persistante qui manquait entre les événements,
-  modèles, compétences et expériences. La première tranche est implémentée et testée;
-  LIFE-001 devra maintenant la brancher à une boucle de vie simulée multi-session.
+  modèles, compétences et expériences. LIFE-001 valide maintenant en simulation la
+  persistance, la régression, le choix sûr d'une expérience et la récupération.
 
 REF-001 est close sans promotion: une concaténation de commande absolue au latent global
-n'explique pas mieux le mouvement propre et n'établit pas la réafférence. Aucun calcul
-REF-002 n'est autorisé avant la revue de Claude Opus 5.
+n'explique pas mieux le mouvement propre et n'établit pas la réafférence. REF-002 est
+close comme non-résultat technique après une collision fortuite de trame dans une garde
+d'intégrité; ses 12 triplets complets ne seront pas analysés. Aucun code, rendu ou
+calcul REF-003 n'est autorisé avant la revue pré-calcul de Claude Opus 5.
 
 Le matériel J0 est conservé mais suspendu:
 

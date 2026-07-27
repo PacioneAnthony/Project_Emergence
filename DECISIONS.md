@@ -418,3 +418,111 @@ porte pré-calcul REF-002 demeure entièrement inchangée.
 Condition de réouverture: test d'injection de panne révélant une incohérence,
 duplication de données brutes, proposition contournant une garde ou besoin démontré
 d'un changement de schéma.
+
+## D-019 - Autorisation amendée de REF-002
+
+Date: 2026-07-26
+Décision: accepter le verdict Claude Opus 5 `AUTORISER AVEC CORRECTIONS BLOQUANTES` et
+intégrer C1–C8 ainsi que R1–R6 avant tout code ou calcul REF-002.
+Statut: implémentation et smoke 13991 autorisés; graines 13301..13316 toujours fermées.
+Motif: la revue confirme la nouveauté et la pertinence du contraste `mixed`, mais
+démontre que le score normalisé sur images strictement statiques force le seuil JEPA à
+1, H2 à zéro et une moitié de H4 à passer à vide.
+Corrections structurantes: contrôles statiques remplacés par micro-mouvements non nuls;
+H2 rétrogradée en SANITY-EXTERNAL descriptive; H3 devient l'unique porte de détection;
+prédicteur `yaw_warp` analytique gelé sans mesure future; équité mesurée sur paramètres
+effectivement actifs; entrée motrice recalculable sans fuite; unicité intra/inter-banque;
+H5 renommée garde de non-dégénérescence; temps H5 inclus dans la projection.
+Données utilisées: documents pré-calcul et contrats logiciels uniquement. Aucun smoke,
+rendu, entraînement, résultat réservé ou graine 13301..13316.
+Avis Codex: retenir la variante micro-mouvement et réduire la revendication plutôt que
+conserver une porte mathématiquement vide. Cette correction rend un échec futur
+attribuable.
+Avis Claude: autorisation après intégration complète de C1–C8; H3 est le cœur valide du
+protocole.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: code et tests REF-002 puis smoke 13991 autorisés. La campagne reste
+interdite avant smoke entièrement vert, projection concordante et manifeste portant le
+digest du protocole amendé.
+Condition de réouverture: échec d'une garde, inégalité de capacité effective, fuite
+motrice, calibration avec `MSE(copie)=0` ou projection non gelée avant 13301.
+
+## D-020 - Clôture technique sans résultat de REF-002
+
+Date: 2026-07-27
+Décision: clore REF-002 sans analyse scientifique, sans promotion et sans reprise après
+l'arrêt d'intégrité sur la préparation de 13313.
+Statut: non-résultat technique; 13301..13312 interdits d'analyse.
+Motif: une trame finale de `moving_self_calibration[201]` collisionne bit à bit avec
+`mixed[244]` sur 13313, malgré des provenances et états objet distincts. C6 imposait
+zéro collision de trame inter-banques; modifier cette garde après 12 triplets serait
+post hoc.
+Données utilisées: manifestes, compte de runs, hashes et métadonnées physiques
+nécessaires au diagnostic uniquement. Aucun score, aucune porte et aucune agrégation
+scientifique des 12 triplets complets.
+État: 36 runs complets sur 13301..13312; 13313 préparée sans entraînement;
+13314..13316 non ouvertes; `35,15402` minutes consignées.
+Avis Codex: la garde a confondu égalité fortuite d'observation et fuite. Le prochain
+protocole doit imposer disjonction de provenance/paires et visibilité contrefactuelle,
+mais traiter les collisions de trames isolées comme diagnostic.
+Avis Claude: revue pré-calcul favorable après C1–C8; aucune revue de résultats possible
+faute de campagne complète.
+Arbitrage Anthony: non requis; application mécanique du protocole gelé.
+Conséquences: aucune reprise REF-002, aucune analyse partielle, aucune promotion. Une
+nouvelle tentative exige protocole, monde et graines neufs.
+Condition de réouverture: aucune pour REF-002.
+
+## D-021 - Pré-enregistrement de REF-003
+
+Date: 2026-07-27
+Décision: retester l'hypothèse REF-002 restée non testée avec REF-003, monde et graines
+neufs, en remplaçant la collision de trame bloquante par des gardes de provenance/paires
+et une visibilité contrefactuelle par paire.
+Statut: pré-enregistrement soumis à revue contradictoire avant code ou calcul.
+Motif: l'arrêt 13313 ne révèle ni fuite ni résultat modèle. Il révèle qu'une observation
+peut être identique malgré des états externes distincts. La propriété scientifique
+requise est l'absence de réutilisation des mêmes paires/provenances et la visibilité
+effective de la manipulation externe.
+Données utilisées: hash et métadonnées physiques de la collision uniquement; aucun
+score ou résultat 13301..13312.
+Baseline et portes: identiques à REF-002 amendé. Seules l'intégrité, la visibilité, le
+monde, les graines et le plafond lié aux rendus supplémentaires changent.
+Avis Codex: une nouvelle campagne est justifiée car l'hypothèse n'a pas été testée. La
+correction ne favorise aucun modèle et rend H3 plus attribuable.
+Avis Claude: à obtenir avant implémentation sur
+`docs/research/reafference_003_preregistration.md`.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: smoke 14991 et graines 14301..14316 interdits avant revue favorable et
+intégration de ses corrections.
+Condition de réouverture: revue défavorable, visibilité par paire non réalisable sans
+oracle modèle, ou garde de provenance insuffisante.
+
+## D-022 - Deuxième tranche LIFE-001
+
+Date: 2026-07-27
+Décision: ajouter au noyau un évaluateur de compétence à hystérésis et une sélection
+auditée entre expériences éligibles, puis vérifier le cycle
+validation→régression→récupération en simulation multi-session.
+Statut: implémenté et vérifié; aucune action physique ni revendication scientifique.
+Motif: KERNEL-001 persistait déjà les transitions et propositions, mais la démonstration
+LIFE-001 ne couvrait ni détection de régression, ni récupération, ni arbitrage entre
+plusieurs expériences sûres.
+Implémentation: `cognitive/competence.py` produit résultats et digests sans modifier
+l'état; `SafeExperimentCatalog.propose_best` applique toutes les gardes à chaque
+candidate, classe uniquement les candidates éligibles et persiste l'audit complet de
+la candidate retenue.
+Vérification: six graines MuJoCo 17101..17106 hors espaces REF; deux validations
+nominales, deux régressions sous vitesse servo injectée à 10°/s, choix de
+`recalibrate-servo`, redémarrage, puis deux validations de récupération tenues à part.
+26 tests KERNEL/LIFE et 236 tests complets verts.
+Avis Codex: cette tranche transforme les états déjà persistés en boucle vérifiable sans
+introduire de politique apprise ou d'actionnement. L'hystérésis réduit le risque de
+flapping et l'audit des candidates empêche qu'une option bloquée gagne par son score.
+Avis Claude: non requis pour cette validation d'infrastructure; requis avant toute
+politique apprise, tout diagnostic causal revendiqué ou toute délégation d'action.
+Arbitrage Anthony: carte blanche donnée pour poursuivre les éléments sûrs du projet.
+Conséquences: LIFE-001 couvre désormais persistance, validation, régression,
+récupération et choix sûr à signaux externes. L'étape suivante doit porter sur des
+signaux acquis plutôt que scénarisés, toujours en simulation.
+Condition de réouverture: sélection non déterministe, perte d'une raison de blocage,
+transition sans preuve, flapping au voisinage des seuils ou contournement d'une garde.

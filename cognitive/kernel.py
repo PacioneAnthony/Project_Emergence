@@ -261,6 +261,28 @@ class CognitiveKernel:
         self.memory.save_proposal(proposal)
         return proposal
 
+    def select_experiment(
+        self,
+        candidates: Mapping[str, ExperimentSignals],
+        *,
+        now_ns: int,
+        safety: SafetyContext,
+    ) -> ExperimentProposal:
+        """Select and persist one eligible proposal from scientific-module signals."""
+
+        if self.session_id is None:
+            raise RuntimeError("an active session is required")
+        proposal = self.catalog.propose_best(
+            candidates,
+            session_id=self.session_id,
+            now_ns=now_ns,
+            safety=safety,
+            beliefs=self.beliefs,
+            memory=self.memory,
+        )
+        self.memory.save_proposal(proposal)
+        return proposal
+
     def transition_competence(
         self,
         name: str,

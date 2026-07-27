@@ -6,7 +6,15 @@ from cognitive.beliefs import (
     ClockDomainMismatchError,
     fuse_independent_gaussians,
 )
-from cognitive.experiments import SafeExperimentCatalog
+from cognitive.competence import (
+    CompetenceAssessment,
+    UpperBoundCriterion,
+    assess_upper_bound,
+)
+from cognitive.experiments import (
+    ExperimentSelectionBlockedError,
+    SafeExperimentCatalog,
+)
 from cognitive.kernel import CognitiveKernel
 from cognitive.memory import EpisodicMemory
 from cognitive.models import (
@@ -26,12 +34,16 @@ __all__ = [
     "BeliefUnavailableError",
     "ClockDomainMismatchError",
     "CognitiveKernel",
+    "CompetenceAssessment",
     "CompetenceStatus",
     "EpisodicMemory",
     "ExperimentProposal",
+    "ExperimentSelectionBlockedError",
     "ExperimentSignals",
     "ExperimentSpec",
     "SafeExperimentCatalog",
     "SafetyContext",
+    "UpperBoundCriterion",
+    "assess_upper_bound",
     "fuse_independent_gaussians",
 ]

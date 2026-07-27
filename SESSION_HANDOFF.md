@@ -1,6 +1,6 @@
 # Émergence — Handoff de session
 
-Date: 2026-07-26
+Date: 2026-07-27
 
 ## Instruction de reprise impérative
 
@@ -20,10 +20,14 @@ Lire dans cet ordre:
 12. `docs/research/reafference_001_integrity.json`
 13. `docs/research/reafference_001_results_review.md`
 14. `docs/research/reafference_002_preregistration.md`
-15. `docs/research/kernel_001_spec.md`
-16. `docs/research/kernel_001_implementation.md`
-17. `CLAUDE_REVIEW_REQUEST.md`
-18. `DECISIONS.md` — D-014 à D-018
+15. `docs/research/reafference_002_review.md`
+16. `docs/research/reafference_002_smoke.md`
+17. `docs/research/reafference_002_technical_stop.md`
+18. `docs/research/reafference_003_preregistration.md`
+19. `docs/research/kernel_001_spec.md`
+20. `docs/research/kernel_001_implementation.md`
+21. `docs/research/life_001_recovery.md`
+22. `DECISIONS.md` — D-014 à D-022
 
 REF-001 est maintenant close sous D-015/D-016. Ne relancer aucun run, ne modifier aucun seuil
 et ne réutiliser aucune graine 12301..12316. La revue contradictoire des résultats est
@@ -93,7 +97,7 @@ collision de trame sans portée existe entre deux banques sur 12312; la garde d'
 utile doit désormais être exportée; C5 n'a pas amendé le plafond et le temps consigné
 exclut l'évaluation.
 
-## Direction active — REF-002
+## REF-002 — clôture technique
 
 D-017 maintient l'étape 3 avec une hypothèse neuve: la copie d'efférence requiert un
 transport explicite de la carte spatiale par une commande **relative**, plutôt qu'une
@@ -105,9 +109,51 @@ qu'aucune baseline ne subisse le décalage de domaine de REF-001. H5 exige en pl
 permuter ou inverser les commandes dégrade le modèle gelé, preuve que l'action est
 causalement utilisée.
 
-Smoke hors protocole: 13991. Campagne vierge: 13301..13316, 16 triplets / 48 runs.
-Aucun code, smoke ou calcul ne peut commencer avant revue contradictoire favorable du
-pré-enregistrement et intégration de ses corrections.
+Smoke hors protocole: 13991. Campagne: 13301..13316, 16 triplets / 48 runs prévus.
+Claude Opus 5 a rendu `AUTORISER AVEC CORRECTIONS BLOQUANTES`. C1–C8 et R1–R6 ont été
+intégrées additivement sous D-019.
+
+Correction centrale: les banques strictement statiques rendaient le score normalisé
+dégénéré. Elles deviennent des banques de micro-mouvement `2°`, H2 devient
+SANITY-EXTERNAL descriptive, et H3 `mixed` est l'unique porte de détection. Les autres
+amendements figent `yaw_warp`, l'équité effective, l'absence de fuite motrice,
+l'unicité des banques, H5 et le périmètre temporel.
+
+L'implémentation dans `learning/reafference_002.py` contient l'encodeur
+`8×8×128`, trois conditions à capacité identique, transport nul identitaire, entrée
+motrice pré-transition, prédicteur servo analytique, warp projectif et plans moteurs
+appariés avec dérangement H5. Le smoke complet 13991 a ensuite passé toutes les gardes:
+projection `48,11896` minutes, plafond initial 75 minutes non amendé, ratio temporel
+`1,12630`.
+
+La campagne a terminé 13301..13312: 12 triplets / 36 runs et 12 évaluations. La
+préparation de 13313 a produit corpus, sept banques et manifeste, puis la garde
+d'intégrité s'est arrêtée avant tout entraînement sur une collision bit à bit entre une
+trame finale de `moving_self_calibration` et une trame finale de `mixed`. Les
+provenances et états physiques étaient distincts; aucune trame du corpus ne
+collisionnait avec une banque. 13314..13316 n'ont jamais été ouvertes.
+
+D-020 clôt REF-002 comme non-résultat technique. Il est interdit de lire ou agréger les
+scores des 12 triplets, de reprendre 13313 ou de modifier la garde post hoc. L'hypothèse
+de transport spatial reste non testée.
+
+## Direction active — REF-003
+
+D-021 pré-enregistre une nouvelle tentative dans un monde et des espaces de graines
+neufs. Elle conserve les modèles, informations, baselines, budgets, H1/H3/H4/H5 et
+seuils de REF-002 amendé. La correction est limitée à l'intégrité et à la visibilité:
+
+- disjonction bloquante des provenances, espaces RNG et digests de paires;
+- collisions de trames isolées seulement descriptives lorsque les paires sont
+  distinctes;
+- rendu contrefactuel par paire `external_only` et `mixed`, invisible aux modèles;
+- effet objet `≥0,01` pour chaque paire et moyenne par bin `≥0,05`;
+- aucun resampling ou remplacement après observation.
+
+Monde `REF3`, smoke 14991, campagne 14301..14316 et graine statistique 2026072701 sont
+réservés et vierges. Le plafond initial de 90 minutes couvre les 1 536 rendus
+contrefactuels par graine. Aucun code, rendu ou calcul REF-003 n'est autorisé avant
+revue favorable de Claude Opus 5 et intégration des corrections éventuelles.
 
 ## Contexte durable
 
@@ -130,15 +176,26 @@ associés sont transactionnels. Une proposition ne contient aucun champ d'action
 Les 22 tests dédiés et les 215 tests complets passent dans `.venv`.
 
 Le premier smoke LIFE-001 traverse deux sessions MuJoCo/J0 et une réouverture de base,
-puis valide avec digest la primitive analytique `bounded_head_orientation`. Il prouve le
-câblage, pas l'apprentissage. La suite doit tester régression/récupération et sélection
-d'expérience sans anticiper REF-002, dont la porte Claude reste fermée.
+puis valide avec digest la primitive analytique `bounded_head_orientation`.
+
+D-022 complète le cycle sur six graines MuJoCo hors REF: validation nominale,
+régression injectée par réduction de vitesse servo, sélection auditée de
+`recalibrate-servo`, redémarrage, récupération et revalidation tenue à part. Un
+évaluateur à hystérésis produit les preuves sans modifier lui-même l'état; le catalogue
+classe uniquement les candidates qui passent toutes les gardes et persiste l'audit.
+Les 26 tests KERNEL/LIFE et 236 tests complets sont verts.
+
+LIFE-001 prouve désormais le câblage du cycle, pas un apprentissage ou diagnostic causal
+autonome. La suite doit produire les signaux de sélection à partir d'observations
+mesurées, sans anticiper REF-003, dont la porte Claude reste fermée.
 
 ## Actions par acteur
 
-Action Codex: préparer LIFE-001 sur KERNEL-001 et, après revue REF-002, intégrer le
-verdict avant tout code scientifique REF-002; ne jamais reprendre REF-001.
+Action Codex: préserver REF-002 close; après revue favorable seulement, intégrer les
+corrections REF-003 puis implémenter et tester avant d'exécuter uniquement le smoke
+14991.
 Action Anthony: aucune.
-Action Claude: exécuter le prompt exact de `CLAUDE_REVIEW_REQUEST.md` et écrire
-uniquement `docs/research/reafference_002_review.md`.
-Blocage: revue contradictoire pré-calcul REF-002.
+Action Claude Opus 5: produire `docs/research/reafference_003_review.md` à partir de
+`CLAUDE_REVIEW_REQUEST.md`, sans lancer de calcul.
+Blocage: tout code/rendu/calcul REF-003, smoke 14991 et campagne 14301..14316 jusqu'à la
+revue pré-calcul favorable et l'intégration de ses corrections bloquantes.

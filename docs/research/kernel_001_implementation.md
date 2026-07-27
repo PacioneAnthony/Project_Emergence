@@ -15,8 +15,11 @@ KERNEL-001 ajoute le paquet `cognitive/`, indépendant des modèles appris:
   snapshots;
 - `boundaries.py`: frontières causales en ligne sur première observation, silence,
   durée maximale et événements explicites;
-- `experiments.py`: catalogue déclaratif et sélection transparente sous gardes de
-  sécurité, risque, coût, croyances requises, cadence et quota;
+- `experiments.py`: catalogue déclaratif, proposition nominale et sélection
+  transparente entre candidates sous gardes de sécurité, risque, coût, croyances
+  requises, cadence et quota;
+- `competence.py`: évaluation générique à hystérésis, preuves et digests pour les
+  métriques dont une borne supérieure définit validation et régression;
 - `kernel.py`: orchestration, ingestion d'événements J0, replay idempotent, reprise
   après crash et fermeture atomique.
 
@@ -86,8 +89,10 @@ scientifiques. KERNEL-001 ne prétend pas définir une curiosité optimale.
 - absence de champs de commande dans une proposition.
 - smoke LIFE-001 réel sur MuJoCo: deux sessions J0, extinction/reprise, deux graines
   hors REF et validation auditée d'une primitive analytique bornée.
+- smoke LIFE-001 de récupération: validation, régression injectée, choix audité d'une
+  recalibration, redémarrage et revalidation sur six graines hors REF.
 
-Les 22 tests KERNEL/LIFE et les 215 tests complets du dépôt passent avec
+Les 26 tests KERNEL/LIFE et les 236 tests complets du dépôt passent avec
 l'environnement `.venv`.
 
 ## Limites assumées
@@ -109,9 +114,10 @@ continue, d'abord avec des estimateurs analytiques simples et des primitives sym
 Elle doit démontrer sur plusieurs sessions: acquisition d'une compétence, reprise après
 arrêt, régression détectée, récupération et choix d'expérience sous contraintes.
 
-Le premier smoke de câblage multi-session est désormais vert. Il certifie une primitive
-analytique existante; il ne démontre ni apprentissage d'une nouvelle compétence, ni
-régression/récupération, ni sélection autonome d'un curriculum.
+Les deux smokes de câblage multi-session sont désormais verts. Ils certifient une
+primitive analytique existante, la détection d'une régression injectée, la récupération
+et la sélection sûre entre des signaux fournis. Ils ne démontrent ni apprentissage
+d'une nouvelle compétence, ni diagnostic causal autonome, ni curriculum appris.
 
-REF-002 reste une voie scientifique séparée. Son code et ses calculs demeurent interdits
+REF-003 reste une voie scientifique séparée. Son code et ses calculs demeurent interdits
 avant la revue pré-calcul de Claude Opus 5.

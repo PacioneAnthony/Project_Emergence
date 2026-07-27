@@ -13,7 +13,12 @@ from cognitive.beliefs import (
     fuse_independent_gaussians,
 )
 from cognitive.boundaries import BoundaryConfig
-from cognitive.experiments import ExperimentBlockedError, SafeExperimentCatalog
+from cognitive.competence import UpperBoundCriterion, assess_upper_bound
+from cognitive.experiments import (
+    ExperimentBlockedError,
+    ExperimentSelectionBlockedError,
+    SafeExperimentCatalog,
+)
 from cognitive.kernel import CognitiveKernel
 from cognitive.memory import (
     EpisodicMemory,
@@ -31,6 +36,7 @@ from cognitive.models import (
 from j0.events import Event
 from j0.recorder import SessionRecorder
 from sim3d.bench_env import BenchHeadEnv
+from sim3d.bench_model import BenchConfig
 
 
 def belief(
@@ -125,6 +131,24 @@ def signals(**overrides: float) -> ExperimentSignals:
     }
     values.update(overrides)
     return ExperimentSignals(**values)
+
+
+def bench_target_error(
+    *,
+    seed: int,
+    target_deg: float,
+    max_speed_deg_s: float = 600.0,
+) -> float:
+    config = BenchConfig(seed=seed)
+    config.servo.max_speed_deg_s = max_speed_deg_s
+    env = BenchHeadEnv(config)
+    try:
+        observation = env.reset(seed=seed)
+        for _ in range(20):
+            observation = env.step(target_deg)
+        return abs(observation.as5600_deg - target_deg)
+    finally:
+        env.close()
 
 
 def test_beliefs_reject_out_of_order_and_apply_constraints() -> None:
@@ -302,6 +326,29 @@ def test_competence_requires_candidate_and_validation_digest(tmp_path) -> None:
         ]
 
 
+def test_upper_bound_assessment_has_hysteresis_and_auditable_digest() -> None:
+    criterion = UpperBoundCriterion(
+        metric_name="absolute_error_deg",
+        validation_upper_bound=2.0,
+        regression_upper_bound=4.0,
+        min_samples=2,
+    )
+    validated = assess_upper_bound([0.5, 1.5], criterion)
+    inconclusive = assess_upper_bound([1.5, 3.0], criterion)
+    regressed = assess_upper_bound([1.5, 4.1], criterion)
+
+    assert validated.outcome == "validated"
+    assert inconclusive.outcome == "inconclusive"
+    assert regressed.outcome == "regressed"
+    assert len(validated.values_digest) == 64
+    assert len(validated.evidence_digest()) == 64
+    assert validated.evidence_digest() == assess_upper_bound([0.5, 1.5], criterion).evidence_digest()
+    with pytest.raises(ValueError, match="at least 2"):
+        assess_upper_bound([0.5], criterion)
+    with pytest.raises(ValueError, match="finite"):
+        assess_upper_bound([0.5, float("nan")], criterion)
+
+
 def test_model_promotion_is_explicit_and_unique(tmp_path) -> None:
     with EpisodicMemory(tmp_path / "memory.sqlite3") as memory:
         memory.register_model(
@@ -392,6 +439,239 @@ def test_proposal_has_no_actuator_command_and_persistent_cadence(tmp_path) -> No
                 "scan-left", now_ns=220, signals=signals(), safety=safe_context()
             )
         assert "session_quota" in error.value.reasons
+
+
+def test_selector_chooses_best_eligible_candidate_and_persists_full_audit(tmp_path) -> None:
+    selection_catalog = SafeExperimentCatalog(
+        [
+            ExperimentSpec(
+                experiment_id="diagnose-servo",
+                primitive="look_left",
+                required_beliefs=(
+                    BeliefRequirement(
+                        "free_space",
+                        max_age_ns=1_000,
+                        max_variance=0.1,
+                        min_quality=0.8,
+                    ),
+                ),
+                max_predicted_risk=0.2,
+                max_motor_cost=0.4,
+                max_proposals_per_session=1,
+            ),
+            ExperimentSpec(
+                experiment_id="wide-scan",
+                primitive="look_wide",
+                max_predicted_risk=0.2,
+                max_motor_cost=0.4,
+            ),
+        ]
+    )
+    path = tmp_path / "selection.sqlite3"
+    with CognitiveKernel(path, catalog=selection_catalog) as kernel:
+        kernel.start_session("selection", started_at_ns=0)
+        kernel.update_belief(belief(), checkpoint=True)
+        proposal = kernel.select_experiment(
+            {
+                "diagnose-servo": signals(epistemic_gain=0.5, learning_progress=0.6),
+                "wide-scan": signals(
+                    epistemic_gain=1.0,
+                    learning_progress=1.0,
+                    predicted_risk=0.3,
+                ),
+            },
+            now_ns=200,
+            safety=SafetyContext(
+                emergency_stop=False,
+                hardware_healthy=True,
+                model_update_in_progress=False,
+                quota_state="ok",
+                allowed_primitives=frozenset({"look_left", "look_wide"}),
+            ),
+        )
+        assert proposal.experiment_id == "diagnose-servo"
+        selection = proposal.rationale["selection"]
+        assert selection["policy"] == "highest_score_then_experiment_id"
+        assert selection["candidates"]["wide-scan"] == {
+            "status": "blocked",
+            "reasons": ["predicted_risk"],
+        }
+        row = kernel.memory.connection.execute(
+            "SELECT rationale_json FROM experiment_proposals WHERE proposal_id = ?",
+            (proposal.proposal_id,),
+        ).fetchone()
+        assert json.loads(row["rationale_json"])["selection"] == selection
+
+        with pytest.raises(ExperimentSelectionBlockedError) as error:
+            kernel.select_experiment(
+                {
+                    "diagnose-servo": signals(),
+                    "wide-scan": signals(),
+                },
+                now_ns=210,
+                safety=SafetyContext(
+                    emergency_stop=True,
+                    hardware_healthy=True,
+                    model_update_in_progress=False,
+                    quota_state="ok",
+                    allowed_primitives=frozenset({"look_left", "look_wide"}),
+                ),
+            )
+        assert "emergency_stop" in error.value.blocked_by_experiment["wide-scan"]
+        assert "session_quota" in error.value.blocked_by_experiment["diagnose-servo"]
+
+
+def test_selector_tie_break_is_stable_and_only_selected_candidate_uses_quota(tmp_path) -> None:
+    selection_catalog = SafeExperimentCatalog(
+        [
+            ExperimentSpec("beta", "look_left", max_proposals_per_session=1),
+            ExperimentSpec("alpha", "look_left", max_proposals_per_session=1),
+        ]
+    )
+    with CognitiveKernel(tmp_path / "tie.sqlite3", catalog=selection_catalog) as kernel:
+        kernel.start_session("tie", started_at_ns=0)
+        first = kernel.select_experiment(
+            {"beta": signals(), "alpha": signals()},
+            now_ns=1,
+            safety=safe_context(),
+        )
+        assert first.experiment_id == "alpha"
+        second = kernel.select_experiment(
+            {"beta": signals(), "alpha": signals()},
+            now_ns=2,
+            safety=safe_context(),
+        )
+        assert second.experiment_id == "beta"
+
+
+def test_life_regression_recovery_and_experiment_choice_survive_restart(tmp_path) -> None:
+    path = tmp_path / "life-recovery.sqlite3"
+    criterion = UpperBoundCriterion(
+        metric_name="absolute_error_deg",
+        validation_upper_bound=2.0,
+        regression_upper_bound=4.0,
+        min_samples=2,
+    )
+    recovery_catalog = SafeExperimentCatalog(
+        [
+            ExperimentSpec("recalibrate-servo", "look_left", max_proposals_per_session=1),
+            ExperimentSpec("explore-room", "look_left", max_proposals_per_session=1),
+        ]
+    )
+
+    validation = assess_upper_bound(
+        [
+            bench_target_error(seed=17101, target_deg=75.0),
+            bench_target_error(seed=17102, target_deg=105.0),
+        ],
+        criterion,
+    )
+    regression = assess_upper_bound(
+        [
+            bench_target_error(seed=17103, target_deg=75.0, max_speed_deg_s=10.0),
+            bench_target_error(seed=17104, target_deg=105.0, max_speed_deg_s=10.0),
+        ],
+        criterion,
+    )
+    assert validation.outcome == "validated"
+    assert regression.outcome == "regressed"
+
+    with CognitiveKernel(path, catalog=recovery_catalog) as kernel:
+        kernel.start_session("life-validation", started_at_ns=0)
+        kernel.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.LEARNING,
+            changed_at_ns=1,
+            evidence={"phase": "acquisition"},
+        )
+        kernel.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.CANDIDATE,
+            changed_at_ns=2,
+            evidence=validation.evidence(),
+            model_version="servo-cal-v1",
+        )
+        kernel.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.VALIDATED,
+            changed_at_ns=3,
+            evidence=validation.evidence(),
+            model_version="servo-cal-v1",
+            validation_digest=validation.evidence_digest(),
+        )
+        kernel.end_session(ended_at_ns=4)
+
+    with CognitiveKernel(path, catalog=recovery_catalog) as restored:
+        restored.start_session("life-regression", started_at_ns=10)
+        restored.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.REGRESSED,
+            changed_at_ns=11,
+            evidence=regression.evidence(),
+            model_version="servo-cal-v1",
+        )
+        proposal = restored.select_experiment(
+            {
+                "explore-room": signals(epistemic_gain=0.4, learning_progress=0.1),
+                "recalibrate-servo": signals(epistemic_gain=0.8, learning_progress=0.9),
+            },
+            now_ns=12,
+            safety=safe_context(),
+        )
+        assert proposal.experiment_id == "recalibrate-servo"
+        restored.end_session(ended_at_ns=13)
+
+    recovery = assess_upper_bound(
+        [
+            bench_target_error(seed=17105, target_deg=70.0),
+            bench_target_error(seed=17106, target_deg=110.0),
+        ],
+        criterion,
+    )
+    with CognitiveKernel(path, catalog=recovery_catalog) as recovered:
+        assert recovered.memory.competence_status(
+            "bounded_head_orientation"
+        ) is CompetenceStatus.REGRESSED
+        recovered.start_session("life-recovery", started_at_ns=20)
+        recovered.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.LEARNING,
+            changed_at_ns=21,
+            evidence={"selected_proposal": proposal.proposal_id},
+            model_version="servo-cal-v2",
+        )
+        recovered.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.CANDIDATE,
+            changed_at_ns=22,
+            evidence=recovery.evidence(),
+            model_version="servo-cal-v2",
+        )
+        recovered.transition_competence(
+            "bounded_head_orientation",
+            CompetenceStatus.VALIDATED,
+            changed_at_ns=23,
+            evidence=recovery.evidence(),
+            model_version="servo-cal-v2",
+            validation_digest=recovery.evidence_digest(),
+        )
+        recovered.end_session(ended_at_ns=24)
+
+    with CognitiveKernel(path, catalog=recovery_catalog) as final:
+        assert final.memory.competence_status(
+            "bounded_head_orientation"
+        ) is CompetenceStatus.VALIDATED
+        assert [row["to_status"] for row in final.memory.competence_history(
+            "bounded_head_orientation"
+        )] == [
+            "learning",
+            "candidate",
+            "validated",
+            "regressed",
+            "learning",
+            "candidate",
+            "validated",
+        ]
 
 
 def test_crash_restart_restores_beliefs_session_and_open_episode(tmp_path) -> None:
