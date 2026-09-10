@@ -1,0 +1,26 @@
+{
+  "used_seconds": 618.5610000000161,
+  "attempt_groups": [
+    [
+      "complete",
+      19,
+      618.5610000000161,
+      1
+    ]
+  ],
+  "data_bytes": 112864808,
+  "integrity": {
+    "dev": {
+      "files": 431,
+      "mismatches": []
+    },
+    "validation": {
+      "files": 885,
+      "mismatches": []
+    },
+    "validation_contract": {
+      "mismatches": []
+    }
+  },
+  "no_reserved_attempts": true
+}

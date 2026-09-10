@@ -1,0 +1,23 @@
+{
+  "sha256": {
+    "learning/resilience_002_publish.py": "39f96b292e473cebf02888956844f7b11f2ef6636332dfa9558db767ca416d43",
+    "learning/resilience_002_diagnostics.py": "380822ba808d1f80d2735d15f6c2c489e056e3f6060d0be58e00fd8324d448e5",
+    "learning/resilience_002_audit.py": "393b1568b9fcb4a90d81265a762148839a74da84b0a92d69652bd87f01292e11",
+    "docs/research/resilience_002_results.md": "acad21dfe3b41ee90efdb915699d1dd80f2728758dc3b07b0b9a04dfe73c3c54",
+    "docs/research/resilience_002_progress.png": "3929ddeda1c08afee521fcd08f8595e3243e87897ef909b0978df4db72cf0e5e"
+  },
+  "budget_snapshot_includes_current_reservation": [
+    [
+      "complete",
+      18,
+      617.8740000000253
+    ],
+    [
+      "reserved",
+      1,
+      900.0
+    ]
+  ],
+  "development_manifest": "60d1e236d389302d4f6c5eb8517c519bbbdf8e2d7dccea3ac070f0e9781cdbee",
+  "validation_manifest": "9592ebaeba28b2449c259735a38197abd6cbd93ae48188494593fec8e2c41444"
+}
