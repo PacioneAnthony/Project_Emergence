@@ -1,7 +1,7 @@
 # BODY-SCHEMA-001 — schéma corporel probabiliste avant reprise de J5
 
 Date: 2026-07-27
-Statut: pré-enregistrement proposé; aucun code, test scientifique ou calcul autorisé
+Statut: autorisé avec amendements B1–B6 intégrés; implémentation et smoke autorisés
 Portée: jalon J1, simulation MuJoCo uniquement
 
 ## Motivation et rupture avec LIFE
@@ -226,3 +226,139 @@ Elle ne qualifie ni J5, curriculum, causalité générale, transfert physique ou
 
 En cas d'échec, aucune variante de sélecteur LIFE n'est relancée. Le rapport attribue
 l'échec à plasticité, représentation, calibration ou détection selon la porte concernée.
+
+## Amendements pré-calcul issus de la revue BODY-SCHEMA-001
+
+Date d'intégration: 2026-07-27. B1–B6 sont additifs et priment sur toute formulation
+antérieure incompatible. Aucune graine 19091+ n'a été ouverte avant ce gel.
+
+### B1 — substrat déterministe et partition réelle des trajectoires
+
+L'AS5600 simulé ne contient aucun bruit aléatoire: pour un organisme et des cibles
+donnés, sa trajectoire est déterministe; la graine d'exécution n'affecte que les autres
+capteurs. La quantification vaut exactement `0,087890625°`. Une réplication privée exige
+donc une trajectoire différente, pas une nouvelle graine.
+
+Chaque motif possède douze instances de 32 pas. Les waypoints et durées de segments
+ci-dessous gèlent exhaustivement leurs cibles. Toutes démarrent depuis 90°, finissent à
+90°, restent dans `[30°,150°]` et coûtent 240°.
+
+```text
+impulsion waypoints: 150,90,30,90
+durées i0..i11:
+[8,8,8,8] [5,11,7,9] [6,10,6,10] [7,9,5,11]
+[9,7,11,5] [10,6,10,6] [11,5,9,7] [4,12,8,8]
+[9,4,11,8] [8,8,4,12] [12,8,8,4] [6,8,12,6]
+
+renversement waypoints: 60,90,120,90,60,90,120,90
+durées i0..i11:
+[4,4,4,4,4,4,4,4]
+rotations 0..7 de [2,3,4,5,6,5,4,3]
+[1,7,1,7,1,7,1,7] [7,1,7,1,7,1,7,1]
+[2,6,2,6,2,6,2,6]
+
+micro waypoints: 75,90,105,90 répété quatre fois
+durée i0: [2]×16
+pour i1..i11: [2]×16, avec la position (i−1) portée à 3 et
+la position ((i−1)+5) mod 16 portée à 1
+```
+
+Rôles sans recouvrement, identiques pour les trois motifs:
+
+- i0: protection;
+- i1: calibration;
+- i2..i9: apprentissage;
+- i10..i11: banque privée;
+- faute: i10..i11 appariées, actionneur modifié.
+
+La porte de contenu exige des digests de plan et couples `(digest, step)` disjoints entre
+rôles normaux. Pour chaque organisme, aucune suite AS5600 de deux rôles différents ne
+peut être égale à `1e-9`. Provenances et digests de session restent également disjoints.
+
+### B2 — protection et calibration séparées
+
+Les 24 trials d'apprentissage sont ajustés; les trois trials de protection décident seuls
+les acceptations; les trois trials de calibration calculent seuls le facteur conformel;
+les six trials privés mesurent seuls la compétence. Aucune trajectoire ne remplit deux
+fonctions.
+
+La calibration reste conditionnée aux acceptations antérieures: sa garantie est
+approximative, pas conforme exacte. Sa taille effective est exportée à chaque checkpoint.
+
+### B3 — bases gelées et comparaison équitable
+
+`B2` conserve les treize features LIFE et l'ajustement pair/impair historique.
+
+`B2'` utilise les mêmes treize features et `alpha=1,0`, mais ajuste les 32 transitions
+des mêmes trials que M et utilise le même ensemble de protection que M.
+
+Chaque membre de M utilise dix-huit features analytiquement normalisées:
+
+1. les treize features LIFE, dans leur ordre gelé;
+2. `(previous_angle_delta/12)²`;
+3. `error×previous_angle_delta/(160×12)`;
+4. `command_delta×previous_angle_delta/(160×12)`;
+5. `abs(previous_angle_delta)/12`;
+6. `(clip(error,−12,12)/12)×(previous_angle_delta/12)`.
+
+M diffère donc de B2' par cette base enrichie, le bootstrap par trial et l'agrégation.
+H2 compare M à B2' avec le seuil 5 %. M contre B2 historique reste descriptif, hors Holm.
+
+### B4 — critère J1, incertitude et fautes
+
+H0 compare M à la persistance B0 sur l'angle et `Δangle`; H1 compare M au prior physique
+sur les deux métriques; H2 compare M à B2' sur les deux. La famille Holm primaire contient
+exactement ces six tests. Chaque test exige au moins 16/24 favorables, une moyenne
+favorable par régime et Monte-Carlo unilatéral `p_corrigé<=0,05`. H1 conserve 15 % et H2
+5 % sur les deux métriques; H0 exige une moyenne strictement favorable.
+
+La banque faute possède deux conditions appariées de même taille:
+
+- `blocked`: angle maintenu;
+- `degraded`: vitesse maximale divisée par trois.
+
+Le détecteur trivial `abs(observed_next-current_angle)` est rapporté. M doit atteindre
+ses seuils absolus séparément sur blocked et degraded et une AUROC au moins égale au
+trivial. Seule degraded porte une revendication de schéma corporel. Le seuil opérationnel
+TPR/FPR est choisi sur les six smoke et gelé avant test.
+
+H4 ajoute largeur médiane `<6×MAE_privée_finale_M` et couverture `[0,80;0,98]` sur rampes,
+plateaux et chaque tercile de déplacement prédit. Un intervalle constant ne suffit pas.
+
+### B5 — plancher privilégié et plasticité conditionnelle
+
+Le modèle diagnostique P utilise la base de M augmentée de `_limited_deg/160` et de la
+vitesse articulaire normalisée. Il ne fournit rien à M, n'entre dans aucune hypothèse et
+ne peut être promu.
+
+La marge disponible vaut `(MAE_prior−MAE_P)/MAE_prior`. Si elle est `>=0,10`, M doit
+accepter au moins une mise à jour; sous 0,10, M doit seulement ne pas dégrader la
+protection au-delà de `1e-12`. Aucun organisme n'est filtré.
+
+Le cas publié 18793 est rejoué hors portes avec ses paramètres exacts:
+`speed=600`, `gain=12,798604369285723`, `damping=0,12651930739806627`,
+`friction=0,0147`, `armature=0,0002`. Il ne compte dans aucune moyenne et détermine
+seulement si le refus historique relève du modèle ou d'une absence de marge.
+
+### B6 — spécifications numériques
+
+Pour chaque classe rampe/plateau:
+
+```text
+sigma_bruit = 1,4826 × MAD(résidus du modèle courant sur calibration)
+sigma² = variance inter-membres + sigma_bruit²
+score conforme = abs(résidu)/sigma
+q = quantile empirique 0,90, interpolation "higher"
+intervalle = moyenne ± q×sigma
+```
+
+Aucun quantile gaussien n'est ajouté. Un membre bootstrap de poids total nul retourne
+exactement le prior physique et contribue à la variance inter-membres.
+
+La non-infériorité H3 utilise
+`d_i=(MAE_best_i−MAE_final_i+0,02×MAE_initial_i)/MAE_initial_i`, puis
+`monte_carlo_sign_flip_pvalue(d, alternative="greater", n_resamples=200000,
+seed=2026072706)`.
+
+L'incertitude qualifiée ici est épistémique sur un canal déterministe et quantifié; elle
+ne modélise ni bruit, hystérésis ou non-linéarité d'un AS5600 physique.
