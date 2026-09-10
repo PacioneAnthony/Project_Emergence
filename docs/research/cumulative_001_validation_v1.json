@@ -1,0 +1,3603 @@
+{
+  "bank": "validation",
+  "batch": 128,
+  "budget": {
+    "per_invocation": 900,
+    "total_seconds": 5400
+  },
+  "criteria": {
+    "learning_mae_deg": 1.0,
+    "relative_gain_vs_prior": 0.3,
+    "retention_margin_deg": 0.2
+  },
+  "evaluation_trials": 8,
+  "hidden": 64,
+  "horizons": [
+    1
+  ],
+  "level": "configuration_validation",
+  "lives": {
+    "friction_dominant/0": {
+      "batches": 3576518260,
+      "body": 268134846,
+      "initialization": 3518456322,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 3311409866,
+          "execution": 2201619412
+        },
+        "evaluation/A/1": {
+          "command": 1955423520,
+          "execution": 3827325106
+        },
+        "evaluation/A/2": {
+          "command": 4284236992,
+          "execution": 2655569197
+        },
+        "evaluation/A/3": {
+          "command": 790782612,
+          "execution": 1034693725
+        },
+        "evaluation/A/4": {
+          "command": 2207648295,
+          "execution": 757018632
+        },
+        "evaluation/A/5": {
+          "command": 525275755,
+          "execution": 1310459648
+        },
+        "evaluation/A/6": {
+          "command": 3251413673,
+          "execution": 2731987486
+        },
+        "evaluation/A/7": {
+          "command": 4081140264,
+          "execution": 3093240518
+        },
+        "evaluation/B/0": {
+          "command": 1791344998,
+          "execution": 656365747
+        },
+        "evaluation/B/1": {
+          "command": 3269402402,
+          "execution": 319138379
+        },
+        "evaluation/B/2": {
+          "command": 997603607,
+          "execution": 1761522273
+        },
+        "evaluation/B/3": {
+          "command": 2831340616,
+          "execution": 2763092999
+        },
+        "evaluation/B/4": {
+          "command": 1283943723,
+          "execution": 2202826879
+        },
+        "evaluation/B/5": {
+          "command": 2178347347,
+          "execution": 883202858
+        },
+        "evaluation/B/6": {
+          "command": 746426350,
+          "execution": 3467802512
+        },
+        "evaluation/B/7": {
+          "command": 991138236,
+          "execution": 2883712155
+        },
+        "evaluation/C/0": {
+          "command": 2954427822,
+          "execution": 578473534
+        },
+        "evaluation/C/1": {
+          "command": 3768177232,
+          "execution": 2135648120
+        },
+        "evaluation/C/2": {
+          "command": 2353716128,
+          "execution": 1494493614
+        },
+        "evaluation/C/3": {
+          "command": 1479067314,
+          "execution": 3223646515
+        },
+        "evaluation/C/4": {
+          "command": 72890738,
+          "execution": 63926125
+        },
+        "evaluation/C/5": {
+          "command": 2338223514,
+          "execution": 3483779702
+        },
+        "evaluation/C/6": {
+          "command": 3724797524,
+          "execution": 2164577248
+        },
+        "evaluation/C/7": {
+          "command": 953974922,
+          "execution": 994458336
+        },
+        "learning/A/0": {
+          "command": 1803030821,
+          "execution": 1901290616
+        },
+        "learning/A/1": {
+          "command": 1089843302,
+          "execution": 3410641719
+        },
+        "learning/A/10": {
+          "command": 2982220700,
+          "execution": 254650404
+        },
+        "learning/A/11": {
+          "command": 2473903053,
+          "execution": 277460912
+        },
+        "learning/A/2": {
+          "command": 1627073362,
+          "execution": 626106369
+        },
+        "learning/A/3": {
+          "command": 391404380,
+          "execution": 2848572254
+        },
+        "learning/A/4": {
+          "command": 1694711429,
+          "execution": 2161655971
+        },
+        "learning/A/5": {
+          "command": 2387334806,
+          "execution": 472630552
+        },
+        "learning/A/6": {
+          "command": 3391406887,
+          "execution": 2923163733
+        },
+        "learning/A/7": {
+          "command": 4140648995,
+          "execution": 1532319607
+        },
+        "learning/A/8": {
+          "command": 2657882008,
+          "execution": 677022371
+        },
+        "learning/A/9": {
+          "command": 925895770,
+          "execution": 1353395505
+        },
+        "learning/A_return/0": {
+          "command": 2884240277,
+          "execution": 2933252479
+        },
+        "learning/A_return/1": {
+          "command": 1304504163,
+          "execution": 367660542
+        },
+        "learning/A_return/10": {
+          "command": 3692623724,
+          "execution": 1056526976
+        },
+        "learning/A_return/11": {
+          "command": 2629762720,
+          "execution": 1251460485
+        },
+        "learning/A_return/2": {
+          "command": 3802799608,
+          "execution": 3370877333
+        },
+        "learning/A_return/3": {
+          "command": 2265237035,
+          "execution": 1450914541
+        },
+        "learning/A_return/4": {
+          "command": 614247931,
+          "execution": 4037923131
+        },
+        "learning/A_return/5": {
+          "command": 1717741662,
+          "execution": 1887995921
+        },
+        "learning/A_return/6": {
+          "command": 1387848119,
+          "execution": 524962489
+        },
+        "learning/A_return/7": {
+          "command": 1124559398,
+          "execution": 428752334
+        },
+        "learning/A_return/8": {
+          "command": 1618733568,
+          "execution": 3030094989
+        },
+        "learning/A_return/9": {
+          "command": 744395025,
+          "execution": 1036703827
+        },
+        "learning/B/0": {
+          "command": 1314172039,
+          "execution": 788606983
+        },
+        "learning/B/1": {
+          "command": 2820401816,
+          "execution": 3258930633
+        },
+        "learning/B/10": {
+          "command": 3386119539,
+          "execution": 124281531
+        },
+        "learning/B/11": {
+          "command": 1888668850,
+          "execution": 580948372
+        },
+        "learning/B/2": {
+          "command": 2722834303,
+          "execution": 457777396
+        },
+        "learning/B/3": {
+          "command": 2804490577,
+          "execution": 3637817745
+        },
+        "learning/B/4": {
+          "command": 1931667174,
+          "execution": 3306384252
+        },
+        "learning/B/5": {
+          "command": 2852766896,
+          "execution": 3639733118
+        },
+        "learning/B/6": {
+          "command": 1620355143,
+          "execution": 3225829257
+        },
+        "learning/B/7": {
+          "command": 3351289723,
+          "execution": 1619115707
+        },
+        "learning/B/8": {
+          "command": 918361751,
+          "execution": 3223062149
+        },
+        "learning/B/9": {
+          "command": 1945364180,
+          "execution": 4195229037
+        },
+        "learning/C/0": {
+          "command": 859230956,
+          "execution": 472877875
+        },
+        "learning/C/1": {
+          "command": 805240540,
+          "execution": 3312740016
+        },
+        "learning/C/10": {
+          "command": 3682564365,
+          "execution": 2115294522
+        },
+        "learning/C/11": {
+          "command": 505604017,
+          "execution": 720856929
+        },
+        "learning/C/2": {
+          "command": 4044388890,
+          "execution": 3886152561
+        },
+        "learning/C/3": {
+          "command": 2094804540,
+          "execution": 2352405366
+        },
+        "learning/C/4": {
+          "command": 1008259729,
+          "execution": 203394202
+        },
+        "learning/C/5": {
+          "command": 1502238933,
+          "execution": 2223486280
+        },
+        "learning/C/6": {
+          "command": 570156088,
+          "execution": 1951712683
+        },
+        "learning/C/7": {
+          "command": 4007699326,
+          "execution": 3711723649
+        },
+        "learning/C/8": {
+          "command": 3469801585,
+          "execution": 1194352947
+        },
+        "learning/C/9": {
+          "command": 1221270507,
+          "execution": 840179653
+        }
+      }
+    },
+    "friction_dominant/1": {
+      "batches": 141593262,
+      "body": 650453835,
+      "initialization": 4103114677,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 163470395,
+          "execution": 4079837188
+        },
+        "evaluation/A/1": {
+          "command": 226963678,
+          "execution": 2388399588
+        },
+        "evaluation/A/2": {
+          "command": 2335078884,
+          "execution": 3443812197
+        },
+        "evaluation/A/3": {
+          "command": 2552332420,
+          "execution": 1470682860
+        },
+        "evaluation/A/4": {
+          "command": 3646738180,
+          "execution": 1307359500
+        },
+        "evaluation/A/5": {
+          "command": 1446018309,
+          "execution": 1106603310
+        },
+        "evaluation/A/6": {
+          "command": 3003830641,
+          "execution": 1601290036
+        },
+        "evaluation/A/7": {
+          "command": 2098081468,
+          "execution": 3788243833
+        },
+        "evaluation/B/0": {
+          "command": 3787985197,
+          "execution": 1271159945
+        },
+        "evaluation/B/1": {
+          "command": 1630352737,
+          "execution": 3277492170
+        },
+        "evaluation/B/2": {
+          "command": 2734800155,
+          "execution": 29258739
+        },
+        "evaluation/B/3": {
+          "command": 1561275442,
+          "execution": 2606129109
+        },
+        "evaluation/B/4": {
+          "command": 556746065,
+          "execution": 1948418262
+        },
+        "evaluation/B/5": {
+          "command": 514388330,
+          "execution": 2385294863
+        },
+        "evaluation/B/6": {
+          "command": 1600672712,
+          "execution": 3838703804
+        },
+        "evaluation/B/7": {
+          "command": 2243858957,
+          "execution": 2693501562
+        },
+        "evaluation/C/0": {
+          "command": 2252747328,
+          "execution": 397257210
+        },
+        "evaluation/C/1": {
+          "command": 3352653991,
+          "execution": 1724754369
+        },
+        "evaluation/C/2": {
+          "command": 514370561,
+          "execution": 2819562757
+        },
+        "evaluation/C/3": {
+          "command": 1738324452,
+          "execution": 2157837522
+        },
+        "evaluation/C/4": {
+          "command": 948200657,
+          "execution": 3613528005
+        },
+        "evaluation/C/5": {
+          "command": 112068208,
+          "execution": 1374948166
+        },
+        "evaluation/C/6": {
+          "command": 2402247220,
+          "execution": 2164852908
+        },
+        "evaluation/C/7": {
+          "command": 1170695990,
+          "execution": 3959352632
+        },
+        "learning/A/0": {
+          "command": 3331166675,
+          "execution": 970305561
+        },
+        "learning/A/1": {
+          "command": 4176322563,
+          "execution": 3679344927
+        },
+        "learning/A/10": {
+          "command": 3077263180,
+          "execution": 172069618
+        },
+        "learning/A/11": {
+          "command": 815585343,
+          "execution": 1810006635
+        },
+        "learning/A/2": {
+          "command": 2287188954,
+          "execution": 2259094909
+        },
+        "learning/A/3": {
+          "command": 1903712844,
+          "execution": 1458209812
+        },
+        "learning/A/4": {
+          "command": 115783212,
+          "execution": 1554733173
+        },
+        "learning/A/5": {
+          "command": 750273915,
+          "execution": 3063699652
+        },
+        "learning/A/6": {
+          "command": 3670105234,
+          "execution": 3515404986
+        },
+        "learning/A/7": {
+          "command": 2316708942,
+          "execution": 3665325694
+        },
+        "learning/A/8": {
+          "command": 1536270679,
+          "execution": 1931351375
+        },
+        "learning/A/9": {
+          "command": 688793252,
+          "execution": 4176411202
+        },
+        "learning/A_return/0": {
+          "command": 284543823,
+          "execution": 1081369178
+        },
+        "learning/A_return/1": {
+          "command": 44583547,
+          "execution": 2434825802
+        },
+        "learning/A_return/10": {
+          "command": 489549071,
+          "execution": 3183991913
+        },
+        "learning/A_return/11": {
+          "command": 1848633325,
+          "execution": 1418226394
+        },
+        "learning/A_return/2": {
+          "command": 1637820020,
+          "execution": 2174638119
+        },
+        "learning/A_return/3": {
+          "command": 2323245681,
+          "execution": 1228013575
+        },
+        "learning/A_return/4": {
+          "command": 2145402636,
+          "execution": 2327885325
+        },
+        "learning/A_return/5": {
+          "command": 2551558602,
+          "execution": 3350780949
+        },
+        "learning/A_return/6": {
+          "command": 3680866612,
+          "execution": 1252173620
+        },
+        "learning/A_return/7": {
+          "command": 722329661,
+          "execution": 3968894751
+        },
+        "learning/A_return/8": {
+          "command": 904610992,
+          "execution": 3004792510
+        },
+        "learning/A_return/9": {
+          "command": 3955938290,
+          "execution": 3103814441
+        },
+        "learning/B/0": {
+          "command": 478244532,
+          "execution": 2393001735
+        },
+        "learning/B/1": {
+          "command": 3833680622,
+          "execution": 3018070595
+        },
+        "learning/B/10": {
+          "command": 3685542852,
+          "execution": 1087632679
+        },
+        "learning/B/11": {
+          "command": 2980566166,
+          "execution": 3949068401
+        },
+        "learning/B/2": {
+          "command": 3043922860,
+          "execution": 1488566464
+        },
+        "learning/B/3": {
+          "command": 1764924090,
+          "execution": 1153979561
+        },
+        "learning/B/4": {
+          "command": 1867591149,
+          "execution": 9179814
+        },
+        "learning/B/5": {
+          "command": 281219532,
+          "execution": 1238161977
+        },
+        "learning/B/6": {
+          "command": 498452668,
+          "execution": 2690136406
+        },
+        "learning/B/7": {
+          "command": 98023828,
+          "execution": 1606029333
+        },
+        "learning/B/8": {
+          "command": 3137514993,
+          "execution": 2547526802
+        },
+        "learning/B/9": {
+          "command": 1115311249,
+          "execution": 3038425154
+        },
+        "learning/C/0": {
+          "command": 3499293374,
+          "execution": 928153473
+        },
+        "learning/C/1": {
+          "command": 1608986830,
+          "execution": 2850084433
+        },
+        "learning/C/10": {
+          "command": 1658026915,
+          "execution": 74048081
+        },
+        "learning/C/11": {
+          "command": 1148051483,
+          "execution": 971770475
+        },
+        "learning/C/2": {
+          "command": 506935371,
+          "execution": 1813851166
+        },
+        "learning/C/3": {
+          "command": 374805194,
+          "execution": 4114124677
+        },
+        "learning/C/4": {
+          "command": 4102162993,
+          "execution": 904569585
+        },
+        "learning/C/5": {
+          "command": 4288833647,
+          "execution": 655669898
+        },
+        "learning/C/6": {
+          "command": 828960991,
+          "execution": 2779282488
+        },
+        "learning/C/7": {
+          "command": 557958541,
+          "execution": 988275545
+        },
+        "learning/C/8": {
+          "command": 1129731775,
+          "execution": 3498395722
+        },
+        "learning/C/9": {
+          "command": 3979272895,
+          "execution": 863391794
+        }
+      }
+    },
+    "friction_dominant/2": {
+      "batches": 3975271650,
+      "body": 1159043709,
+      "initialization": 3055019795,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 2493896383,
+          "execution": 786104452
+        },
+        "evaluation/A/1": {
+          "command": 1467869446,
+          "execution": 2165757521
+        },
+        "evaluation/A/2": {
+          "command": 1689277695,
+          "execution": 4224805549
+        },
+        "evaluation/A/3": {
+          "command": 244857486,
+          "execution": 2269866519
+        },
+        "evaluation/A/4": {
+          "command": 3345193141,
+          "execution": 4223477227
+        },
+        "evaluation/A/5": {
+          "command": 1390536624,
+          "execution": 3842318438
+        },
+        "evaluation/A/6": {
+          "command": 1783516895,
+          "execution": 1260986416
+        },
+        "evaluation/A/7": {
+          "command": 1182901153,
+          "execution": 3099653779
+        },
+        "evaluation/B/0": {
+          "command": 3051114536,
+          "execution": 2971692822
+        },
+        "evaluation/B/1": {
+          "command": 3558375446,
+          "execution": 2486449223
+        },
+        "evaluation/B/2": {
+          "command": 2302472996,
+          "execution": 3220384169
+        },
+        "evaluation/B/3": {
+          "command": 1184031072,
+          "execution": 868637025
+        },
+        "evaluation/B/4": {
+          "command": 3876270673,
+          "execution": 2587194528
+        },
+        "evaluation/B/5": {
+          "command": 223599164,
+          "execution": 1313231551
+        },
+        "evaluation/B/6": {
+          "command": 823661103,
+          "execution": 2074529320
+        },
+        "evaluation/B/7": {
+          "command": 1049846824,
+          "execution": 1593156843
+        },
+        "evaluation/C/0": {
+          "command": 3317116762,
+          "execution": 4015718284
+        },
+        "evaluation/C/1": {
+          "command": 250783036,
+          "execution": 2479712443
+        },
+        "evaluation/C/2": {
+          "command": 1975455706,
+          "execution": 3470728262
+        },
+        "evaluation/C/3": {
+          "command": 670668336,
+          "execution": 742561720
+        },
+        "evaluation/C/4": {
+          "command": 2941786726,
+          "execution": 2804075618
+        },
+        "evaluation/C/5": {
+          "command": 1913985797,
+          "execution": 3080038293
+        },
+        "evaluation/C/6": {
+          "command": 4282396897,
+          "execution": 695048075
+        },
+        "evaluation/C/7": {
+          "command": 1672661366,
+          "execution": 2422449134
+        },
+        "learning/A/0": {
+          "command": 1640990098,
+          "execution": 1693402505
+        },
+        "learning/A/1": {
+          "command": 4093099190,
+          "execution": 2047402367
+        },
+        "learning/A/10": {
+          "command": 2548153607,
+          "execution": 1848370784
+        },
+        "learning/A/11": {
+          "command": 1535136262,
+          "execution": 3387826150
+        },
+        "learning/A/2": {
+          "command": 78290176,
+          "execution": 1464401155
+        },
+        "learning/A/3": {
+          "command": 1145971500,
+          "execution": 1774492446
+        },
+        "learning/A/4": {
+          "command": 3218808463,
+          "execution": 2466081383
+        },
+        "learning/A/5": {
+          "command": 763839774,
+          "execution": 2480272563
+        },
+        "learning/A/6": {
+          "command": 3401574592,
+          "execution": 3176962184
+        },
+        "learning/A/7": {
+          "command": 1779946616,
+          "execution": 471631612
+        },
+        "learning/A/8": {
+          "command": 2669321596,
+          "execution": 2820913574
+        },
+        "learning/A/9": {
+          "command": 782345338,
+          "execution": 2716172612
+        },
+        "learning/A_return/0": {
+          "command": 2279053943,
+          "execution": 3610518188
+        },
+        "learning/A_return/1": {
+          "command": 3010946583,
+          "execution": 3489579449
+        },
+        "learning/A_return/10": {
+          "command": 3937614497,
+          "execution": 3276134477
+        },
+        "learning/A_return/11": {
+          "command": 544596728,
+          "execution": 2729324352
+        },
+        "learning/A_return/2": {
+          "command": 2499972913,
+          "execution": 455859113
+        },
+        "learning/A_return/3": {
+          "command": 2385359204,
+          "execution": 1364794699
+        },
+        "learning/A_return/4": {
+          "command": 1840722872,
+          "execution": 2168953577
+        },
+        "learning/A_return/5": {
+          "command": 3647669974,
+          "execution": 630271322
+        },
+        "learning/A_return/6": {
+          "command": 2332677340,
+          "execution": 3044462928
+        },
+        "learning/A_return/7": {
+          "command": 28112820,
+          "execution": 3883354189
+        },
+        "learning/A_return/8": {
+          "command": 953917534,
+          "execution": 2836623171
+        },
+        "learning/A_return/9": {
+          "command": 1412050197,
+          "execution": 4001057293
+        },
+        "learning/B/0": {
+          "command": 3802368332,
+          "execution": 3845769638
+        },
+        "learning/B/1": {
+          "command": 3203278648,
+          "execution": 2658113352
+        },
+        "learning/B/10": {
+          "command": 3822774072,
+          "execution": 1496953667
+        },
+        "learning/B/11": {
+          "command": 3313951795,
+          "execution": 381157306
+        },
+        "learning/B/2": {
+          "command": 2041608940,
+          "execution": 4008779064
+        },
+        "learning/B/3": {
+          "command": 1476305358,
+          "execution": 786062812
+        },
+        "learning/B/4": {
+          "command": 1362924493,
+          "execution": 3048645778
+        },
+        "learning/B/5": {
+          "command": 3129524427,
+          "execution": 1238672624
+        },
+        "learning/B/6": {
+          "command": 188516423,
+          "execution": 2341371030
+        },
+        "learning/B/7": {
+          "command": 4166616412,
+          "execution": 1823098635
+        },
+        "learning/B/8": {
+          "command": 3385082437,
+          "execution": 3181574285
+        },
+        "learning/B/9": {
+          "command": 2133452220,
+          "execution": 402556871
+        },
+        "learning/C/0": {
+          "command": 2384904926,
+          "execution": 4189773170
+        },
+        "learning/C/1": {
+          "command": 608620622,
+          "execution": 1527943409
+        },
+        "learning/C/10": {
+          "command": 3177576931,
+          "execution": 2118370835
+        },
+        "learning/C/11": {
+          "command": 1734116266,
+          "execution": 2142143672
+        },
+        "learning/C/2": {
+          "command": 142396903,
+          "execution": 3818572581
+        },
+        "learning/C/3": {
+          "command": 1577491717,
+          "execution": 2943738683
+        },
+        "learning/C/4": {
+          "command": 2604118624,
+          "execution": 1069331294
+        },
+        "learning/C/5": {
+          "command": 2124085931,
+          "execution": 224930328
+        },
+        "learning/C/6": {
+          "command": 756259047,
+          "execution": 1155253719
+        },
+        "learning/C/7": {
+          "command": 2948039483,
+          "execution": 921983501
+        },
+        "learning/C/8": {
+          "command": 491581180,
+          "execution": 790681316
+        },
+        "learning/C/9": {
+          "command": 12822127,
+          "execution": 3872763384
+        }
+      }
+    },
+    "friction_dominant/3": {
+      "batches": 1984927875,
+      "body": 3398707881,
+      "initialization": 3158140973,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 2997221200,
+          "execution": 904153862
+        },
+        "evaluation/A/1": {
+          "command": 149819367,
+          "execution": 3418062493
+        },
+        "evaluation/A/2": {
+          "command": 3471988214,
+          "execution": 1154879538
+        },
+        "evaluation/A/3": {
+          "command": 3851532797,
+          "execution": 669629510
+        },
+        "evaluation/A/4": {
+          "command": 3506230684,
+          "execution": 2390780845
+        },
+        "evaluation/A/5": {
+          "command": 892497483,
+          "execution": 921628936
+        },
+        "evaluation/A/6": {
+          "command": 49611108,
+          "execution": 3932633076
+        },
+        "evaluation/A/7": {
+          "command": 2183880542,
+          "execution": 893096621
+        },
+        "evaluation/B/0": {
+          "command": 2121772781,
+          "execution": 4252790524
+        },
+        "evaluation/B/1": {
+          "command": 4017198355,
+          "execution": 1369404583
+        },
+        "evaluation/B/2": {
+          "command": 1204015816,
+          "execution": 3047358833
+        },
+        "evaluation/B/3": {
+          "command": 1219293174,
+          "execution": 976377925
+        },
+        "evaluation/B/4": {
+          "command": 3137584938,
+          "execution": 3710714437
+        },
+        "evaluation/B/5": {
+          "command": 3024073490,
+          "execution": 1336525577
+        },
+        "evaluation/B/6": {
+          "command": 4204254771,
+          "execution": 3340615590
+        },
+        "evaluation/B/7": {
+          "command": 629317687,
+          "execution": 2474368538
+        },
+        "evaluation/C/0": {
+          "command": 542644684,
+          "execution": 2324483300
+        },
+        "evaluation/C/1": {
+          "command": 615314588,
+          "execution": 2175612426
+        },
+        "evaluation/C/2": {
+          "command": 19227322,
+          "execution": 3862968094
+        },
+        "evaluation/C/3": {
+          "command": 476902192,
+          "execution": 2190473265
+        },
+        "evaluation/C/4": {
+          "command": 2387414250,
+          "execution": 2032588400
+        },
+        "evaluation/C/5": {
+          "command": 2550280834,
+          "execution": 1071045059
+        },
+        "evaluation/C/6": {
+          "command": 3655768938,
+          "execution": 2548725035
+        },
+        "evaluation/C/7": {
+          "command": 290700472,
+          "execution": 1384822816
+        },
+        "learning/A/0": {
+          "command": 2152538832,
+          "execution": 2657219363
+        },
+        "learning/A/1": {
+          "command": 1940159717,
+          "execution": 971715729
+        },
+        "learning/A/10": {
+          "command": 1884166624,
+          "execution": 593226078
+        },
+        "learning/A/11": {
+          "command": 89140496,
+          "execution": 1544689337
+        },
+        "learning/A/2": {
+          "command": 153544826,
+          "execution": 2475665069
+        },
+        "learning/A/3": {
+          "command": 2462393641,
+          "execution": 3230054907
+        },
+        "learning/A/4": {
+          "command": 1093552702,
+          "execution": 3775206477
+        },
+        "learning/A/5": {
+          "command": 2998256353,
+          "execution": 3058397470
+        },
+        "learning/A/6": {
+          "command": 1702682802,
+          "execution": 3097459042
+        },
+        "learning/A/7": {
+          "command": 1489562931,
+          "execution": 2810161258
+        },
+        "learning/A/8": {
+          "command": 1681906596,
+          "execution": 1704106559
+        },
+        "learning/A/9": {
+          "command": 2686149073,
+          "execution": 3789357249
+        },
+        "learning/A_return/0": {
+          "command": 2276498902,
+          "execution": 1899658918
+        },
+        "learning/A_return/1": {
+          "command": 1010497287,
+          "execution": 3604691627
+        },
+        "learning/A_return/10": {
+          "command": 4022709737,
+          "execution": 4139469990
+        },
+        "learning/A_return/11": {
+          "command": 1655717517,
+          "execution": 3124057436
+        },
+        "learning/A_return/2": {
+          "command": 3250940632,
+          "execution": 2474448948
+        },
+        "learning/A_return/3": {
+          "command": 3649952840,
+          "execution": 1154823958
+        },
+        "learning/A_return/4": {
+          "command": 3576095250,
+          "execution": 3229132038
+        },
+        "learning/A_return/5": {
+          "command": 3563868127,
+          "execution": 1798344789
+        },
+        "learning/A_return/6": {
+          "command": 3529811154,
+          "execution": 1983213758
+        },
+        "learning/A_return/7": {
+          "command": 1295539926,
+          "execution": 438577931
+        },
+        "learning/A_return/8": {
+          "command": 4221475020,
+          "execution": 3112625478
+        },
+        "learning/A_return/9": {
+          "command": 286903180,
+          "execution": 2805512006
+        },
+        "learning/B/0": {
+          "command": 3669275958,
+          "execution": 2220021131
+        },
+        "learning/B/1": {
+          "command": 1438058532,
+          "execution": 219941080
+        },
+        "learning/B/10": {
+          "command": 1025639676,
+          "execution": 3551659023
+        },
+        "learning/B/11": {
+          "command": 892627572,
+          "execution": 3667677937
+        },
+        "learning/B/2": {
+          "command": 103512411,
+          "execution": 2981136015
+        },
+        "learning/B/3": {
+          "command": 4115558253,
+          "execution": 1493989136
+        },
+        "learning/B/4": {
+          "command": 779422640,
+          "execution": 4293197514
+        },
+        "learning/B/5": {
+          "command": 664803897,
+          "execution": 2749945156
+        },
+        "learning/B/6": {
+          "command": 302295216,
+          "execution": 1758859513
+        },
+        "learning/B/7": {
+          "command": 3316921171,
+          "execution": 2689194479
+        },
+        "learning/B/8": {
+          "command": 1069373461,
+          "execution": 1191891905
+        },
+        "learning/B/9": {
+          "command": 3925256113,
+          "execution": 276059644
+        },
+        "learning/C/0": {
+          "command": 99220858,
+          "execution": 544618132
+        },
+        "learning/C/1": {
+          "command": 743679732,
+          "execution": 3518657357
+        },
+        "learning/C/10": {
+          "command": 2054239261,
+          "execution": 4120775998
+        },
+        "learning/C/11": {
+          "command": 1833259098,
+          "execution": 3614666217
+        },
+        "learning/C/2": {
+          "command": 3152860812,
+          "execution": 2487760387
+        },
+        "learning/C/3": {
+          "command": 4195147949,
+          "execution": 2340299262
+        },
+        "learning/C/4": {
+          "command": 3598560881,
+          "execution": 3417865357
+        },
+        "learning/C/5": {
+          "command": 4119024569,
+          "execution": 2653945505
+        },
+        "learning/C/6": {
+          "command": 3479451641,
+          "execution": 1001928851
+        },
+        "learning/C/7": {
+          "command": 742195785,
+          "execution": 1096357151
+        },
+        "learning/C/8": {
+          "command": 3588588805,
+          "execution": 170293419
+        },
+        "learning/C/9": {
+          "command": 4250216443,
+          "execution": 1306131052
+        }
+      }
+    },
+    "settling_dominant/0": {
+      "batches": 289178074,
+      "body": 193341031,
+      "initialization": 4048354554,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 2322393264,
+          "execution": 475720131
+        },
+        "evaluation/A/1": {
+          "command": 292515587,
+          "execution": 2054741616
+        },
+        "evaluation/A/2": {
+          "command": 1783362553,
+          "execution": 2300453365
+        },
+        "evaluation/A/3": {
+          "command": 2297994208,
+          "execution": 3117723682
+        },
+        "evaluation/A/4": {
+          "command": 2192219674,
+          "execution": 3548100907
+        },
+        "evaluation/A/5": {
+          "command": 2673651533,
+          "execution": 2125941938
+        },
+        "evaluation/A/6": {
+          "command": 1988907988,
+          "execution": 2811794208
+        },
+        "evaluation/A/7": {
+          "command": 2357895079,
+          "execution": 1998006896
+        },
+        "evaluation/B/0": {
+          "command": 733987954,
+          "execution": 3333143613
+        },
+        "evaluation/B/1": {
+          "command": 3785433747,
+          "execution": 3265844542
+        },
+        "evaluation/B/2": {
+          "command": 1781358427,
+          "execution": 3309689279
+        },
+        "evaluation/B/3": {
+          "command": 2502366049,
+          "execution": 995312656
+        },
+        "evaluation/B/4": {
+          "command": 3265590527,
+          "execution": 4268739849
+        },
+        "evaluation/B/5": {
+          "command": 205976683,
+          "execution": 850820834
+        },
+        "evaluation/B/6": {
+          "command": 3972409756,
+          "execution": 1492323771
+        },
+        "evaluation/B/7": {
+          "command": 3503878749,
+          "execution": 286238085
+        },
+        "evaluation/C/0": {
+          "command": 4089367332,
+          "execution": 1296386474
+        },
+        "evaluation/C/1": {
+          "command": 1151700896,
+          "execution": 1371563075
+        },
+        "evaluation/C/2": {
+          "command": 1375816555,
+          "execution": 3172522287
+        },
+        "evaluation/C/3": {
+          "command": 2295448596,
+          "execution": 1904467173
+        },
+        "evaluation/C/4": {
+          "command": 3369772655,
+          "execution": 3766773011
+        },
+        "evaluation/C/5": {
+          "command": 679564454,
+          "execution": 440453076
+        },
+        "evaluation/C/6": {
+          "command": 3292447988,
+          "execution": 2115956889
+        },
+        "evaluation/C/7": {
+          "command": 2116394115,
+          "execution": 968199077
+        },
+        "learning/A/0": {
+          "command": 1270558990,
+          "execution": 3758198871
+        },
+        "learning/A/1": {
+          "command": 1994350740,
+          "execution": 2896042028
+        },
+        "learning/A/10": {
+          "command": 684658202,
+          "execution": 2744982596
+        },
+        "learning/A/11": {
+          "command": 1119141970,
+          "execution": 247265950
+        },
+        "learning/A/2": {
+          "command": 1440790739,
+          "execution": 4190156361
+        },
+        "learning/A/3": {
+          "command": 487863804,
+          "execution": 2779624969
+        },
+        "learning/A/4": {
+          "command": 3246585741,
+          "execution": 2802637390
+        },
+        "learning/A/5": {
+          "command": 2426822416,
+          "execution": 1024331432
+        },
+        "learning/A/6": {
+          "command": 2987322040,
+          "execution": 3237323326
+        },
+        "learning/A/7": {
+          "command": 3855736121,
+          "execution": 863197557
+        },
+        "learning/A/8": {
+          "command": 3438207553,
+          "execution": 3740504601
+        },
+        "learning/A/9": {
+          "command": 2485012131,
+          "execution": 4125861309
+        },
+        "learning/A_return/0": {
+          "command": 3684918480,
+          "execution": 4264874511
+        },
+        "learning/A_return/1": {
+          "command": 1516552576,
+          "execution": 1813393355
+        },
+        "learning/A_return/10": {
+          "command": 2463152780,
+          "execution": 1497667872
+        },
+        "learning/A_return/11": {
+          "command": 2265181752,
+          "execution": 2529608356
+        },
+        "learning/A_return/2": {
+          "command": 1857812699,
+          "execution": 1234766345
+        },
+        "learning/A_return/3": {
+          "command": 538029267,
+          "execution": 3986780739
+        },
+        "learning/A_return/4": {
+          "command": 3694181060,
+          "execution": 979790522
+        },
+        "learning/A_return/5": {
+          "command": 2950266608,
+          "execution": 3450731084
+        },
+        "learning/A_return/6": {
+          "command": 1412506230,
+          "execution": 21908626
+        },
+        "learning/A_return/7": {
+          "command": 2050319713,
+          "execution": 3162945494
+        },
+        "learning/A_return/8": {
+          "command": 3407701617,
+          "execution": 3627164267
+        },
+        "learning/A_return/9": {
+          "command": 1120762098,
+          "execution": 3585200639
+        },
+        "learning/B/0": {
+          "command": 2538659744,
+          "execution": 916914477
+        },
+        "learning/B/1": {
+          "command": 1051325104,
+          "execution": 891593406
+        },
+        "learning/B/10": {
+          "command": 3667411796,
+          "execution": 2883002087
+        },
+        "learning/B/11": {
+          "command": 1140677489,
+          "execution": 3418434336
+        },
+        "learning/B/2": {
+          "command": 1205971931,
+          "execution": 1714657518
+        },
+        "learning/B/3": {
+          "command": 3007462167,
+          "execution": 3525842394
+        },
+        "learning/B/4": {
+          "command": 3404036226,
+          "execution": 2871529461
+        },
+        "learning/B/5": {
+          "command": 3009475793,
+          "execution": 2244586076
+        },
+        "learning/B/6": {
+          "command": 722399568,
+          "execution": 3456054399
+        },
+        "learning/B/7": {
+          "command": 3516431233,
+          "execution": 1839901831
+        },
+        "learning/B/8": {
+          "command": 3514671667,
+          "execution": 2976703090
+        },
+        "learning/B/9": {
+          "command": 278944875,
+          "execution": 3516647520
+        },
+        "learning/C/0": {
+          "command": 3244872900,
+          "execution": 2096948127
+        },
+        "learning/C/1": {
+          "command": 4236732994,
+          "execution": 820546291
+        },
+        "learning/C/10": {
+          "command": 2159403549,
+          "execution": 3087915057
+        },
+        "learning/C/11": {
+          "command": 4152631491,
+          "execution": 2725578807
+        },
+        "learning/C/2": {
+          "command": 2396897227,
+          "execution": 3884159095
+        },
+        "learning/C/3": {
+          "command": 4243298421,
+          "execution": 1504331955
+        },
+        "learning/C/4": {
+          "command": 328292172,
+          "execution": 1799858194
+        },
+        "learning/C/5": {
+          "command": 1027492635,
+          "execution": 2206979712
+        },
+        "learning/C/6": {
+          "command": 1964041290,
+          "execution": 1495370214
+        },
+        "learning/C/7": {
+          "command": 467260380,
+          "execution": 2508428082
+        },
+        "learning/C/8": {
+          "command": 3908226789,
+          "execution": 866629680
+        },
+        "learning/C/9": {
+          "command": 3925521320,
+          "execution": 3720361899
+        }
+      }
+    },
+    "settling_dominant/1": {
+      "batches": 3110436420,
+      "body": 488984882,
+      "initialization": 3029146205,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 1235291668,
+          "execution": 2821521719
+        },
+        "evaluation/A/1": {
+          "command": 2020003047,
+          "execution": 2941962072
+        },
+        "evaluation/A/2": {
+          "command": 3357768027,
+          "execution": 1741450819
+        },
+        "evaluation/A/3": {
+          "command": 236872833,
+          "execution": 1879722053
+        },
+        "evaluation/A/4": {
+          "command": 3582004121,
+          "execution": 3570344023
+        },
+        "evaluation/A/5": {
+          "command": 3399147771,
+          "execution": 36762431
+        },
+        "evaluation/A/6": {
+          "command": 149318014,
+          "execution": 2124475955
+        },
+        "evaluation/A/7": {
+          "command": 64409942,
+          "execution": 3552948656
+        },
+        "evaluation/B/0": {
+          "command": 1856675225,
+          "execution": 1744983348
+        },
+        "evaluation/B/1": {
+          "command": 3416522215,
+          "execution": 2265155997
+        },
+        "evaluation/B/2": {
+          "command": 3946536206,
+          "execution": 1377824856
+        },
+        "evaluation/B/3": {
+          "command": 1880829454,
+          "execution": 1000899547
+        },
+        "evaluation/B/4": {
+          "command": 3122354555,
+          "execution": 2966590610
+        },
+        "evaluation/B/5": {
+          "command": 2710194290,
+          "execution": 1113389791
+        },
+        "evaluation/B/6": {
+          "command": 3830818246,
+          "execution": 3203131412
+        },
+        "evaluation/B/7": {
+          "command": 3022345819,
+          "execution": 1221437473
+        },
+        "evaluation/C/0": {
+          "command": 1637896914,
+          "execution": 2795266774
+        },
+        "evaluation/C/1": {
+          "command": 209283993,
+          "execution": 2570914487
+        },
+        "evaluation/C/2": {
+          "command": 1747688466,
+          "execution": 2262756249
+        },
+        "evaluation/C/3": {
+          "command": 3819872848,
+          "execution": 3219574242
+        },
+        "evaluation/C/4": {
+          "command": 2834391527,
+          "execution": 445299397
+        },
+        "evaluation/C/5": {
+          "command": 990980119,
+          "execution": 2114634066
+        },
+        "evaluation/C/6": {
+          "command": 3604054096,
+          "execution": 692444940
+        },
+        "evaluation/C/7": {
+          "command": 2515588047,
+          "execution": 758223904
+        },
+        "learning/A/0": {
+          "command": 2810819647,
+          "execution": 3462206318
+        },
+        "learning/A/1": {
+          "command": 2758514323,
+          "execution": 1523784791
+        },
+        "learning/A/10": {
+          "command": 1533926989,
+          "execution": 853917600
+        },
+        "learning/A/11": {
+          "command": 1029081493,
+          "execution": 4251965070
+        },
+        "learning/A/2": {
+          "command": 2043443600,
+          "execution": 3025942136
+        },
+        "learning/A/3": {
+          "command": 2052750103,
+          "execution": 3753077598
+        },
+        "learning/A/4": {
+          "command": 3521609424,
+          "execution": 3067303088
+        },
+        "learning/A/5": {
+          "command": 1819295351,
+          "execution": 2263877620
+        },
+        "learning/A/6": {
+          "command": 4075068765,
+          "execution": 2392619722
+        },
+        "learning/A/7": {
+          "command": 2126195559,
+          "execution": 3625124665
+        },
+        "learning/A/8": {
+          "command": 2360780627,
+          "execution": 1726489538
+        },
+        "learning/A/9": {
+          "command": 1876165527,
+          "execution": 3032542474
+        },
+        "learning/A_return/0": {
+          "command": 2499689596,
+          "execution": 4016615478
+        },
+        "learning/A_return/1": {
+          "command": 671838439,
+          "execution": 227301497
+        },
+        "learning/A_return/10": {
+          "command": 2770171588,
+          "execution": 1388858775
+        },
+        "learning/A_return/11": {
+          "command": 275704475,
+          "execution": 3006036929
+        },
+        "learning/A_return/2": {
+          "command": 3224984754,
+          "execution": 1693800495
+        },
+        "learning/A_return/3": {
+          "command": 3981686636,
+          "execution": 272627261
+        },
+        "learning/A_return/4": {
+          "command": 267702456,
+          "execution": 2429815369
+        },
+        "learning/A_return/5": {
+          "command": 1863091407,
+          "execution": 95660500
+        },
+        "learning/A_return/6": {
+          "command": 3311296688,
+          "execution": 2891781481
+        },
+        "learning/A_return/7": {
+          "command": 1772068554,
+          "execution": 284591961
+        },
+        "learning/A_return/8": {
+          "command": 3861207392,
+          "execution": 2129147292
+        },
+        "learning/A_return/9": {
+          "command": 1433825745,
+          "execution": 875693726
+        },
+        "learning/B/0": {
+          "command": 4280660780,
+          "execution": 3487470474
+        },
+        "learning/B/1": {
+          "command": 131163217,
+          "execution": 2408554529
+        },
+        "learning/B/10": {
+          "command": 3513353852,
+          "execution": 781292448
+        },
+        "learning/B/11": {
+          "command": 444803213,
+          "execution": 2290267297
+        },
+        "learning/B/2": {
+          "command": 295825037,
+          "execution": 1708606379
+        },
+        "learning/B/3": {
+          "command": 1060943961,
+          "execution": 1447848522
+        },
+        "learning/B/4": {
+          "command": 2507928285,
+          "execution": 3912695007
+        },
+        "learning/B/5": {
+          "command": 2271827082,
+          "execution": 2481813552
+        },
+        "learning/B/6": {
+          "command": 581774482,
+          "execution": 2629666511
+        },
+        "learning/B/7": {
+          "command": 1946652753,
+          "execution": 1705221524
+        },
+        "learning/B/8": {
+          "command": 4252173852,
+          "execution": 3374024542
+        },
+        "learning/B/9": {
+          "command": 724253538,
+          "execution": 4258747706
+        },
+        "learning/C/0": {
+          "command": 1458379272,
+          "execution": 3471146263
+        },
+        "learning/C/1": {
+          "command": 2195921650,
+          "execution": 4014562048
+        },
+        "learning/C/10": {
+          "command": 416018185,
+          "execution": 995968602
+        },
+        "learning/C/11": {
+          "command": 2267666162,
+          "execution": 2501863872
+        },
+        "learning/C/2": {
+          "command": 2559453724,
+          "execution": 3650490237
+        },
+        "learning/C/3": {
+          "command": 404388581,
+          "execution": 2243754140
+        },
+        "learning/C/4": {
+          "command": 893873437,
+          "execution": 3638564392
+        },
+        "learning/C/5": {
+          "command": 2577782126,
+          "execution": 3486824087
+        },
+        "learning/C/6": {
+          "command": 2516591500,
+          "execution": 2484468353
+        },
+        "learning/C/7": {
+          "command": 2435547311,
+          "execution": 539520225
+        },
+        "learning/C/8": {
+          "command": 201020188,
+          "execution": 191442217
+        },
+        "learning/C/9": {
+          "command": 3229428690,
+          "execution": 3673810413
+        }
+      }
+    },
+    "settling_dominant/2": {
+      "batches": 2336080516,
+      "body": 2542398493,
+      "initialization": 930689219,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 1044372172,
+          "execution": 2333349512
+        },
+        "evaluation/A/1": {
+          "command": 2481581985,
+          "execution": 2484199873
+        },
+        "evaluation/A/2": {
+          "command": 3373937466,
+          "execution": 3463982274
+        },
+        "evaluation/A/3": {
+          "command": 3906704557,
+          "execution": 3065526945
+        },
+        "evaluation/A/4": {
+          "command": 2052576890,
+          "execution": 3416278856
+        },
+        "evaluation/A/5": {
+          "command": 1196756054,
+          "execution": 3190444791
+        },
+        "evaluation/A/6": {
+          "command": 132551893,
+          "execution": 1382247582
+        },
+        "evaluation/A/7": {
+          "command": 1387705901,
+          "execution": 3766325617
+        },
+        "evaluation/B/0": {
+          "command": 4050954847,
+          "execution": 532275636
+        },
+        "evaluation/B/1": {
+          "command": 1074282446,
+          "execution": 2079343
+        },
+        "evaluation/B/2": {
+          "command": 3944390619,
+          "execution": 2374101139
+        },
+        "evaluation/B/3": {
+          "command": 2811029716,
+          "execution": 3103648859
+        },
+        "evaluation/B/4": {
+          "command": 1697211952,
+          "execution": 281993843
+        },
+        "evaluation/B/5": {
+          "command": 878924173,
+          "execution": 3284775526
+        },
+        "evaluation/B/6": {
+          "command": 3408051440,
+          "execution": 2759707831
+        },
+        "evaluation/B/7": {
+          "command": 2894603598,
+          "execution": 441025759
+        },
+        "evaluation/C/0": {
+          "command": 3112024961,
+          "execution": 3453234492
+        },
+        "evaluation/C/1": {
+          "command": 3095348596,
+          "execution": 2910648026
+        },
+        "evaluation/C/2": {
+          "command": 4110993703,
+          "execution": 2736122587
+        },
+        "evaluation/C/3": {
+          "command": 3015293625,
+          "execution": 244782476
+        },
+        "evaluation/C/4": {
+          "command": 2548433365,
+          "execution": 3635547637
+        },
+        "evaluation/C/5": {
+          "command": 2979393426,
+          "execution": 463414220
+        },
+        "evaluation/C/6": {
+          "command": 3589427944,
+          "execution": 2098463674
+        },
+        "evaluation/C/7": {
+          "command": 320461527,
+          "execution": 1852314781
+        },
+        "learning/A/0": {
+          "command": 458607840,
+          "execution": 774905835
+        },
+        "learning/A/1": {
+          "command": 1631208006,
+          "execution": 2241107002
+        },
+        "learning/A/10": {
+          "command": 3782948115,
+          "execution": 1172104083
+        },
+        "learning/A/11": {
+          "command": 2665735223,
+          "execution": 1878665416
+        },
+        "learning/A/2": {
+          "command": 4015727258,
+          "execution": 1958411708
+        },
+        "learning/A/3": {
+          "command": 1271484827,
+          "execution": 1531635420
+        },
+        "learning/A/4": {
+          "command": 3417486466,
+          "execution": 2260918748
+        },
+        "learning/A/5": {
+          "command": 3824231567,
+          "execution": 1777934096
+        },
+        "learning/A/6": {
+          "command": 2298997,
+          "execution": 3588161631
+        },
+        "learning/A/7": {
+          "command": 2058162461,
+          "execution": 466771660
+        },
+        "learning/A/8": {
+          "command": 3964121147,
+          "execution": 1606090159
+        },
+        "learning/A/9": {
+          "command": 1233866630,
+          "execution": 598219679
+        },
+        "learning/A_return/0": {
+          "command": 2001745283,
+          "execution": 1464861852
+        },
+        "learning/A_return/1": {
+          "command": 2626845191,
+          "execution": 3921738191
+        },
+        "learning/A_return/10": {
+          "command": 363409716,
+          "execution": 798840926
+        },
+        "learning/A_return/11": {
+          "command": 4005218529,
+          "execution": 3103212921
+        },
+        "learning/A_return/2": {
+          "command": 223685421,
+          "execution": 982493397
+        },
+        "learning/A_return/3": {
+          "command": 4159221577,
+          "execution": 828575884
+        },
+        "learning/A_return/4": {
+          "command": 1105871205,
+          "execution": 2481073273
+        },
+        "learning/A_return/5": {
+          "command": 78694909,
+          "execution": 1666777372
+        },
+        "learning/A_return/6": {
+          "command": 2428364463,
+          "execution": 3099045147
+        },
+        "learning/A_return/7": {
+          "command": 3566308477,
+          "execution": 684341926
+        },
+        "learning/A_return/8": {
+          "command": 1364549239,
+          "execution": 1274756925
+        },
+        "learning/A_return/9": {
+          "command": 2888566491,
+          "execution": 3633094730
+        },
+        "learning/B/0": {
+          "command": 3041515093,
+          "execution": 2760536819
+        },
+        "learning/B/1": {
+          "command": 1154044689,
+          "execution": 2743217253
+        },
+        "learning/B/10": {
+          "command": 804277647,
+          "execution": 188887452
+        },
+        "learning/B/11": {
+          "command": 373190724,
+          "execution": 2195980804
+        },
+        "learning/B/2": {
+          "command": 396810587,
+          "execution": 1423735131
+        },
+        "learning/B/3": {
+          "command": 796473050,
+          "execution": 98132555
+        },
+        "learning/B/4": {
+          "command": 1154503248,
+          "execution": 2671110309
+        },
+        "learning/B/5": {
+          "command": 1686457856,
+          "execution": 1223367169
+        },
+        "learning/B/6": {
+          "command": 1017849706,
+          "execution": 2241064006
+        },
+        "learning/B/7": {
+          "command": 1288418200,
+          "execution": 1170217895
+        },
+        "learning/B/8": {
+          "command": 1674560860,
+          "execution": 718669796
+        },
+        "learning/B/9": {
+          "command": 445330314,
+          "execution": 3015504298
+        },
+        "learning/C/0": {
+          "command": 2697510120,
+          "execution": 1509333177
+        },
+        "learning/C/1": {
+          "command": 4020864655,
+          "execution": 4254334676
+        },
+        "learning/C/10": {
+          "command": 334217182,
+          "execution": 3010433227
+        },
+        "learning/C/11": {
+          "command": 2119382952,
+          "execution": 2345287292
+        },
+        "learning/C/2": {
+          "command": 2224640256,
+          "execution": 899141282
+        },
+        "learning/C/3": {
+          "command": 2322465746,
+          "execution": 1089552570
+        },
+        "learning/C/4": {
+          "command": 1924825888,
+          "execution": 3602325213
+        },
+        "learning/C/5": {
+          "command": 684452580,
+          "execution": 457249111
+        },
+        "learning/C/6": {
+          "command": 2319561299,
+          "execution": 2602014063
+        },
+        "learning/C/7": {
+          "command": 2032891775,
+          "execution": 3240402622
+        },
+        "learning/C/8": {
+          "command": 2149339181,
+          "execution": 3725099596
+        },
+        "learning/C/9": {
+          "command": 2104407607,
+          "execution": 4270448356
+        }
+      }
+    },
+    "settling_dominant/3": {
+      "batches": 1863036079,
+      "body": 1372510749,
+      "initialization": 1925186247,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 891317825,
+          "execution": 902368739
+        },
+        "evaluation/A/1": {
+          "command": 2120181710,
+          "execution": 4247842920
+        },
+        "evaluation/A/2": {
+          "command": 1498224861,
+          "execution": 3137220744
+        },
+        "evaluation/A/3": {
+          "command": 2292778887,
+          "execution": 2418175174
+        },
+        "evaluation/A/4": {
+          "command": 1196266757,
+          "execution": 2754148819
+        },
+        "evaluation/A/5": {
+          "command": 639764693,
+          "execution": 3347580736
+        },
+        "evaluation/A/6": {
+          "command": 3013595951,
+          "execution": 335998815
+        },
+        "evaluation/A/7": {
+          "command": 263116396,
+          "execution": 1080523687
+        },
+        "evaluation/B/0": {
+          "command": 2455737094,
+          "execution": 1692356995
+        },
+        "evaluation/B/1": {
+          "command": 2493877493,
+          "execution": 2552488308
+        },
+        "evaluation/B/2": {
+          "command": 2841064324,
+          "execution": 1547658916
+        },
+        "evaluation/B/3": {
+          "command": 378212476,
+          "execution": 3818987439
+        },
+        "evaluation/B/4": {
+          "command": 326705981,
+          "execution": 635482628
+        },
+        "evaluation/B/5": {
+          "command": 2582990208,
+          "execution": 4079794837
+        },
+        "evaluation/B/6": {
+          "command": 1938697520,
+          "execution": 291860354
+        },
+        "evaluation/B/7": {
+          "command": 2700011626,
+          "execution": 2066172939
+        },
+        "evaluation/C/0": {
+          "command": 2893331076,
+          "execution": 1200029539
+        },
+        "evaluation/C/1": {
+          "command": 1454003888,
+          "execution": 4117343468
+        },
+        "evaluation/C/2": {
+          "command": 2991416019,
+          "execution": 3617664083
+        },
+        "evaluation/C/3": {
+          "command": 3381695633,
+          "execution": 2921429265
+        },
+        "evaluation/C/4": {
+          "command": 623522811,
+          "execution": 1954260743
+        },
+        "evaluation/C/5": {
+          "command": 4252053981,
+          "execution": 1548803617
+        },
+        "evaluation/C/6": {
+          "command": 1079868708,
+          "execution": 2087609268
+        },
+        "evaluation/C/7": {
+          "command": 3757330917,
+          "execution": 2085939915
+        },
+        "learning/A/0": {
+          "command": 3217436989,
+          "execution": 1862807507
+        },
+        "learning/A/1": {
+          "command": 2873259446,
+          "execution": 1159794281
+        },
+        "learning/A/10": {
+          "command": 4113585702,
+          "execution": 3290433261
+        },
+        "learning/A/11": {
+          "command": 408882514,
+          "execution": 333896140
+        },
+        "learning/A/2": {
+          "command": 4019906966,
+          "execution": 768466626
+        },
+        "learning/A/3": {
+          "command": 4125927479,
+          "execution": 4232525603
+        },
+        "learning/A/4": {
+          "command": 794492461,
+          "execution": 1335330157
+        },
+        "learning/A/5": {
+          "command": 2782540604,
+          "execution": 1616296125
+        },
+        "learning/A/6": {
+          "command": 1910288268,
+          "execution": 195520823
+        },
+        "learning/A/7": {
+          "command": 1557003249,
+          "execution": 3888998230
+        },
+        "learning/A/8": {
+          "command": 718089321,
+          "execution": 320013738
+        },
+        "learning/A/9": {
+          "command": 2655355532,
+          "execution": 1002044814
+        },
+        "learning/A_return/0": {
+          "command": 1745516494,
+          "execution": 1934661504
+        },
+        "learning/A_return/1": {
+          "command": 3334851552,
+          "execution": 1366604870
+        },
+        "learning/A_return/10": {
+          "command": 3166217434,
+          "execution": 3327570652
+        },
+        "learning/A_return/11": {
+          "command": 3045519759,
+          "execution": 4041959604
+        },
+        "learning/A_return/2": {
+          "command": 2611956570,
+          "execution": 3293433310
+        },
+        "learning/A_return/3": {
+          "command": 2689678529,
+          "execution": 2602379341
+        },
+        "learning/A_return/4": {
+          "command": 3513380823,
+          "execution": 1940510015
+        },
+        "learning/A_return/5": {
+          "command": 1838815081,
+          "execution": 1061809268
+        },
+        "learning/A_return/6": {
+          "command": 1122713958,
+          "execution": 230207270
+        },
+        "learning/A_return/7": {
+          "command": 2854060456,
+          "execution": 2346267920
+        },
+        "learning/A_return/8": {
+          "command": 2813987462,
+          "execution": 3557106063
+        },
+        "learning/A_return/9": {
+          "command": 580272720,
+          "execution": 3153801022
+        },
+        "learning/B/0": {
+          "command": 2313628716,
+          "execution": 52025615
+        },
+        "learning/B/1": {
+          "command": 59840347,
+          "execution": 2426396345
+        },
+        "learning/B/10": {
+          "command": 1650159696,
+          "execution": 2107863343
+        },
+        "learning/B/11": {
+          "command": 1993158745,
+          "execution": 738692145
+        },
+        "learning/B/2": {
+          "command": 4119869328,
+          "execution": 2099920377
+        },
+        "learning/B/3": {
+          "command": 1744921270,
+          "execution": 1040094546
+        },
+        "learning/B/4": {
+          "command": 1718936226,
+          "execution": 2928112647
+        },
+        "learning/B/5": {
+          "command": 2411969006,
+          "execution": 2979884495
+        },
+        "learning/B/6": {
+          "command": 442887955,
+          "execution": 2799413780
+        },
+        "learning/B/7": {
+          "command": 373807711,
+          "execution": 2829983729
+        },
+        "learning/B/8": {
+          "command": 1789771389,
+          "execution": 2411787576
+        },
+        "learning/B/9": {
+          "command": 2016989161,
+          "execution": 1487930378
+        },
+        "learning/C/0": {
+          "command": 2004957745,
+          "execution": 1579878471
+        },
+        "learning/C/1": {
+          "command": 1717031874,
+          "execution": 468898008
+        },
+        "learning/C/10": {
+          "command": 1657574376,
+          "execution": 1038790742
+        },
+        "learning/C/11": {
+          "command": 2409489499,
+          "execution": 2445698356
+        },
+        "learning/C/2": {
+          "command": 1771080416,
+          "execution": 3543669109
+        },
+        "learning/C/3": {
+          "command": 1560648934,
+          "execution": 447456121
+        },
+        "learning/C/4": {
+          "command": 4215218101,
+          "execution": 3172159952
+        },
+        "learning/C/5": {
+          "command": 2429431389,
+          "execution": 690592800
+        },
+        "learning/C/6": {
+          "command": 2079064867,
+          "execution": 3735058837
+        },
+        "learning/C/7": {
+          "command": 2031657969,
+          "execution": 1933146313
+        },
+        "learning/C/8": {
+          "command": 967347351,
+          "execution": 2600207064
+        },
+        "learning/C/9": {
+          "command": 3272899711,
+          "execution": 396098664
+        }
+      }
+    },
+    "speed_dominant/0": {
+      "batches": 889160587,
+      "body": 151735827,
+      "initialization": 1900197646,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 3008220646,
+          "execution": 1295899581
+        },
+        "evaluation/A/1": {
+          "command": 4027774339,
+          "execution": 3147561444
+        },
+        "evaluation/A/2": {
+          "command": 1806916365,
+          "execution": 3122070532
+        },
+        "evaluation/A/3": {
+          "command": 1925747408,
+          "execution": 524017901
+        },
+        "evaluation/A/4": {
+          "command": 674244537,
+          "execution": 1191888507
+        },
+        "evaluation/A/5": {
+          "command": 1724288056,
+          "execution": 2182218296
+        },
+        "evaluation/A/6": {
+          "command": 1690081131,
+          "execution": 4114282818
+        },
+        "evaluation/A/7": {
+          "command": 2369199961,
+          "execution": 3344243020
+        },
+        "evaluation/B/0": {
+          "command": 2899596566,
+          "execution": 580407349
+        },
+        "evaluation/B/1": {
+          "command": 2598382964,
+          "execution": 424571829
+        },
+        "evaluation/B/2": {
+          "command": 4196681946,
+          "execution": 295023629
+        },
+        "evaluation/B/3": {
+          "command": 2018981299,
+          "execution": 3824579105
+        },
+        "evaluation/B/4": {
+          "command": 1354152418,
+          "execution": 2191613324
+        },
+        "evaluation/B/5": {
+          "command": 999919103,
+          "execution": 3532253025
+        },
+        "evaluation/B/6": {
+          "command": 1727905984,
+          "execution": 1777344126
+        },
+        "evaluation/B/7": {
+          "command": 4152662062,
+          "execution": 1707405140
+        },
+        "evaluation/C/0": {
+          "command": 3593939890,
+          "execution": 4063071503
+        },
+        "evaluation/C/1": {
+          "command": 4140780440,
+          "execution": 2321053265
+        },
+        "evaluation/C/2": {
+          "command": 2403472891,
+          "execution": 3760152107
+        },
+        "evaluation/C/3": {
+          "command": 339213010,
+          "execution": 263772557
+        },
+        "evaluation/C/4": {
+          "command": 1812220042,
+          "execution": 16749700
+        },
+        "evaluation/C/5": {
+          "command": 2904550809,
+          "execution": 2944017914
+        },
+        "evaluation/C/6": {
+          "command": 1668400107,
+          "execution": 285418619
+        },
+        "evaluation/C/7": {
+          "command": 3802070218,
+          "execution": 390884403
+        },
+        "learning/A/0": {
+          "command": 2071949070,
+          "execution": 3194830604
+        },
+        "learning/A/1": {
+          "command": 1359190983,
+          "execution": 2747896474
+        },
+        "learning/A/10": {
+          "command": 982668733,
+          "execution": 1466145235
+        },
+        "learning/A/11": {
+          "command": 2028587811,
+          "execution": 2350185914
+        },
+        "learning/A/2": {
+          "command": 3005707824,
+          "execution": 1159182871
+        },
+        "learning/A/3": {
+          "command": 1373009322,
+          "execution": 2678256995
+        },
+        "learning/A/4": {
+          "command": 1467239755,
+          "execution": 2062002936
+        },
+        "learning/A/5": {
+          "command": 467337259,
+          "execution": 76605625
+        },
+        "learning/A/6": {
+          "command": 95759307,
+          "execution": 2692592679
+        },
+        "learning/A/7": {
+          "command": 3712204810,
+          "execution": 4096712906
+        },
+        "learning/A/8": {
+          "command": 3543532899,
+          "execution": 556623739
+        },
+        "learning/A/9": {
+          "command": 3254453327,
+          "execution": 3738512207
+        },
+        "learning/A_return/0": {
+          "command": 3105500767,
+          "execution": 705848238
+        },
+        "learning/A_return/1": {
+          "command": 72145094,
+          "execution": 2313823113
+        },
+        "learning/A_return/10": {
+          "command": 3078694351,
+          "execution": 4237003265
+        },
+        "learning/A_return/11": {
+          "command": 3590936876,
+          "execution": 4257827821
+        },
+        "learning/A_return/2": {
+          "command": 3311411300,
+          "execution": 3916875074
+        },
+        "learning/A_return/3": {
+          "command": 1520311728,
+          "execution": 1668292098
+        },
+        "learning/A_return/4": {
+          "command": 3308498195,
+          "execution": 2316927797
+        },
+        "learning/A_return/5": {
+          "command": 291746023,
+          "execution": 1645412121
+        },
+        "learning/A_return/6": {
+          "command": 838067272,
+          "execution": 1939654803
+        },
+        "learning/A_return/7": {
+          "command": 206554609,
+          "execution": 668610243
+        },
+        "learning/A_return/8": {
+          "command": 3136465488,
+          "execution": 2714670610
+        },
+        "learning/A_return/9": {
+          "command": 1723873862,
+          "execution": 3699177006
+        },
+        "learning/B/0": {
+          "command": 1455984656,
+          "execution": 1494086188
+        },
+        "learning/B/1": {
+          "command": 3916965286,
+          "execution": 1483601049
+        },
+        "learning/B/10": {
+          "command": 2266703499,
+          "execution": 3038165111
+        },
+        "learning/B/11": {
+          "command": 2625232467,
+          "execution": 3336607821
+        },
+        "learning/B/2": {
+          "command": 3034405499,
+          "execution": 2031302947
+        },
+        "learning/B/3": {
+          "command": 2453515981,
+          "execution": 867167481
+        },
+        "learning/B/4": {
+          "command": 3135973115,
+          "execution": 1769986814
+        },
+        "learning/B/5": {
+          "command": 1261128596,
+          "execution": 2873065110
+        },
+        "learning/B/6": {
+          "command": 3123148288,
+          "execution": 1925509775
+        },
+        "learning/B/7": {
+          "command": 4262903795,
+          "execution": 1131690450
+        },
+        "learning/B/8": {
+          "command": 2806726812,
+          "execution": 1362287639
+        },
+        "learning/B/9": {
+          "command": 678884201,
+          "execution": 2608245471
+        },
+        "learning/C/0": {
+          "command": 1081566716,
+          "execution": 1282988224
+        },
+        "learning/C/1": {
+          "command": 2755979061,
+          "execution": 3048112930
+        },
+        "learning/C/10": {
+          "command": 2502369152,
+          "execution": 1796888869
+        },
+        "learning/C/11": {
+          "command": 2150489320,
+          "execution": 2709644273
+        },
+        "learning/C/2": {
+          "command": 1914845280,
+          "execution": 3205113034
+        },
+        "learning/C/3": {
+          "command": 1685271525,
+          "execution": 3166088380
+        },
+        "learning/C/4": {
+          "command": 4258794255,
+          "execution": 105346410
+        },
+        "learning/C/5": {
+          "command": 2440905717,
+          "execution": 3012861761
+        },
+        "learning/C/6": {
+          "command": 2894610465,
+          "execution": 3238227256
+        },
+        "learning/C/7": {
+          "command": 2420070119,
+          "execution": 3905998771
+        },
+        "learning/C/8": {
+          "command": 618168392,
+          "execution": 3782056429
+        },
+        "learning/C/9": {
+          "command": 3455302867,
+          "execution": 179682574
+        }
+      }
+    },
+    "speed_dominant/1": {
+      "batches": 1268308053,
+      "body": 1873398845,
+      "initialization": 631862934,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 3493653031,
+          "execution": 4061840251
+        },
+        "evaluation/A/1": {
+          "command": 2698162886,
+          "execution": 264243609
+        },
+        "evaluation/A/2": {
+          "command": 538100499,
+          "execution": 3061818394
+        },
+        "evaluation/A/3": {
+          "command": 2645543815,
+          "execution": 4048483513
+        },
+        "evaluation/A/4": {
+          "command": 2856974131,
+          "execution": 602863191
+        },
+        "evaluation/A/5": {
+          "command": 1679279758,
+          "execution": 3822408983
+        },
+        "evaluation/A/6": {
+          "command": 2505308229,
+          "execution": 1520282331
+        },
+        "evaluation/A/7": {
+          "command": 1429768234,
+          "execution": 1408757470
+        },
+        "evaluation/B/0": {
+          "command": 2508837832,
+          "execution": 2387082943
+        },
+        "evaluation/B/1": {
+          "command": 2773505611,
+          "execution": 4174406822
+        },
+        "evaluation/B/2": {
+          "command": 4120453893,
+          "execution": 2335474529
+        },
+        "evaluation/B/3": {
+          "command": 2209961076,
+          "execution": 1665232064
+        },
+        "evaluation/B/4": {
+          "command": 2014602478,
+          "execution": 2121314845
+        },
+        "evaluation/B/5": {
+          "command": 1620753912,
+          "execution": 1353566879
+        },
+        "evaluation/B/6": {
+          "command": 2476124494,
+          "execution": 547705368
+        },
+        "evaluation/B/7": {
+          "command": 509905730,
+          "execution": 1595801286
+        },
+        "evaluation/C/0": {
+          "command": 1261339774,
+          "execution": 4048896740
+        },
+        "evaluation/C/1": {
+          "command": 2021764991,
+          "execution": 1064123031
+        },
+        "evaluation/C/2": {
+          "command": 1349542046,
+          "execution": 1617489094
+        },
+        "evaluation/C/3": {
+          "command": 2397260058,
+          "execution": 3861889932
+        },
+        "evaluation/C/4": {
+          "command": 4125189300,
+          "execution": 3318712993
+        },
+        "evaluation/C/5": {
+          "command": 2686439128,
+          "execution": 4066514607
+        },
+        "evaluation/C/6": {
+          "command": 4206412370,
+          "execution": 2237098040
+        },
+        "evaluation/C/7": {
+          "command": 4254270441,
+          "execution": 180761390
+        },
+        "learning/A/0": {
+          "command": 1791468551,
+          "execution": 1198948452
+        },
+        "learning/A/1": {
+          "command": 561786167,
+          "execution": 850242389
+        },
+        "learning/A/10": {
+          "command": 1131433408,
+          "execution": 1404526492
+        },
+        "learning/A/11": {
+          "command": 3752483851,
+          "execution": 3278579703
+        },
+        "learning/A/2": {
+          "command": 892468375,
+          "execution": 403011556
+        },
+        "learning/A/3": {
+          "command": 1798832487,
+          "execution": 2552075012
+        },
+        "learning/A/4": {
+          "command": 2728480158,
+          "execution": 2549298844
+        },
+        "learning/A/5": {
+          "command": 2458506785,
+          "execution": 2541129423
+        },
+        "learning/A/6": {
+          "command": 580948306,
+          "execution": 3945906629
+        },
+        "learning/A/7": {
+          "command": 1913579634,
+          "execution": 207490981
+        },
+        "learning/A/8": {
+          "command": 1473258837,
+          "execution": 2096036075
+        },
+        "learning/A/9": {
+          "command": 3300769002,
+          "execution": 4153651111
+        },
+        "learning/A_return/0": {
+          "command": 829844771,
+          "execution": 763166669
+        },
+        "learning/A_return/1": {
+          "command": 3890371906,
+          "execution": 2171656415
+        },
+        "learning/A_return/10": {
+          "command": 2296925167,
+          "execution": 4150318125
+        },
+        "learning/A_return/11": {
+          "command": 1574666838,
+          "execution": 2638755873
+        },
+        "learning/A_return/2": {
+          "command": 3724603133,
+          "execution": 2533344346
+        },
+        "learning/A_return/3": {
+          "command": 893552197,
+          "execution": 2152375820
+        },
+        "learning/A_return/4": {
+          "command": 4061943750,
+          "execution": 3429984224
+        },
+        "learning/A_return/5": {
+          "command": 4156296016,
+          "execution": 3232391065
+        },
+        "learning/A_return/6": {
+          "command": 1131695843,
+          "execution": 2237943735
+        },
+        "learning/A_return/7": {
+          "command": 2701398867,
+          "execution": 2687544268
+        },
+        "learning/A_return/8": {
+          "command": 68157905,
+          "execution": 4220822223
+        },
+        "learning/A_return/9": {
+          "command": 2131756272,
+          "execution": 1799866907
+        },
+        "learning/B/0": {
+          "command": 1798055268,
+          "execution": 2761402972
+        },
+        "learning/B/1": {
+          "command": 1762698502,
+          "execution": 3112321962
+        },
+        "learning/B/10": {
+          "command": 4107589050,
+          "execution": 4289575907
+        },
+        "learning/B/11": {
+          "command": 944369121,
+          "execution": 59193699
+        },
+        "learning/B/2": {
+          "command": 2541433137,
+          "execution": 3438695809
+        },
+        "learning/B/3": {
+          "command": 1958383016,
+          "execution": 2291173044
+        },
+        "learning/B/4": {
+          "command": 700273891,
+          "execution": 4066286527
+        },
+        "learning/B/5": {
+          "command": 1681899611,
+          "execution": 1016503403
+        },
+        "learning/B/6": {
+          "command": 4166147474,
+          "execution": 3542911790
+        },
+        "learning/B/7": {
+          "command": 3537324658,
+          "execution": 3351075300
+        },
+        "learning/B/8": {
+          "command": 1297981820,
+          "execution": 4167933023
+        },
+        "learning/B/9": {
+          "command": 1785524038,
+          "execution": 2659267379
+        },
+        "learning/C/0": {
+          "command": 2025570091,
+          "execution": 2765744891
+        },
+        "learning/C/1": {
+          "command": 1486768071,
+          "execution": 1020122938
+        },
+        "learning/C/10": {
+          "command": 3042483554,
+          "execution": 1077259117
+        },
+        "learning/C/11": {
+          "command": 3917275430,
+          "execution": 442951394
+        },
+        "learning/C/2": {
+          "command": 2723263544,
+          "execution": 996082791
+        },
+        "learning/C/3": {
+          "command": 689328090,
+          "execution": 4079518311
+        },
+        "learning/C/4": {
+          "command": 2454381280,
+          "execution": 3892974947
+        },
+        "learning/C/5": {
+          "command": 698509132,
+          "execution": 1586921609
+        },
+        "learning/C/6": {
+          "command": 2796384791,
+          "execution": 498585670
+        },
+        "learning/C/7": {
+          "command": 3945952380,
+          "execution": 3116062992
+        },
+        "learning/C/8": {
+          "command": 37102347,
+          "execution": 2321471315
+        },
+        "learning/C/9": {
+          "command": 3225182523,
+          "execution": 2582499889
+        }
+      }
+    },
+    "speed_dominant/2": {
+      "batches": 4126409758,
+      "body": 2503965311,
+      "initialization": 2399183317,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 3384720584,
+          "execution": 1952644616
+        },
+        "evaluation/A/1": {
+          "command": 4043184773,
+          "execution": 1350676985
+        },
+        "evaluation/A/2": {
+          "command": 3872829714,
+          "execution": 765301717
+        },
+        "evaluation/A/3": {
+          "command": 1901214837,
+          "execution": 436387395
+        },
+        "evaluation/A/4": {
+          "command": 841329844,
+          "execution": 996685153
+        },
+        "evaluation/A/5": {
+          "command": 1198754794,
+          "execution": 2258769646
+        },
+        "evaluation/A/6": {
+          "command": 3428521059,
+          "execution": 4023800642
+        },
+        "evaluation/A/7": {
+          "command": 631916040,
+          "execution": 900013740
+        },
+        "evaluation/B/0": {
+          "command": 2810304442,
+          "execution": 1078946566
+        },
+        "evaluation/B/1": {
+          "command": 1666429823,
+          "execution": 2371140130
+        },
+        "evaluation/B/2": {
+          "command": 73373094,
+          "execution": 3405314858
+        },
+        "evaluation/B/3": {
+          "command": 3303984253,
+          "execution": 2897796928
+        },
+        "evaluation/B/4": {
+          "command": 632848054,
+          "execution": 3418565078
+        },
+        "evaluation/B/5": {
+          "command": 504400225,
+          "execution": 562845607
+        },
+        "evaluation/B/6": {
+          "command": 3277858676,
+          "execution": 476263523
+        },
+        "evaluation/B/7": {
+          "command": 2309504016,
+          "execution": 2583041610
+        },
+        "evaluation/C/0": {
+          "command": 554574837,
+          "execution": 2671966767
+        },
+        "evaluation/C/1": {
+          "command": 3743862338,
+          "execution": 1774950544
+        },
+        "evaluation/C/2": {
+          "command": 602932485,
+          "execution": 2491013178
+        },
+        "evaluation/C/3": {
+          "command": 1735224084,
+          "execution": 1908163928
+        },
+        "evaluation/C/4": {
+          "command": 55227833,
+          "execution": 2569905616
+        },
+        "evaluation/C/5": {
+          "command": 618340764,
+          "execution": 1753022927
+        },
+        "evaluation/C/6": {
+          "command": 1066556187,
+          "execution": 4234396932
+        },
+        "evaluation/C/7": {
+          "command": 654419395,
+          "execution": 2857361524
+        },
+        "learning/A/0": {
+          "command": 1998366672,
+          "execution": 3987054797
+        },
+        "learning/A/1": {
+          "command": 1145152588,
+          "execution": 2081613772
+        },
+        "learning/A/10": {
+          "command": 2106981667,
+          "execution": 3276428641
+        },
+        "learning/A/11": {
+          "command": 1712683832,
+          "execution": 3235037367
+        },
+        "learning/A/2": {
+          "command": 4158287688,
+          "execution": 1864776404
+        },
+        "learning/A/3": {
+          "command": 1620593976,
+          "execution": 212508694
+        },
+        "learning/A/4": {
+          "command": 500026726,
+          "execution": 1551915739
+        },
+        "learning/A/5": {
+          "command": 3106653811,
+          "execution": 3854689884
+        },
+        "learning/A/6": {
+          "command": 3221709631,
+          "execution": 1980484422
+        },
+        "learning/A/7": {
+          "command": 1690387318,
+          "execution": 1384307453
+        },
+        "learning/A/8": {
+          "command": 187152219,
+          "execution": 1963504990
+        },
+        "learning/A/9": {
+          "command": 3477822280,
+          "execution": 2764160155
+        },
+        "learning/A_return/0": {
+          "command": 1515221716,
+          "execution": 3166536483
+        },
+        "learning/A_return/1": {
+          "command": 2471119466,
+          "execution": 2387232487
+        },
+        "learning/A_return/10": {
+          "command": 2537281482,
+          "execution": 3537006284
+        },
+        "learning/A_return/11": {
+          "command": 1421296020,
+          "execution": 97120969
+        },
+        "learning/A_return/2": {
+          "command": 3036148796,
+          "execution": 694114814
+        },
+        "learning/A_return/3": {
+          "command": 3327674283,
+          "execution": 84779111
+        },
+        "learning/A_return/4": {
+          "command": 4156264806,
+          "execution": 3284621557
+        },
+        "learning/A_return/5": {
+          "command": 2754043043,
+          "execution": 4169157212
+        },
+        "learning/A_return/6": {
+          "command": 3273014261,
+          "execution": 3837409307
+        },
+        "learning/A_return/7": {
+          "command": 3409568866,
+          "execution": 61565788
+        },
+        "learning/A_return/8": {
+          "command": 251636371,
+          "execution": 3600647972
+        },
+        "learning/A_return/9": {
+          "command": 3339656589,
+          "execution": 880331281
+        },
+        "learning/B/0": {
+          "command": 2922931561,
+          "execution": 619264898
+        },
+        "learning/B/1": {
+          "command": 1057120142,
+          "execution": 2248162883
+        },
+        "learning/B/10": {
+          "command": 3040101844,
+          "execution": 3401171701
+        },
+        "learning/B/11": {
+          "command": 4109429208,
+          "execution": 4088594875
+        },
+        "learning/B/2": {
+          "command": 2274969304,
+          "execution": 3420995203
+        },
+        "learning/B/3": {
+          "command": 3147697466,
+          "execution": 2484819587
+        },
+        "learning/B/4": {
+          "command": 2988369608,
+          "execution": 1403948991
+        },
+        "learning/B/5": {
+          "command": 952064807,
+          "execution": 2981097125
+        },
+        "learning/B/6": {
+          "command": 1584387102,
+          "execution": 2670799898
+        },
+        "learning/B/7": {
+          "command": 3802259974,
+          "execution": 4257050913
+        },
+        "learning/B/8": {
+          "command": 917971,
+          "execution": 2584188302
+        },
+        "learning/B/9": {
+          "command": 2135860770,
+          "execution": 57150426
+        },
+        "learning/C/0": {
+          "command": 3956105990,
+          "execution": 1691845056
+        },
+        "learning/C/1": {
+          "command": 1549527389,
+          "execution": 4266340801
+        },
+        "learning/C/10": {
+          "command": 1465768123,
+          "execution": 2890260689
+        },
+        "learning/C/11": {
+          "command": 1738959889,
+          "execution": 4180303718
+        },
+        "learning/C/2": {
+          "command": 2597314444,
+          "execution": 1774547646
+        },
+        "learning/C/3": {
+          "command": 776652452,
+          "execution": 2852751315
+        },
+        "learning/C/4": {
+          "command": 3591566619,
+          "execution": 3738851159
+        },
+        "learning/C/5": {
+          "command": 2894840741,
+          "execution": 2503726415
+        },
+        "learning/C/6": {
+          "command": 3650153681,
+          "execution": 2368822794
+        },
+        "learning/C/7": {
+          "command": 2772174189,
+          "execution": 740566693
+        },
+        "learning/C/8": {
+          "command": 2460823916,
+          "execution": 109986422
+        },
+        "learning/C/9": {
+          "command": 2150197419,
+          "execution": 2683545968
+        }
+      }
+    },
+    "speed_dominant/3": {
+      "batches": 2125162991,
+      "body": 3549790783,
+      "initialization": 3927467165,
+      "trials": {
+        "evaluation/A/0": {
+          "command": 1258518381,
+          "execution": 3206717651
+        },
+        "evaluation/A/1": {
+          "command": 845391776,
+          "execution": 2886749449
+        },
+        "evaluation/A/2": {
+          "command": 688280392,
+          "execution": 1042872866
+        },
+        "evaluation/A/3": {
+          "command": 2873365165,
+          "execution": 2471439469
+        },
+        "evaluation/A/4": {
+          "command": 4050765109,
+          "execution": 2943769352
+        },
+        "evaluation/A/5": {
+          "command": 2753173712,
+          "execution": 963352633
+        },
+        "evaluation/A/6": {
+          "command": 1343075713,
+          "execution": 2981842599
+        },
+        "evaluation/A/7": {
+          "command": 2948876265,
+          "execution": 1661809762
+        },
+        "evaluation/B/0": {
+          "command": 2425566738,
+          "execution": 1071868423
+        },
+        "evaluation/B/1": {
+          "command": 4005851102,
+          "execution": 747039455
+        },
+        "evaluation/B/2": {
+          "command": 1404871295,
+          "execution": 1084871292
+        },
+        "evaluation/B/3": {
+          "command": 1633448998,
+          "execution": 1329015621
+        },
+        "evaluation/B/4": {
+          "command": 271479276,
+          "execution": 4094484867
+        },
+        "evaluation/B/5": {
+          "command": 2761845535,
+          "execution": 1067029915
+        },
+        "evaluation/B/6": {
+          "command": 104365004,
+          "execution": 2615038622
+        },
+        "evaluation/B/7": {
+          "command": 1522618964,
+          "execution": 3121335137
+        },
+        "evaluation/C/0": {
+          "command": 1836069735,
+          "execution": 1363868141
+        },
+        "evaluation/C/1": {
+          "command": 2019568139,
+          "execution": 20190948
+        },
+        "evaluation/C/2": {
+          "command": 2435213145,
+          "execution": 204085990
+        },
+        "evaluation/C/3": {
+          "command": 553170172,
+          "execution": 2999610399
+        },
+        "evaluation/C/4": {
+          "command": 2197375253,
+          "execution": 2701441583
+        },
+        "evaluation/C/5": {
+          "command": 490781464,
+          "execution": 277674320
+        },
+        "evaluation/C/6": {
+          "command": 2640011982,
+          "execution": 2353930301
+        },
+        "evaluation/C/7": {
+          "command": 4279485165,
+          "execution": 805826261
+        },
+        "learning/A/0": {
+          "command": 726599743,
+          "execution": 449491408
+        },
+        "learning/A/1": {
+          "command": 1581085208,
+          "execution": 910199260
+        },
+        "learning/A/10": {
+          "command": 3310393170,
+          "execution": 2333905315
+        },
+        "learning/A/11": {
+          "command": 303258906,
+          "execution": 320417647
+        },
+        "learning/A/2": {
+          "command": 1075363721,
+          "execution": 2706504606
+        },
+        "learning/A/3": {
+          "command": 1711290021,
+          "execution": 2846215528
+        },
+        "learning/A/4": {
+          "command": 1596853373,
+          "execution": 2142583110
+        },
+        "learning/A/5": {
+          "command": 2402492284,
+          "execution": 1911826786
+        },
+        "learning/A/6": {
+          "command": 769209192,
+          "execution": 2142179583
+        },
+        "learning/A/7": {
+          "command": 59768689,
+          "execution": 1170325324
+        },
+        "learning/A/8": {
+          "command": 2648807384,
+          "execution": 888332126
+        },
+        "learning/A/9": {
+          "command": 934861382,
+          "execution": 4247694593
+        },
+        "learning/A_return/0": {
+          "command": 2984406563,
+          "execution": 1768225135
+        },
+        "learning/A_return/1": {
+          "command": 1681753405,
+          "execution": 929448714
+        },
+        "learning/A_return/10": {
+          "command": 2190368392,
+          "execution": 693381035
+        },
+        "learning/A_return/11": {
+          "command": 133689149,
+          "execution": 1226157773
+        },
+        "learning/A_return/2": {
+          "command": 3427053947,
+          "execution": 3106265482
+        },
+        "learning/A_return/3": {
+          "command": 3642705964,
+          "execution": 2839335929
+        },
+        "learning/A_return/4": {
+          "command": 4042953768,
+          "execution": 969832961
+        },
+        "learning/A_return/5": {
+          "command": 2996945016,
+          "execution": 544753232
+        },
+        "learning/A_return/6": {
+          "command": 2661905034,
+          "execution": 1082023316
+        },
+        "learning/A_return/7": {
+          "command": 147238767,
+          "execution": 3235940665
+        },
+        "learning/A_return/8": {
+          "command": 990076538,
+          "execution": 2818572446
+        },
+        "learning/A_return/9": {
+          "command": 2966829835,
+          "execution": 1357816936
+        },
+        "learning/B/0": {
+          "command": 43443904,
+          "execution": 523092963
+        },
+        "learning/B/1": {
+          "command": 1150454455,
+          "execution": 3750306748
+        },
+        "learning/B/10": {
+          "command": 1743070568,
+          "execution": 3009474886
+        },
+        "learning/B/11": {
+          "command": 1926546240,
+          "execution": 161434396
+        },
+        "learning/B/2": {
+          "command": 181764668,
+          "execution": 2372077454
+        },
+        "learning/B/3": {
+          "command": 2745829573,
+          "execution": 1890490429
+        },
+        "learning/B/4": {
+          "command": 1261870133,
+          "execution": 3942318324
+        },
+        "learning/B/5": {
+          "command": 699858356,
+          "execution": 617886998
+        },
+        "learning/B/6": {
+          "command": 1854615908,
+          "execution": 613574739
+        },
+        "learning/B/7": {
+          "command": 2039024157,
+          "execution": 3422966678
+        },
+        "learning/B/8": {
+          "command": 916284494,
+          "execution": 2341341496
+        },
+        "learning/B/9": {
+          "command": 1145827715,
+          "execution": 1087799566
+        },
+        "learning/C/0": {
+          "command": 646688743,
+          "execution": 3707495479
+        },
+        "learning/C/1": {
+          "command": 3565596652,
+          "execution": 3947368393
+        },
+        "learning/C/10": {
+          "command": 1134671751,
+          "execution": 4292476427
+        },
+        "learning/C/11": {
+          "command": 419274233,
+          "execution": 4034331135
+        },
+        "learning/C/2": {
+          "command": 2526762713,
+          "execution": 2991399938
+        },
+        "learning/C/3": {
+          "command": 3293198956,
+          "execution": 987572891
+        },
+        "learning/C/4": {
+          "command": 3125740308,
+          "execution": 1559973703
+        },
+        "learning/C/5": {
+          "command": 2258081110,
+          "execution": 1049463789
+        },
+        "learning/C/6": {
+          "command": 3879994457,
+          "execution": 1849208575
+        },
+        "learning/C/7": {
+          "command": 759077195,
+          "execution": 2803242565
+        },
+        "learning/C/8": {
+          "command": 838428643,
+          "execution": 2536091319
+        },
+        "learning/C/9": {
+          "command": 1636214937,
+          "execution": 2834141265
+        }
+      }
+    }
+  },
+  "lr": 0.001,
+  "namespace": "cumulative-001/validation/v1",
+  "phases": [
+    "A",
+    "B",
+    "A_return",
+    "C"
+  ],
+  "primary": "neural_replay",
+  "replay_fraction": 0.5,
+  "seed_inventory": {
+    "collision_count": 0,
+    "distinct": 1767,
+    "smallest": 917971
+  },
+  "short_ridge_trials": 4,
+  "source_frozen": {
+    "learning/body_schema_002.py": "95384885e7fe7241cf935e66875faceedd6ab4ca5e98459c6bfa2bb730ecf815",
+    "learning/cumulative_001.py": "1c34735e3811f3122602c72804c56d5231f02fd69a93c9c362eea49e41fe295f",
+    "learning/cumulative_001_data.py": "ba367853f7a9f814c64d71f3b673328b44524f86c84e4966508f92f283348e50",
+    "learning/cumulative_001_neural.py": "114bd6f247a96d6f725a168aaf2fef5cb7c6f539d5525a43469833307cb17b47",
+    "learning/life_010.py": "288476032a0afa0460c0721d52315cc02432d47c46639177c61d996c95f988f8",
+    "sim3d/bench_env.py": "959337b0e787547d89a581d59ac38e94f06f2ecd03e4e51ae7f8e30f6010e311",
+    "sim3d/bench_model.py": "39e44711335deb2ade132be80c2cee79af233e671454a8b3b9cebaa73106ef46"
+  },
+  "statistics": {
+    "recovery": 421924742,
+    "vs_naive": 1138342414,
+    "vs_ridge": 2938705374
+  },
+  "steps": 64,
+  "trials_per_phase": 12,
+  "updates": 64,
+  "validation_criteria": {
+    "acquisition_mae_deg": 1.0,
+    "gain_vs_prior": 0.3,
+    "recovery_favorable_lives": 9,
+    "recovery_gain_mean": 0.2,
+    "retention_margin_deg": 0.2,
+    "secondary_gain": 0.15
+  },
+  "variant": "v1"
+}
