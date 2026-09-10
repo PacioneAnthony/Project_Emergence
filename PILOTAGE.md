@@ -74,8 +74,10 @@ de marge ; exécuter la sonde et publier ses deux chiffres, faisabilité et marg
 banque de confirmation avant que la marge existe. Le prompt complet est dans
 `CODEX_TASK_BRIEF.md`.
 
-**Anthony** — aucune. `ANT-008`, l'achat du kit AS5600, reste ouvert dans
-`ANTHONY_INBOX.md` mais ne bloque rien sous D-008.
+**Anthony** — rien de bloquant. Les deux demandes matérielles de juin, `ANT-008` (kit
+AS5600) et `ANT-009` (banc v1.0), sont en sommeil et sans objet sous D-008 et D-060. Une
+seule question sans urgence attend dans `ANTHONY_INBOX.md` : les fermer, ou les garder en
+sommeil en vue d'un retour au matériel ?
 
 **Claude** — aucune revue en attente. La prochaine porte à revue est le
 pré-enregistrement de C1, et seulement si la sonde de marge est verte.
