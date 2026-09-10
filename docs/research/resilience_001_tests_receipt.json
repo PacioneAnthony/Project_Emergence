@@ -1,0 +1,28 @@
+{
+  "tests": 345,
+  "pytest_seconds": 24.95,
+  "budget_attempt": "eec8797e4ec346d795c5a26b649d6ad6",
+  "charged_seconds": 25.671999999991385,
+  "source": {
+    "learning/cumulative_001_data.py": "ba367853f7a9f814c64d71f3b673328b44524f86c84e4966508f92f283348e50",
+    "learning/cumulative_001_neural.py": "114bd6f247a96d6f725a168aaf2fef5cb7c6f539d5525a43469833307cb17b47",
+    "learning/cumulative_001.py": "1c34735e3811f3122602c72804c56d5231f02fd69a93c9c362eea49e41fe295f",
+    "learning/body_schema_002.py": "95384885e7fe7241cf935e66875faceedd6ab4ca5e98459c6bfa2bb730ecf815",
+    "learning/life_010.py": "288476032a0afa0460c0721d52315cc02432d47c46639177c61d996c95f988f8",
+    "sim3d/bench_env.py": "959337b0e787547d89a581d59ac38e94f06f2ecd03e4e51ae7f8e30f6010e311",
+    "sim3d/bench_model.py": "39e44711335deb2ade132be80c2cee79af233e671454a8b3b9cebaa73106ef46",
+    "learning/resilience_001_v3.py": "96736b6e43aebd38a6a66b8933855041eef67ecc5fdfef674025db2a7308f4e2",
+    "learning/resilience_001.py": "b43ec9cff55f71815ab78bcef5f96df2a68c316b0768913e3bb4b40e1c3c08ce",
+    "learning/resilience_001_agent.py": "349df9ffb9aa295238398a5f33cfd3f81d778b9a08da64241928202b231b7f33",
+    "cognitive/resilience.py": "9f03c24ba1b5a97fcc56e46f5837828c01be1a20f539602727d8ca631bcfbc1a",
+    "learning/resilience_001_plastic.py": "97286ff472c5a7b54f504bf87753f6607c7cc7579bebdaa5001c4259a4224185",
+    "cognitive/resilience_plastic.py": "c0dccd2e4afdb38310ae6a13a564f07f5a6aac3ebaa4bf3b68da3b38c42ac71d",
+    "learning/cumulative_001_choice.py": "0f9219a2f4ab879694dbc2f3248a484db6ef8472e5a656d6a27b89d8303b5767",
+    "cognitive/memory.py": "a2b1a871f71239156865e562b1b53b08765bc86154cca2e48917fa9f404a89cf",
+    "cognitive/kernel.py": "2dc98aaa59fbf50352730902f4aee9450892d9f2e86c37acc4ace0f95b8b5e20"
+  },
+  "test_sources": {
+    "tests/test_resilience_001.py": "0e3bf404f5e0b0a5bc22dea9888cf884fde64b58eaaccba3cf6c8c238a94804f",
+    "tests/test_resilience_001_plastic.py": "139d56c67099fcbc50956995b15778b8b1bfc021caa88c4c1fab113c98c28c60"
+  }
+}

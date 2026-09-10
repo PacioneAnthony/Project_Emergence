@@ -1,0 +1,7 @@
+{
+  "manifest_sha256": "853ae0fce80353ab8550ae97e439b61e167ea64e32e608989490f482a0a864c4",
+  "validation_protocol_sha256": "e035d7014a3c5764b6642d942ad922685453928442e963d8b019a91535b11dd4",
+  "development_seed_overlap": 0,
+  "audit_timing": "separate receipt after launch; protocol existed before launch; manifest unchanged",
+  "note": "The first metadata-enrichment command failed on a results JSON without lives before any write. Original created manifest is the frozen manifest."
+}
