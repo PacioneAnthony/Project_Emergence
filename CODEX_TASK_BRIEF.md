@@ -19,6 +19,11 @@ d'angle, et toute porte mesurant la connaissance de soi ou la qualité d'un choi
 ne se réplique pas. Le problème n'était pas le mécanisme mais le terrain. D-060 change le
 terrain et impose une sonde de marge sur le banc lui-même.
 
+Révision du 10 septembre au soir. Le brief porte désormais D-061 : les octets bruts des
+sources sont l'unité d'audit du projet, Git ne les normalise plus, et l'allègement
+documentaire de D-060 ne touche pas l'archive des sources gelées. La sonde de marge exige
+en outre que son seuil soit écrit avant d'être exécutée.
+
 ## Prompt à donner à Codex
 
 ```text
@@ -77,6 +82,10 @@ ORDRE DE TRAVAIL — arrête-toi à la première porte rouge
      REF-003. Vérifie la manipulation dans les images rendues AVANT tout entraînement.
    - MARGE — l'écart entre le témoin trivial et l'oracle, en réussite et en coût de
      mouvements. Si le témoin trivial est déjà proche de l'oracle, la tâche est rejetée.
+   Écris ce que « proche » veut dire AVANT de lancer la sonde : un seuil chiffré sur la
+   réussite et sur le coût de mouvements, déposé dans le journal de la capacité. Quatre
+   campagnes sont mortes sur une porte de marge ; aucune ne doit mourir sur une porte
+   déplacée après coup, et un seuil choisi en voyant les chiffres n'est pas une porte.
    Publie ces deux chiffres seuls. Quelques dizaines de vies, moins d'une heure de calcul.
 
 4. N'écris aucun mécanisme, aucun pré-enregistrement et n'ouvre aucune banque de
@@ -116,6 +125,12 @@ DISCIPLINE QUI NE CHANGE PAS
    c'est une complexité non payée.
 7. Ne modifie pas une source gelée pour ensuite appeler cela une reprise. Ne réouvre pas
    les banques consommées. Les acquis conservent leur niveau de preuve ET leurs limites.
+8. Les octets bruts des sources sont l'unité d'audit (D-061). `.gitattributes` déclare
+   `* -text` : n'ajoute aucun attribut `text`, `eol` ni `working-tree-encoding`, sous aucun
+   motif. Une normalisation de fin de ligne casse des empreintes gelées en silence, sans
+   qu'aucun test ne le signale. Et si une empreinte ne correspond plus, l'anomalie est dans
+   les octets et non dans le manifeste : on restaure les octets, on ne recalcule jamais
+   l'empreinte pour faire repasser un test au vert.
 
 DISCIPLINE QUI CHANGE — D-060
 
@@ -125,7 +140,10 @@ DISCIPLINE QUI CHANGE — D-060
 3. Un pré-enregistrement, un rapport et un journal par capacité. RESILIENCE-002 a produit
    21 fichiers dans docs/research pour dix minutes de calcul : ce volume était calibré pour
    des campagnes de plusieurs heures. Les audits d'empreintes, reçus et diagnostics
-   séparés ne sont plus produits par défaut.
+   séparés ne sont plus produits par défaut. L'allègement porte sur les documents et jamais
+   sur l'archive : toute source que tu gèles reste copiée à côté de ses résultats, selon la
+   convention `source_v1`. C'est cette copie, et elle seule, qui a rendu six des onze
+   sources réécrites récupérables sans reconstruction lors de l'incident du 10 septembre.
 4. La confirmation est rare et réservée à une capacité dont la marge est déjà établie.
 5. Le calcul n'est pas la contrainte et ne l'a jamais été : RESILIENCE-002 a consommé 618 s
    sur 5400 s. Ne dimensionne pas une campagne comme si le GPU était rare ; le simulateur
@@ -158,3 +176,13 @@ et ajoute la seule règle qui aurait épargné les quatre campagnes LIFE : mesur
 banc avant de concevoir quoi que ce soit dessus. Si tu veux revenir sur l'axe d'inclinaison
 et rester strictement équivalent au montage physique à un servo, c'est l'étape 1 du prompt
 qu'il faut amender, et la mémoire spatiale retombe à environ cinq cellules.
+
+La révision du soir ajoute trois choses. La règle sur les octets bruts, parce que rien
+n'empêchait de recréer l'incident de D-061. La précision que l'allègement documentaire ne
+supprime pas l'archive des sources : lu seul, le brief disait à Codex d'arrêter de produire
+les audits d'empreintes, ce qui pouvait se comprendre comme arrêter d'archiver les sources,
+alors que c'est exactement ce qui a sauvé la moitié des fichiers. Enfin l'obligation
+d'écrire le seuil de marge avant de lancer la sonde : sans cela « écart exploitable » se
+tranche en voyant les chiffres, ce qui est précisément la porte molle que D-060 veut
+supprimer. Le seuil lui-même reste un choix de Codex sous D-004 ; c'est son moment de
+décision qui est contraint, pas sa valeur.

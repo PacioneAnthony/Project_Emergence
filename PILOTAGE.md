@@ -39,6 +39,23 @@ construire C1, exécuter la sonde de marge, publier ce seul chiffre, s'arrêter 
 première porte rouge. Cadrage D-056 et D-008 inchangés ; aucune action Anthony requise.
 Les sections suivantes conservent les acquis antérieurs et leurs limites.
 
+## Règle permanente — D-061 : les octets des sources sont l'unité d'audit
+
+Les manifestes gèlent des SHA-256 des octets bruts des sources. `.gitattributes` déclare
+`* -text` et cette ligne ne se touche pas : aucun attribut `text`, `eol` ni
+`working-tree-encoding` n'est ajouté, sous aucun motif. Une normalisation de fin de ligne
+casse des empreintes gelées en silence — le 10 septembre elle a réécrit onze sources `.py`
+et cassé 566 références d'empreintes dans 113 manifestes.
+
+Une empreinte qui ne correspond plus signale un problème dans les octets et jamais dans le
+manifeste : on restaure les octets, on ne recalcule pas l'empreinte pour faire repasser un
+test au vert. L'allègement documentaire de D-060 porte sur les documents et jamais sur
+l'archive : toute source gelée reste copiée à côté de ses résultats selon la convention
+`source_v1`, seule chose qui ait rendu six des onze sources récupérables sans
+reconstruction.
+
+État vérifié après restauration : 358 tests verts, empreintes gelées valides sur clone neuf.
+
 ## Jalon antérieur — D-059 : RESILIENCE-002 terminé
 
 Mémoire des résultats vécus, annonces avant action et choix d'expériences désormais

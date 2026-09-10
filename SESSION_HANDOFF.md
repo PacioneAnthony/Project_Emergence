@@ -25,6 +25,16 @@ pas réouvertes et les sources gelées ne sont pas modifiées. Cadrage D-056 et 
 inchangés. 358 tests verts au moment de la décision. Aucune action Anthony requise.
 Les sections suivantes conservent les acquis antérieurs et leurs limites.
 
+## Règle permanente — D-061 : les octets des sources sont l'unité d'audit
+
+À lire avant tout commit. `.gitattributes` déclare `* -text` : n'ajoute aucun attribut
+`text`, `eol` ni `working-tree-encoding`. Une normalisation de fin de ligne casse en
+silence les empreintes que gèlent les manifestes — le 10 septembre elle a réécrit onze
+sources `.py` et cassé 566 références dans 113 manifestes, toutes restaurées depuis. Si une
+empreinte ne correspond plus, l'anomalie est dans les octets et non dans le manifeste : on
+restaure les octets, on ne recalcule pas l'empreinte. Toute source gelée reste archivée à
+côté de ses résultats, convention `source_v1`.
+
 ## Jalon antérieur — D-059 : RESILIENCE-002 terminé
 
 Mémoire des résultats vécus, annonces avant action et choix d'expériences désormais
