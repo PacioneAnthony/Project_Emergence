@@ -1201,3 +1201,337 @@ Arbitrage Anthony: non requis; retour conforme à l'ordre J1→J5 de l'architect
 Conséquences: aucun nouveau LIFE/J5 avant qualification BODY-SCHEMA-001.
 Condition de réouverture: corrections Claude, défaut d'équité, incertitude invalide ou
 banque faute non attribuable.
+
+## D-048 - Intégration de la revue BODY-SCHEMA-001
+
+Date: 2026-07-27
+Décision: intégrer B1–B6 avant toute graine.
+Constat majeur: l'AS5600 simulé est déterministe; les banques LIFE de plans répétés
+mesuraient une erreur d'ajustement et non une généralisation tenue à part.
+Corrections: 36 instances temporelles distinctes, protection/calibration séparées,
+comparateur B2' équitable, H0 angle/vitesse, fautes blocked/degraded, plancher privilégié
+P, plasticité conditionnée par la marge et incertitude numérique entièrement gelée.
+Avis Claude: implémentation puis smoke 19091..19096 autorisés après intégration.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: 19201..19224 interdits avant dix portes smoke vertes.
+Condition de réouverture: collision de contenu, calibration invalide, absence de marge,
+porte smoke rouge ou décision scientifique nouvelle.
+
+## D-049 - Arrêt BODY-SCHEMA-001 aux portes d'incertitude et de faute
+
+Date: 2026-07-27
+Décision: clore BODY-SCHEMA-001 après le smoke `19091..19096`, sans ouvrir
+`19201..19224`.
+Statut: résultat smoke négatif; portes 7 et 8 rouges, huit autres portes vertes.
+Résultat: M apprend sur les six organismes, réduit la MAE du prior de `53,2 %` à
+`92,6 %` et corrige le refus historique de 18793. La couverture globale et les largeurs
+sont valides, mais quatre organismes échouent à au moins une petite cellule
+conditionnelle. Le détecteur par transition franchit `0,75` sur `degraded` mais ne bat
+pas toujours la quantité de mouvement triviale; sur `blocked`, le trivial atteint
+`0,948..1,000`.
+Diagnostic: l'agrégation par trial rend M et le trivial parfaits sur les deux fautes.
+Le défaut porte donc sur l'unité temporelle de décision et sur des interventions
+résolubles sans relation commande→effet. B2' simple égale ou bat M sur cinq organismes.
+Avis Claude: non requis pour appliquer la règle d'arrêt pré-enregistrée.
+Arbitrage Anthony: non requis sous D-004.
+Conséquences: BODY-SCHEMA-001 ne qualifie pas J1; aucune reprise ni modification post
+hoc. Le rapport est `docs/research/body_schema_001_technical_stop.md`.
+Condition de réouverture: aucune sous BODY-SCHEMA-001.
+
+## D-050 - Pré-enregistrement BODY-SCHEMA-002
+
+Date: 2026-07-27
+Décision: proposer un successeur J1 qui sépare prévision moyenne, incertitude et
+surveillance d'agence.
+Statut: protocole et demande de revue prêts; aucun code ni calcul `19391+`.
+Modèles: F reprend la ridge protégée simple B2'; E est un bootstrap de la même base,
+chargé seulement de l'incertitude; A accumule causalement quatre innovations
+consécutives.
+Hypothèse nouvelle: une faute `mirrored` conserve la magnitude marginale des cibles
+mais inverse leur direction effective. A doit la détecter et battre un détecteur fondé
+sur la seule quantité de mouvement. `blocked` reste le contrôle J1 de commande sans
+effet.
+Statistique: unité faute = trial, couverture conditionnelle agrégée sur organismes avec
+effectifs publiés, baseline de commande désalignée B-action, familles Holm séparées.
+Graines proposées: smoke `19391..19396`, test `19501..19524`, statistique
+`2026072707`.
+Avis Claude: revue contradictoire obligatoire via
+`docs/research/body_schema_002_review_request.md`.
+Arbitrage Anthony: non requis pour la rédaction sous D-004.
+Conséquences: code, smoke, test et toute reprise J5 interdits avant verdict.
+Condition de réouverture: corrections Claude, faute mirrored trivialement séparable,
+baseline B-action invalide, calibration encore sous-puissante ou composant J1 manquant.
+
+## D-051 — Contrat BODY-SCHEMA-002 révisé après diagnostic
+
+Date : 2026-09-09.
+Décision : préparer la révision prospective du contrat et la prévision persistante,
+conformément à la demande d'Anthony d'effectuer les étapes proposées après l'audit.
+Statut : préparation documentaire achevée ; revue r2 requise avant code ou calcul.
+
+Constats vérifiés par lecture : métrique angle/delta dupliquée, sigma dépendante de
+ramp_class postérieure, porte d'absence de fuite constante. Le registre de modèles,
+la promotion et les reprises existent mais ne démontrent pas encore la restauration
+d'une capacité apprise. Aucun nouveau test, entraînement ou résultat de simulation.
+
+Proposition : entrée causale dédiée et invariance, calibration globale, comparateur
+entraîné sans commandes, déroulement libre, diversité du contenu des trajectoires,
+candidat indépendant de l'actif, promotion avec marge pratique et plafond cumulatif.
+Qualifications séparées : prévision, persistance, calibration et détection. F seul ne
+qualifie pas J1 intégralement et ne rouvre pas J5.
+
+Méthode proposée : développement borné sur provenance neuve, validation de configuration
+séparée, puis manifeste confirmatoire complet et revu. Budget de première itération
+proposé : 15 minutes par invocation, 60 minutes cumulées, génération/évaluation incluses.
+Seuils d'usage à fixer sur développement avant validation ; aucune ancienne porte
+n'est assouplie rétroactivement et aucune campagne close n'est reprise.
+
+Artefacts :
+- docs/research/body_schema_002_preregistration.md : contrat r2 ;
+- docs/research/body_schema_002_persistence_plan.md : interfaces, réception et suite cumulative ;
+- docs/research/body_schema_002_review_request.md : revue ciblée actualisée ;
+- docs/research/body_schema_002_proposal_20260727.md : copie exacte de la proposition v1.
+
+SHA-256 de l'archive v1 :
+20f95a967d07da65eaae3a7c4b37a2f7df441cd996efcc7543aee5493d4225c3.
+
+Avis Claude : non reçu ; aucun verdict n'est présumé. La revue demandée porte sur
+l'implémentation r2 et son développement, pas sur le smoke v1 ni la confirmation.
+Action Anthony : transmission du dossier préparé, ANT-010.
+Action Codex : intégrer ensuite le verdict et poursuivre le plan selon son périmètre.
+Conséquences : les réserves 19201..19224, 19391..19396 et 19501..19524 restent fermées ;
+confirmation et J5 non autorisés. Aucun achat, mouvement physique ou collecte humaine.
+Condition de suite : verdict r2 explicite, corrections intégrées et manifeste de
+développement fixé avant premier calcul. La confirmation requiert un gel ultérieur.
+
+
+## D-052 — Intégration de la revue BODY-SCHEMA-002 r2
+
+Date : 2026-09-09. Verdict : AUTORISER AVEC CORRECTIONS BLOQUANTES.
+Auteur de la revue : Codex, à la demande d’Anthony en remplacement de Claude ;
+aucune indépendance ni attribution à Claude revendiquée.
+C1–C6 intégrées textuellement dans le contrat et le plan de persistance : gel
+temporel, équité B, validation, dépendances des preuves, atomicité et budget durable.
+Autorisation : manifeste puis code, tests, développement MuJoCo borné et intégration
+persistante après réception. Validation seulement après gel. Confirmation, réserves
+historiques, J5 et A→B→A→C restent fermés.
+Action Codex : fixer le manifeste puis exécuter les contrôles et le développement.
+Action Anthony : aucune transmission supplémentaire requise.
+
+
+## D-053 — Prévision corporelle persistante et validation de recette
+
+Date : 2026-09-09. Statut : livrable F persistant réalisé, portée développement et
+validation de configuration. Aucun J1 intégral, aucune confirmation ni agence qualifiée.
+
+C1–C6 implémentées pour la capacité F et ses comparateurs. Contrat causal et calibration
+synthétique vérifiés ; entrée privilégiée refusée et contrôle négatif sensible à une
+fuite volontaire. Candidat séparé, huit occasions de promotion, référence fixe et marge
+pratique. Activation par paquet et preuves, écritures atomiques et registre complet de
+rejeu. Reprise entre trials et prochaine mise à jour bit-identiques en nouveau processus.
+
+Variante dev v1 : arrêt du vérificateur avant publication de performances, à cause d'un
+snapshot restauré dont history restait partagée. Correctif et test d'immuabilité ; v2
+relance les six organismes entiers avec même provenance de développement réutilisable.
+Ancien manifeste/artefacts préservés, budget cumulé non réinitialisé.
+
+Six organismes dev verts. B3 choisi explicitement avant validation comme témoin sans
+action : moyenne 3,981° contre 4,091° pour B13. Manifeste de validation gelé et empreinte
+97edbe58fdeed02c861614eb5d5147d0872dd20d89efba8d8d59b282165f9647
+avant accès. Six nouveaux organismes, apprenants neufs, sans réglage sur leurs scores.
+
+Résultat validation : F moyenne 0,435216° à un pas contre prior 1,433081° et B3 4,326102° ;
+0,464152° à 0,1 s ; 0,579012° à 0,5 s. Six/six satisfont les seuils figés de prévision,
+déroulement et persistance. Statut : validation de recette sur formes connues, deux
+organismes par régime ; aucune précision confirmatoire revendiquée.
+
+Activation : six F de développement dans leurs mémoires du noyau, références immuables
+et preuves par paquet. Requêtes servies identiques après redémarrage. Calibration et
+détection non qualifiées ; le succès de la recette multi-pas sur validation ne modifie
+pas rétroactivement les statuts des paquets de développement.
+
+Vérification : 24 tests de contrat, 3 tests de frontière de validation ; suite finale
+327 tests verts en 25,52 s. Supervision extérieure des calculs/tests : environ 121 s
+cumulées sur 3600 s, plafond individuel 900 s. Journal exact dans le budget SQLite.
+
+Artefacts : docs/research/body_schema_002_results.md et .json ; manifestes et journal
+liés au rapport. Les essais restent dans body_schema_002_r2_dev_v1, v2 et validation_v1.
+Action Codex suivante : préparer un protocole cumulatif distinct ou un manifeste
+confirmatoire à nouvelles formes, selon le jalon suivant ; revue avant leurs calculs.
+Action Anthony : aucune intervention requise pour ce lot ; ANT-010 clos.
+Restrictions : E/A MuJoCo non qualifiés, bootstrap E pas encore raccordé ; reprise
+physique intra-trial non qualifiée ; confirmation, réserves historiques, J5,
+A→B→A→C et matériel restent fermés.
+
+## D-054 — Mandat de progression autonome et CUMULATIVE-001
+
+Date : 2026-09-09. Anthony demande de poursuivre jusqu'à des avancées notables et
+prometteuses, en utilisant la RTX 5080 disponible et en notant avancées et échecs.
+Ce nouveau mandat autorise les nouveaux travaux cumulatifs en simulation préparés
+sous CUMULATIVE-001. Il remplace l'attente procédurale sur leur ouverture ; les anciens
+résultats et les réserves historiques ne sont pas réouverts. Pas de matériel ni achat.
+
+GPU vérifié localement : NVIDIA GeForce RTX 5080, 16303 MiB, CUDA disponible,
+PyTorch 2.11.0+cu128. Premier cycle borné à 90 minutes cumulées et 15 minutes par
+invocation avec journal durable ; pas de service de calcul payant.
+
+Pré-enregistrement : docs/research/cumulative_001_preregistration.md, fixé avant code.
+Comparer mémoire cumulative ridge, mémoire courte et MLP CUDA avec/sans rejeu dans
+A→B→A→C ; contrôler l'oubli avant de revendiquer la consolidation. Conserver F r2
+inchangé. Nouvelle étape comportementale à spécifier avant ses calculs.
+Auto-revue Codex explicitement non indépendante ; toutes variantes, y compris négatives,
+seront consignées. Action Codex : exécuter le protocole et progresser selon les preuves.
+Action Anthony : aucune intervention requise. Aucun verdict Claude présumé.
+
+## D-055 — CUMULATIVE-001 : candidat persistant et choix utile validés sur ce banc
+
+Date : 2026-09-09. Mandat D-054 accompli pour ce cycle : avancées notables avec
+succès et échecs consignés, sans ouverture des anciennes réserves ni essai matériel.
+Rapport : docs/research/cumulative_001_results.md, JSON, graphique et journal associés.
+
+Six vies dev puis 12 vies neuves A→B→A→C ; recette neuronale figée. Réseau avec
+rejeu, MAE finale A/B/C 0,079515°, −53,19 % contre réseau naïf et −77,92 % contre
+ridge cumulative, 12/12 vies favorables. Acquisition/rétention/récupération/reprise
+passent. Retour A : gain relatif moyen par vie 69,93 % face à une instance neuve.
+Reprises CUDA exactes des deux réseaux sur les 18 vies, avec optimiseur et mémoire.
+
+Usage v1 négatif : aucune amélioration des trajectoires, plus de variation de commande.
+Non promu. V2 distincte : choisir la cible atteignable avant échéance. Dev positif,
+puis validation préspécifiée sur 192 situations de 12 corps distincts : 190 réussites,
+utilité 47,031° contre prior prudent 38,125° et ridge 41,667°. Portes vertes.
+Échecs locaux et absence du naïf dans la comparaison comportementale déclarés.
+Oubli naïf généralement faible : aucune preuve de correction d'oubli catastrophique.
+
+Décision : conserver le réseau à rejeu comme candidat expérimental persistant et
+la sélection avant échéance comme usage probant dans cette famille de simulations.
+Pas d'activation neuronale dans CognitiveKernel à ce stade ; F r2 déjà actif conservé.
+Pas de revendication de vie physique continue, de rupture détectée ou de confirmation
+générale. Revue Codex non indépendante, nouveaux cas de la même famille.
+
+Vérification : 336 tests verts en 24,29 s ; publication vérifie 141 empreintes et
+recalcule les scores comportementaux bruts. Budget 496,812 s / 5400 s, 13 invocations
+supervisées terminées, aucune réservation restante. RTX 5080 effectivement utilisée.
+Les données locales sous data/ sont exclues de Git et doivent être conservées.
+
+Action Codex suivante lors de la poursuite : intégration du candidat au noyau puis
+rupture de dynamique observable et récupération dans une nouvelle variante ; ajouter
+le naïf au contraste comportemental. Ne pas régler sur les banques déjà consommées.
+Action Anthony : aucune intervention requise pour le lot livré.
+
+
+## D-056 — Résilience et apprentissage intrinsèque comme direction prioritaire
+
+2026-09-10. Anthony autorise la suite et précise le but : un noyau robuste et résilient,
+capable d'apprendre dans des situations nouvelles, de comprendre environnement, présence
+propre et interlocuteur humain, de former objectifs/sous-objectifs et d'incarner ensuite
+un corps électromécanique. L'analogie nouveau-né porte sur le développement intrinsèque.
+La précision motrice ne constitue pas l'objectif final.
+
+Cadrage intégré dans DEVELOPMENTAL_ARCHITECTURE.md. RESILIENCE-001 commence : rupture
+non annoncée, réponse interne à la surprise, mémoire d'acquis, récupération fonctionnelle
+et intégration transactionnelle au noyau. Protocole avant calcul dans
+`docs/research/resilience_001_preregistration.md`. Sous-objectifs de récupération codés
+explicitement ; exploration intrinsèque ouverte et compréhension humaine non revendiquées.
+
+Budget distinct 90 min, 15 min/invocation, RTX 5080 ; nouvelles banques, anciennes sources
+gelées conservées. Auto-revue Codex non indépendante. Action Codex : implémenter,
+vérifier, exécuter le développement puis validation neuve si justifiée par les preuves.
+Action Anthony : aucune intervention requise. Simulation uniquement.
+
+## D-057 — RESILIENCE-001 : récupération répliquée, fragilité fonctionnelle à traiter
+
+2026-09-10. Le cadrage D-056 est inscrit dans l'architecture, le brief et le pilotage.
+Un service neuronal expérimental est intégré à la mémoire du noyau : expériences
+atomiques, checkpoints complets, archives immuables, détecteur et sous-objectifs de
+récupération, reprise exacte et absence de double apprentissage après interruption.
+
+V1 arrêtée après première vie pour alias d'état Adam ; test rouge puis correction,
+sources conservées. V2 six vies complètes : quatre portes sur cinq, mais −9,78 %
+d'utilité pendant récupération contre naïf ; non promue et validation non lancée.
+V3 distincte préspécifiée : forte surprise immédiate et trois essais de plasticité
+sans ancien rejeu, puis mémoire récente ; archives préservées. Six nouvelles vies dev,
+puis 12 nouvelles vies de validation, toutes les portes fixées passent.
+
+Validation v3 : 24 changements détectés dès le premier essai, aucune fausse alarme
+initiale, 24 sous-objectifs ouverts/clos et 12 rappels. Utilité post-rupture 16,782°
+contre naïf 16,100° (+4,24 %) et récente 11,354° (+47,81 %). Rejeu cumulatif 0,602°,
+figé 0°. Réussite pendant récupération 93,52 %, finale 137/144 (95,14 %).
+Retour : utilité +2,54 % contre naïf, sans domination sur toutes les métriques.
+Douze reprises exactes sur validation ; état de plasticité et prochaine mise à jour inclus.
+
+Décision : garder v3 comme base expérimentale de récupération, preuve bornée à cette
+famille. Le registre reste en état candidat : le résultat de recette n'est pas une
+qualification universelle de chaque paquet. Le modèle F actif antérieur est conservé.
+La génération d'objectifs reste une règle explicite et les expériences d'apprentissage
+sont fournies par le banc ; autonomie ouverte et compréhension humaine non établies.
+
+Limite décisive : life-04 de validation atteint seulement 50 % de réussite finale
+après ralentissement, utilité 5°/11,667° atteignables, malgré erreur prédictive 0,0815°.
+La clôture du sous-objectif prédictif peut donc masquer une faiblesse fonctionnelle.
+Pas de tuning sur ce cas. La priorité suivante est de relier besoin interne, choix
+d'expériences et clôture sur compétence observée, avec une nouvelle variante et de
+nouveaux cas ; élargir ensuite les perturbations et leurs instants.
+
+Validation/audit : 345 tests en 24,95 s ; 234 empreintes et 1728 situations vérifiées
+sur validation. Sources gelées, continuité mécanique et reprises contrôlées. Un reçu
+documente le contrôle supplémentaire de collision de graines réalisé juste après
+lancement suite à un échec d'enrichissement facultatif du manifeste ; zéro collision,
+manifeste original inchangé, protocole fixé avant lancement. Auto-revue non indépendante.
+Budget final 1022,517 s / 5400 s, 22 invocations ; aucune réservation inachevée.
+RTX 5080 effectivement utilisée. Environ 339 Mo de données locales exclus de Git.
+
+Rapport : docs/research/resilience_001_results.md ; journal et manifestes associés.
+Action Codex suivante : nouvelle épreuve de besoin d'apprentissage fonctionnel et
+choix d'expériences ; ne pas réouvrir les banques closes. Action Anthony : aucune.
+
+
+## D-058 — Besoin fonctionnel et choix d'expériences, RESILIENCE-002
+
+2026-09-10. Anthony autorise à enchaîner. Le nouveau cycle examine la clôture du
+besoin d'apprentissage à partir des résultats vécus et une sélection intrinsèque
+restreinte d'expériences, comparée au cycle fixe et au hasard. Prédiction directe
+à l'échéance, marge estimée sur expériences réellement observées, aucune donnée
+privée du juge dans le noyau. Capacité de suivi honnête et valeur propre du choix
+actif seront jugées séparément, avec critère sur la pire vie.
+
+Protocole fixé avant code/calcul : docs/research/resilience_002_preregistration.md.
+Budget propre 5400 s, 900 s/invocation, sources et banques précédentes inchangées.
+Nouvelles vies, instants de rupture variables non transmis à l'agent. Catalogue
+et règles écrits explicitement ; aucune autonomie ouverte présumée. Auto-revue
+Codex non indépendante. Action Codex : contrats, développement complet, validation
+neuve uniquement pour une capacité étayée. Aucune action Anthony requise.
+
+## D-059 — RESILIENCE-002 : persistance acquise, choix actif non répliqué
+
+2026-09-10. Cycle D-058 complet : prédiction terminale, promesses avant action,
+résultats vécus, besoin et sélection de catégorie persistés atomiquement dans le
+noyau. V1 stoppée après deux commits : score NumPy non relisible de façon sécurisée ;
+sources et vie partielle conservées. V2 convertit le score en float natif, sans
+modifier les règles d'apprentissage. 358 tests passent ; 18 reprises exactes.
+
+Six vies dev : gain actif +17,77 % contre cycle, 91,48 % de l'oracle. Douze nouvelles
+vies de validation : effet inversé à −15,20 %, réussite finale 143/144, pire vie
+91,67 %, mais seulement 71,18 % de l'oracle. Récupération active et sélection
+échouent. Cycle fixe 100 %/80,56 %, uniforme 100 %/74,00 %. Ne pas promouvoir le
+sélecteur actif ; garder le cycle comme référence sans qualification universelle.
+
+Le code gelé restreignait l'honnêteté aux checkpoints 6/fin, sans exclusion explicite
+de 0 dans le texte. Audit strict ajouté sans modifier l'analyse gelée : moniteur
+actif 22/57 états clos contredits (38,60 %), dont quatre après apprentissage ; même
+le taux restreint 4/39 (10,26 %) échoue. Couverture 54,17 %. Aucune qualification.
+
+Life-03 montre le couplage fragile : alarme tardive sans nouveau changement physique,
+marge globale 3,515° et repli vers 5°/23,333° disponibles, malgré 12/12 réussites.
+La contribution relative des composants reste à isoler ; pas de réglage sur ces vies.
+
+573 expériences du noyau auditées en validation, 73344 pas et 36672 updates par
+politique ; 1296 situations, 3888 décisions corrélées. 431+885 empreintes nouvelles
+et 375 anciennes vérifiées sans écart. Budget 618,561 s/5400 s, 19 invocations
+terminées (une erreur technique v1), aucune en cours. Environ 112,9 Mo hors Git à
+préserver. Sources de banc figées, registre candidat, aucune activation globale.
+Auto-revue non indépendante, simulation uniquement.
+
+Action Codex suivante : nouveau protocole distinguant compétence, preuves récentes,
+lacunes locales et changement global avant de guider l'exploration. Nouvelles banques,
+aucune réouverture des validations consommées. Cadrage D-056 prioritaire, aucune
+action Anthony. Rapport : docs/research/resilience_002_results.md.

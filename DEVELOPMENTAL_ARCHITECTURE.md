@@ -9,6 +9,26 @@ d'abord émerger, battre leurs baselines et se répliquer dans des simulations d
 croissant. Les jalons physiques J0/J1 restent spécifiés mais sont suspendus jusqu'à une
 décision explicite de retour au banc.
 
+## Cadrage prioritaire — résilience (Anthony, 2026-09-10, D-056)
+
+L'objectif final est un noyau robuste et résilient, capable d'apprendre intrinsèquement
+au contact de situations nouvelles. La précision des mouvements est une mesure locale ;
+elle ne doit pas devenir le critère directeur ni remplacer l'adaptation, la récupération,
+la conservation des acquis et la capacité à reconnaître ses limites.
+
+À terme, ce noyau habitera un corps électromécanique. Il devra construire une compréhension
+de son environnement et de sa propre présence, reconnaître et interagir avec un humain
+qui lui parle, puis former des objectifs et sous-objectifs pour des tâches demandées
+ou choisies. L'analogie avec un vivant ou un nouveau-né décrit cette capacité de
+développement ; elle ne constitue pas une équivalence biologique démontrée.
+
+Les prochains jalons doivent mesurer le fonctionnement après perturbation, les besoins
+d'expérience pour récupérer, le transfert à des situations inédites, les échecs reconnus,
+la réutilisation de mémoire et la continuité après interruption. Une politique précise
+sur un banc familier mais fragile au changement ne satisfait pas cette direction.
+Les sous-objectifs codés par le chercheur doivent être distingués des objectifs appris
+ou produits de façon autonome, et les acquisitions locales de la capacité finale.
+
 ## 1. Vision du projet
 
 Emergence vise un robot domestique développemental, capable d'acquérir progressivement des régularités sensorimotrices, perceptives et sociales à partir de son expérience dans une pièce partagée avec un humain.

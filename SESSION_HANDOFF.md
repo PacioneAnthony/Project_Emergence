@@ -1,6 +1,138 @@
 # Émergence — Handoff de session
 
-Date: 2026-07-27
+Date: 2026-09-10
+
+## Dernier jalon réalisé — D-059 : RESILIENCE-002 terminé
+
+Mémoire des résultats vécus, annonces avant action et choix d'expériences désormais
+persistés atomiquement dans le noyau ; 358 tests verts, 18 reprises interprocessus
+exactes sur les six vies dev et douze de validation. Registre candidat uniquement.
+
+Résultat scientifique négatif conservé : le gain actif +17,77 % en développement
+s'inverse à −15,20 % en validation contre cycle fixe. Réussite finale active 99,31 %,
+pire vie 91,67 %, mais utilité/oracle 71,18 % <80 %. Cycle 100 %/80,56 %, uniforme
+100 %/74,00 %. Ne pas promouvoir le choix actif ; garder le cycle comme référence,
+sans qualification universelle. Le moniteur échoue : 4/39 clôtures contredites après
+apprentissage, 22/57 tous checkpoints. Les deux dénominateurs sont explicités.
+
+V1 : échec de relecture d'un score NumPy après deux commits, sources/vie archivées.
+V2 : conversion float native, nouvelles banques et mêmes règles. Life-03 validation
+montre une alarme tardive et une marge globale qui forcent des actions de 5° malgré
+23,333° disponibles. Un succès d'action ne suffit pas à prouver la résilience.
+
+Lire `docs/research/resilience_002_results.md`, le journal, les JSON d'analyse,
+audits, diagnostics et reçus. Données sous `data/processed/experiments/resilience_002`,
+environ 112,9 Mo hors Git à conserver. Budget final 618,561 s /5400 s, 19 invocations,
+aucune réservation ou simulation active ; 431+885 empreintes nouvelles et 375 anciennes
+vérifiées sans écart. Bancs et protocoles figés, aucune retouche des vies consommées.
+
+Point de reprise suivant : préparer une expérience neuve qui distingue lacune
+locale, changement global et validité des preuves avant de guider l'exploration.
+Aucun nouveau cycle de calcul n'est lancé. Priorité : résilience et apprentissage
+intrinsèque (D-056), précision motrice secondaire. Aucune action Anthony requise.
+Les sections suivantes conservent les acquis antérieurs.
+
+## Jalon antérieur — D-057 : récupération et limites de résilience
+
+Cadrage Anthony D-056 appliqué : résilience, apprentissage intrinsèque et développement
+incarné sont la direction ; la précision motrice reste une sonde locale.
+RESILIENCE-001 terminé : service neuronal dans la mémoire SQLite du noyau, archives,
+détecteur, sous-objectifs de récupération et plasticité temporaire, commits atomiques.
+
+V1 arrêt technique (alias Adam corrigé/testé), sources archivées. V2 six vies complètes,
+non promue : récupération fonctionnelle −9,78 % contre naïf ; validation v2 non lancée.
+V3 six vies dev puis 12 nouvelles vies de validation, toutes les portes prévues passent.
+24 changements détectés au premier essai, zéro fausse alarme initiale, 24 sous-objectifs
+clos, 12 rappels, 12 reprises interprocessus exactes. Post-rupture : utilité 16,782°
+contre naïf 16,100° (+4,24 %) et mémoire récente 11,354° (+47,81 %). Réussite 93,52 %
+pendant récupération, 95,14 % au dernier checkpoint. 345 tests verts.
+
+Limite prioritaire : validation life-04 ne réussit que 50 % des choix après 12 essais,
+malgré une MAE de 0,0815°. Une clôture de sous-objectif prédictif ne prouve donc pas
+une compétence fonctionnelle retrouvée. Au retour, le rappel ne domine pas toutes
+les mesures. Le choix des expériences est encore imposé, la règle de récupération
+est écrite ; aucune autonomie ouverte ou compréhension humaine n'est revendiquée.
+
+Lire `docs/research/resilience_001_results.md`, son graphique, le journal, les JSON
+v2/dev-v3/validation-v3 et le reçu des 345 tests. Données et noyaux sous
+`data/processed/experiments/resilience_001`, environ 339 Mo exclus de Git à conserver.
+Validation v3 auditée : 234 empreintes et 1728 situations. Budget final 1022,517 s
+sur 5400 s, 22 invocations ; aucun processus ou réservation inachevés.
+
+Service utilisable comme candidat expérimental persistant ; versions du registre
+encore candidates, sans promotion universelle. Prochaine étape : relier besoin
+interne, choix d'expériences et clôture sur fonctionnement observé, puis varier les
+perturbations et leurs instants. Nouvelle variante et nouveaux cas avant calcul ;
+ne pas régler sur la validation consommée ni réouvrir les anciennes banques.
+Aucune intervention Anthony requise. Les sections suivantes sont historiques.
+
+## Point de reprise antérieur — D-055
+
+Anthony a donné mandat de poursuivre jusqu'à des avancées prometteuses, avec la RTX
+5080, en documentant aussi les échecs. Ce point est atteint pour CUMULATIVE-001.
+Le mandat D-054 autorise les travaux cumulatifs ; ne pas rétablir les anciennes
+attentes procédurales. Aucun calcul ni processus de cette série n'est encore en cours.
+
+Six vies dev et 12 vies de validation complètes : réseau avec rejeu MAE finale
+A/B/C 0,079515°, −53,19 % contre naïf, −77,92 % contre ridge cumulative. Toutes
+les portes acquisition/rétention/récupération/reprise passent. Retour A : gain
+relatif moyen par vie 69,93 % face au réseau neuf. Reprise interprocessus exacte
+sur 18 vies et les deux réseaux. Suite entière : 336 tests verts en 24,29 s.
+
+Contrôle v1 négatif conservé : zéro gain de trajectoire et davantage de commandes.
+Choix v2 dev positif, puis validation comportementale sur 192 nouvelles situations :
+190 réussites, utilité 47,031° contre prior prudent 38,125° et ridge 41,667°.
+Deux échecs speed_dominant/1 ; prudence excessive settling_dominant/2. L'oubli naïf
+reste généralement faible. Pas d'attribution du gain comportemental au seul rejeu.
+
+Lire d'abord `docs/research/cumulative_001_results.md`, son JSON (141 empreintes),
+le graphique, `cumulative_001_log.md`, protocoles et manifestes. Les poids après C,
+corpus, checkpoints B avec sondes de reprise, courbes et choix bruts sont dans
+`data/processed/experiments/cumulative_001`, exclus de Git : ne pas perdre ce dossier.
+Ledger budget.sqlite : 496,812 s / 5400 s, aucune réservation restante.
+Publication reproductible : `learning.cumulative_001_publish`, sans rejouer les vies.
+
+Ne pas écraser une vie terminée, modifier une source gelée puis appeler cela reprise,
+ou régler la recette sur validation. Candidat neuronal persistant qualifié sur ce
+banc, pas encore intégré au registre actif de CognitiveKernel. F r2 reste actif.
+Prochaine étape : intégration du candidat et épreuve distincte de rupture/récupération
+sur nouvelle variante et nouveaux cas ; comparer aussi le naïf dans le comportement.
+Pas de preuve de vie physique continue, calibration/rupture non qualifiées.
+Les preuves D-053 restent inchangées ; les anciennes sections suivantes sont historiques.
+
+## État de reprise antérieur — D-053
+
+La revue BODY-SCHEMA-002 r2 a été fournie par Codex, à la demande d'Anthony en
+remplacement de Claude. C1–C6 intégrées textuellement sous D-052 ; aucune attente de
+revue r2 restante. Le développement et la validation autorisés ont été exécutés.
+
+Lire d'abord `docs/research/body_schema_002_results.md`, ses résultats JSON, le journal
+`body_schema_002_development_log.md`, les manifestes dev/validation et D-052/D-053.
+La proposition initiale reste archivée, les clôtures anciennes inchangées.
+
+Réalisé : entrée causale, ridge F, B13/B3 sans action, candidat cumulatif/actif,
+calibration globale et moniteur synthétiques, artefacts, application atomique des
+trials, activation par version, contrôle durable du budget, lanceur de validation.
+La v1 a arrêté un vérificateur de reprise à liste partagée ; v2 corrige avec test et
+relance complète. Aucun réglage n'a utilisé la validation.
+
+Résultats : six organismes de développement et six de validation neufs ; F validation
+0,435° à un pas, 0,579° à 0,5 s. Les portes prévision/déroulement/persistance sont
+vertes. F/B13/B3 reproduisent prévisions et prochaine mise à jour dans un autre
+processus. Six paquets F de développement activés dans leurs mémoires ; requêtes
+servies identiques après redémarrage. Calibration/agence non qualifiées par paquet.
+
+Tests : 24 contrats, 3 frontières de validation, 327 complets en 25,52 s. Budget
+commun environ 121 s/3600 s, tests et essais perdus inclus, sous
+`data/processed/experiments/body_schema_002_r2_dev_v1/budget.sqlite`.
+Artefacts positifs dans `body_schema_002_r2_dev_v2` et `body_schema_002_r2_validation_v1`.
+Les répertoires complets et la validation sont protégés contre un remplacement/rejeu
+implicite. Ne pas modifier les sources gelées puis appeler cela une reprise.
+
+Limites : reprise physique intra-trial non qualifiée ; validation sur formes connues,
+aucune confirmation statistique ni essai d'oubli. E/A MuJoCo, bootstrap d'E intégré,
+confirmation, J5 et A→B→A→C ne sont pas réalisés. Préparer le protocole cumulatif
+ou le manifeste confirmatoire distinct avant leur revue. Aucune action Anthony requise.
 
 ## Instruction de reprise impérative
 
@@ -30,6 +162,10 @@ Lire dans cet ordre:
 22. `docs/research/kernel_001_implementation.md`
 23. `docs/research/life_001_recovery.md`
 24. `DECISIONS.md` — D-014 à D-027
+25. `docs/research/body_schema_001_review.md`
+26. `docs/research/body_schema_001_technical_stop.md`
+27. `docs/research/body_schema_002_preregistration.md`
+28. `docs/research/body_schema_002_review_request.md`
 
 REF-001 est maintenant close sous D-015/D-016. Ne relancer aucun run, ne modifier aucun seuil
 et ne réutiliser aucune graine 12301..12316. La revue contradictoire des résultats est
@@ -398,10 +534,25 @@ persistance/prior/ridge LIFE et ensemble probabiliste de ridges ARX bootstrapé 
 Les portes couvrent plasticité, MAE, calibration conformelle et détection d'actionneur
 bloqué. Smoke proposé 19091..19096, test 19201..19224; aucun code avant Claude.
 
+Claude a autorisé BODY-SCHEMA-001 avec B1–B6, intégrées sous D-048. L'implémentation
+passe 8 tests ciblés et 300 tests complets. Le smoke `19091..19096` termine en
+`20,70713 s`: huit portes vertes, portes 7 et 8 rouges. M atteint une MAE
+`0,3476..0,6910°`, accepte `14..17/24` mises à jour et corrige 18793, mais les petites
+cellules conditionnelles sortent de `[0,80;0,98]` sur quatre organismes. Le détecteur
+par transition ne bat pas le mouvement trivial sur toutes les fautes. D-049 clôt sans
+ouvrir 19201+.
+
+D-050 pré-enregistre BODY-SCHEMA-002. F est la ridge simple B2', E porte seulement
+l'incertitude et A agrège causalement les innovations sur quatre pas. La faute
+`mirrored` inverse la direction effective tout en conservant les amplitudes demandées;
+elle doit être détectée au-delà d'un baseline de quantité de mouvement. Nouvelles
+graines proposées: smoke 19391..19396, test 19501..19524. Aucun code ou calcul avant la
+revue Claude.
+
 ## Actions par acteur
 
-Action Codex: préserver LIFE-009..012 closes et attendre BODY-SCHEMA-001.
-Action Anthony: transmettre `docs/research/body_schema_001_review_request.md` à Claude.
-Action Claude Opus 5: écrire uniquement `docs/research/body_schema_001_review.md`.
-Blocage: BODY-SCHEMA-001 et tout nouveau J5 interdits avant verdict.
-Toute nouvelle tentative REF exige monde non occlusible, graines neuves et revue pré-calcul.
+Action Codex : lot D-053 terminé ; partir du rapport BODY-SCHEMA-002 pour le prochain
+protocole, sans réouvrir la validation ni les campagnes closes.
+Action Anthony : aucune intervention en attente pour ce lot ; ANT-010 clos.
+Prochaine revue : protocole cumulatif ou manifeste confirmatoire préparé, pas r2 déjà revue.
+Confirmation, réserves historiques, J5, A→B→A→C et matériel restent fermés.

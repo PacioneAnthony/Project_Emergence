@@ -7,6 +7,19 @@ qu'une nouvelle variante développementale abstraite).
 
 ---
 
+## Priorité actuelle — D-056, cadrage Anthony du 10 septembre 2026
+
+Le noyau recherché est résilient : apprentissage intrinsèque, adaptation aux situations
+nouvelles, continuité de mémoire, récupération après perturbation, puis développement
+incarné en interaction avec un humain et formation d'objectifs/sous-objectifs. La
+précision motrice est une sonde locale et ne remplace pas cette direction.
+
+Lire l'état actif dans PILOTAGE.md / SESSION_HANDOFF.md et le cadrage ajouté à
+DEVELOPMENTAL_ARCHITECTURE.md. RESILIENCE-001 prolonge le candidat CUMULATIVE-001
+par une mémoire neuronale intégrée au noyau et une rupture de dynamique non annoncée.
+Les consignes historiques ci-dessous expliquent la trajectoire du projet ; elles
+ne demandent pas de relancer les campagnes closes ni de rétablir des attentes levées.
+
 ## Prompt à donner à Codex
 
 ```text

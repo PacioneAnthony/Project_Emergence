@@ -1,9 +1,41 @@
 # Émergence - Boîte de réception d'Anthony
 
-Dernière mise à jour par Codex: 2026-06-12  
+Dernière mise à jour par Codex: 2026-09-10
 Décisions à arbitrer: **1**  
 Informations à fournir: **0**  
 Actions matérielles à effectuer: **1**
+
+Transmission de revue en attente : **0**. Les demandes matérielles historiques
+ci-dessous ne bloquent pas le travail actuel en simulation (D-008).
+
+## Cycle actuel — D-059
+
+RESILIENCE-002 terminé : acquis de persistance, échec de généralisation du choix
+actif documenté. Aucune décision, transmission de revue ou intervention matérielle
+demandée à Anthony. Le cadrage de résilience D-056 est maintenu. Les demandes
+historiques ci-dessous ne suspendent pas le travail autonome en simulation.
+
+## Transmission traitée
+
+### ANT-010 — Revue du contrat BODY-SCHEMA-002 révisé
+
+- Statut : `clos`, 2026-09-09 sous D-052/D-053.
+- Résultat consigné par Codex : revue reçue, rédigée par Codex à la demande d’Anthony
+  en remplacement de Claude ; corrections intégrées et lot de développement/validation terminé.
+- Demandé le : 2026-09-09, sous D-051.
+- Action Anthony : transmettre à Claude le contenu de
+  [la demande actualisée](docs/research/body_schema_002_review_request.md), avec accès
+  aux fichiers ciblés qui y sont listés.
+- Résultat attendu : `docs/research/body_schema_002_review.md`, portant explicitement
+  sur la révision 2 du 9 septembre ; rendre ce fichier disponible dans le dépôt.
+- Suite Codex : intégrer les corrections, puis implémenter le développement et la
+  persistance dans les limites du verdict. Aucun achat ni manipulation requis.
+- Motif : la proposition active impose une revue avant code ou calcul ; le dossier
+  concret de contrat et d'intégration est maintenant prêt.
+
+**Réponse Anthony :**
+
+>
 
 ## Mode d'emploi
 

@@ -132,8 +132,19 @@ et obtenu une marge oracle médiane de 16,8853 %, mais D-043 l'a fermée parce q
 minimum settling reste `4,4039 % < 5 %`. LIFE-012 propose des plateaux d'établissement
 réalisés à coût 240°, mais sa plaque échoue sous D-046: 18793 refuse 24/24 mises à jour
 et la marge oracle médiane tombe à 4,9404 %. La famille de sélecteurs est close.
-BODY-SCHEMA-001 revient à J1 pour qualifier plasticité, incertitude calibrée et détection
-d'actionneur sans effet avant toute reprise de J5.
+BODY-SCHEMA-001 est revenu à J1 avec trente-six trajectoires distinctes,
+protection/calibration séparées, ridge équitable, ensemble bootstrap et fautes
+appariées. L'implémentation passe 8 tests ciblés et 300 tests complets. Le smoke
+`19091..19096` apprend nettement et corrige 18793, mais ses portes d'incertitude
+conditionnelle et de détection face au trivial sont rouges. D-049 clôt sans ouvrir
+19201+.
+
+Le diagnostic montre qu'une agrégation de trial rend l'ensemble et la quantité de
+mouvement tous deux parfaits sur `blocked/degraded`: ces fautes ne prouvent pas une
+contingence commande→effet. D-050 propose donc BODY-SCHEMA-002 avec F pour la moyenne,
+E pour l'incertitude et A pour l'accumulation séquentielle d'innovations. Une faute
+directionnelle `mirrored` doit être détectée au-delà du mouvement trivial. Le protocole
+attend la revue Claude; aucune graine 19391+ n'est ouverte.
 
 Les smokes LIFE certifient le câblage persistant, la régression/récupération et le choix
 à partir d'observations. Ils ne démontrent ni apprentissage d'une nouvelle compétence,
