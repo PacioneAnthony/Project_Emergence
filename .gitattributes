@@ -1,8 +1,4 @@
-* text=auto
-
-*.py text eol=lf
-*.md text eol=lf
-*.txt text eol=lf
-*.ini text eol=lf
-*.ino text eol=lf
-*.ps1 text eol=crlf
+# Les empreintes SHA-256 des sources sont l'unité d'audit du projet : les manifestes
+# gèlent les octets exacts des fichiers. Toute normalisation de fins de ligne par Git
+# casse ces empreintes silencieusement. Aucun fichier n'est donc normalisé.
+* -text
