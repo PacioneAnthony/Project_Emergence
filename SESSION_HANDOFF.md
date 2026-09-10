@@ -28,6 +28,39 @@ chiffres. **Aucun mécanisme cognitif, aucun pré-enregistrement et aucune banqu
 confirmation avant que cette marge existe.** Si elle n'existe pas, le substrat est déclaré
 épuisé et on n'y construit rien.
 
+### Étape 1 — faite le 11 septembre 2026
+
+L'axe d'inclinaison existe. `sim3d/bench2_model.py` et `sim3d/bench2_env.py` **étendent**
+le banc gelé sans le toucher : ses octets sont référencés par 116 et 112 manifestes, donc
+`build_bench2_mjcf` transforme le MJCF que produit `build_bench_mjcf` au lieu de le
+réécrire, sur des ancres vérifiées une à une — si le banc gelé changeait, la construction
+échouerait bruyamment au lieu de rendre un monde à un axe.
+
+Ce qui est vérifié, pas affirmé :
+
+- **grille 5 × 3 = 15 cellules**, centres espacés d'exactement un champ de 30° ;
+- **à tilt nul, le rendu est identique au pixel près au banc gelé** sur toute la course de
+  panoramique — le monde à deux axes diffère de l'ancien par la charnière et par rien
+  d'autre ;
+- **les 15 cellules sont distinctes** : identification au plus proche voisin 15/15 sur cinq
+  pièces, marge entre 2,1× et 9,7× l'écart d'une cellule avec elle-même ;
+- **la charnière ne s'affaisse pas** : elle passe par le barillet, donc le corps mobile est
+  équilibré. Articulée au niveau de l'objectif, elle pendait de 0,101° sous les 90 g de la
+  caméra et le rendu à tilt nul n'était plus identique.
+
+Deux pièges rencontrés, tous deux verrouillés par un test : le signe du tilt — l'axe naïf
+`0 1 0` fait descendre la vue quand on commande une valeur positive, l'axe est donc
+`0 -1 0` — et l'affaissement ci-dessus.
+
+Vérification reproductible : `python -m scripts.research.bench2_cells --sheet out.png`.
+Planche des 15 cellules : `docs/research/bench2_view_grid.png`.
+
+**Réserve pour l'étape 2.** Les 15 cellules sont distinctes, mais le contenu de la pièce
+est dans la seule rangée centrale : à +30° on voit le mur haut et le ciel, à −30° le
+plateau uni de la table, contraste 26 contre 46 au centre. Une cible C1 hors rangée
+centrale serait invisible. C'est la faute de faisabilité de REF-002 et REF-003 ; elle se
+traite en ajoutant du contenu par le paramètre `wall_panels`, sans toucher au banc gelé.
+
 Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`,
 `learning/paired_stats.py` pour toutes les portes statistiques, `learning/visual_jepa.py`,
 et le banc `sim3d/bench_model.py` / `sim3d/bench_env.py`, qui contient déjà la pièce
