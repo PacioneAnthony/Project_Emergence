@@ -1603,3 +1603,56 @@ première porte rouge. Aucun mécanisme cognitif, aucun pré-enregistrement et a
 de confirmation avant que cette marge existe.
 Action Anthony : aucune ; l'arbitrage demandé est rendu.
 Blocage : aucun. Proposition et argumentaire : `PROPOSITION_SUBSTRAT.md`.
+## D-061 — Les octets des sources sont l'unité d'audit : Git ne les normalise plus
+
+2026-09-10. Incident et clôture, sans perte. Le dépôt déclarait `*.py text eol=lf` dans
+`.gitattributes` depuis le 21 juin, alors que les manifestes gèlent des SHA-256 des octets
+bruts des sources. Toute normalisation de fin de ligne casse donc une empreinte sans rien
+signaler. Le défaut était latent et général — la machine a `core.autocrlf = true` et
+n'importe quel `git clone` produisait le même effet — mais il a été déclenché par le commit
+du travail de septembre, dû à Claude Opus 5, qui a réécrit en LF onze sources `.py` écrites
+en CRLF : 566 références d'empreintes dans 113 manifestes, sur 1 477 références `.py`
+vérifiables.
+
+La causalité est établie et non supposée. `resilience_002_previous_integrity.json`, écrit
+par Codex le matin même, enregistre zéro écart sur `cumulative_001_results.json` et
+`resilience_001_validation_v3_results.json` ; ces deux mêmes fichiers ont échoué après le
+commit.
+
+Cause racine fermée. `.gitattributes` passe à `* -text` : Git ne transforme plus rien et
+restitue les octets tels quels. `-text` l'emporte sur `core.autocrlf`, donc la protection
+ne dépend pas de la configuration d'une machine. Vérifié par clone neuf depuis `origin` :
+`source_frozen` 11/11 et `driver_sha256` valides.
+
+Restauration intégrale, sans re-gel. Six sources ont été reprises depuis
+`data/processed/experiments/resilience_002/source_v1`, que Git n'avait jamais touché. Les
+cinq sources BODY-SCHEMA-002 antérieures à la convention d'archivage n'existaient nulle
+part ailleurs et ont d'abord été déclarées perdues. Elles ne l'étaient pas : leurs fins de
+ligne n'étaient pas mélangées arbitrairement mais en LF partout sauf le dernier
+terminateur, en CRLF — les deux derniers pour `body_forecast.py`. Cette forme reproduit
+exactement les empreintes gelées `bd4065f5`, `d2b35cb7`, `2765cad3`, `d9cf0fd7` et
+`d854bc7f`. C'est donc le manifeste gelé lui-même qui certifie la restauration : aucune
+empreinte n'a été réécrite et aucune garde assouplie.
+
+Arbitrage Anthony : ne pas adapter la garde pour qu'elle compare un contenu normalisé. La
+comparaison sur octets bruts est ce qui donne sa valeur au gel ; la rendre tolérante aux
+fins de ligne aurait échangé une propriété d'audit contre un test vert.
+
+État vérifié. 358 tests passent, aucun échec ; `run_validation()` de BODY-SCHEMA-002 refuse
+de nouveau sur la garde « banque déjà exposée » et non sur « le code a changé depuis le
+gel ». Balayage de 2 369 références fichier → SHA-256 dans tout l'arbre de travail : ne
+subsistent que les entrées `dev_v1`, qui désignent des sources v1 abandonnées dont les
+archives correspondent exactement, et une dérive antérieure sur un fichier de travail non
+suivi de REAFFERENCE-003. Le contrôle de Codex rejoué rend ses compteurs exacts, 141 et
+234 références, zéro écart. Aucun résultat n'est modifié et aucun niveau de preuve ne bouge.
+
+Règles. Les octets bruts des sources sont l'unité d'audit du projet ; aucun attribut Git ne
+doit les transformer. Une source gelée n'est jamais modifiée puis re-gelée sous couvert de
+reprise. Toute source destinée au gel est archivée à côté de ses résultats, comme le fait
+la convention `source_v1` : c'est elle qui a rendu six des onze fichiers récupérables sans
+reconstruction. Enfin, `body_schema_002_validation.py` est audité par la clé
+`driver_sha256` du manifeste et non par `source_frozen.files` — un contrôle d'intégrité
+indexé par chemin seul le manque et rend un vert trompeur.
+
+Action Codex : aucune ; D-060 reste la tâche en cours. Action Anthony : aucune.
+Blocage : aucun.
