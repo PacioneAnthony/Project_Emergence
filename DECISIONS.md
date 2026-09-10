@@ -1535,3 +1535,71 @@ Action Codex suivante : nouveau protocole distinguant compétence, preuves réce
 lacunes locales et changement global avant de guider l'exploration. Nouvelles banques,
 aucune réouverture des validations consommées. Cadrage D-056 prioritaire, aucune
 action Anthony. Rapport : docs/research/resilience_002_results.md.
+
+## D-060 — Changement de substrat : la vision dans la boucle, cou à deux axes
+
+2026-09-10. Anthony retient l'option (a) de `PROPOSITION_SUBSTRAT.md`, préparée par
+Claude Opus 5. Le banc à un axe observé par cinq scalaires cesse d'être le substrat des
+travaux cognitifs. Cette décision porte sur le terrain d'expérimentation, pas sur les
+mécanismes ni sur les résultats acquis.
+
+Constat qui la motive. Sur les neuf campagnes de LIFE-009 à RESILIENCE-002, toutes menées
+sur le même banc, tout ce qui relève de la régression réussit — jusqu'à 0,0795° d'erreur
+d'angle — tandis que toute porte mesurant la connaissance de soi ou la qualité d'un choix
+échoue ou ne se réplique pas : incertitude et calibration jamais qualifiées, détection de
+faute battue par « il y a moins de mouvement », contrôleur d'orientation sans gain,
+moniteur d'honnêteté contredit sur 22 clôtures sur 57, choix actif à +17,77 % en
+développement puis −15,20 % en validation. Quatre campagnes sont mortes sur une porte de
+faisabilité ou de marge avant de tourner. La marge est donc déjà correctement mesurée,
+mais appliquée à la variante proposée et jamais au banc. C'est le banc qui est vide : sur
+cinq scalaires et un axe, une ridge est presque optimale et aucun mécanisme cognitif n'a
+de quoi se payer.
+
+Décision. La vision entre dans la boucle : l'observation devient une image plus la
+proprioception, et l'angle du cou cesse d'être l'état du monde pour devenir un pointeur
+vers une portion du monde. Une articulation d'inclinaison est ajoutée au jumeau MuJoCo,
+portant l'espace sensorimoteur d'environ 5,3 vues à une quinzaine de cellules et donnant
+un schéma corporel bidimensionnel. L'écart assumé avec le montage physique à un servo est
+sans conséquence sous D-008, le banc v1.0 (ANT-009) n'étant pas construit.
+
+Trois capacités enchaînées, chacune opposée au témoin simple le plus fort disponible :
+C1 retrouver un objet désigné par son apparence, contre le retour au dernier angle vu ;
+C2 localiser un changement sous budget de mouvements, contre balayage uniforme et
+différence de pixels par cellule ; C3 conserver C1 en apprenant C2. Les capacités sont
+promues séparément et gardent chacune son niveau de preuve.
+
+Règle nouvelle, contraignante. La sonde de marge s'applique désormais au banc avant toute
+conception de mécanisme, et non à la seule variante. Avant tout pré-enregistrement, mesurer
+l'écart entre le témoin trivial et une borne supérieure sur la tâche ; si l'écart n'est pas
+exploitable, la tâche est rejetée avant qu'une ligne de mécanisme ne soit écrite. Critère
+d'abandon fixé maintenant : si C1 ne montre pas cette marge, ce substrat est déclaré épuisé
+à son tour et aucun mécanisme n'est conçu dessus.
+
+Allègement documentaire. Un pré-enregistrement, un rapport et un journal par capacité.
+RESILIENCE-002 a produit 21 fichiers dans docs/research pour dix minutes de calcul : ce
+volume était calibré pour des campagnes de plusieurs heures. Le développement redevient
+libre — déboguer, essayer et jeter sans rebaptiser chaque correction en hypothèse ni
+consommer de banque confirmatoire. La confirmation est rare et réservée à une capacité
+dont la marge est établie.
+
+Budget, mesuré sur la machine le 10 septembre et non estimé : 9 242 pas/s en physique
+seule, 1 878 pas/s avec rendu 128×128 (37,6× le temps réel), 18 720 images/s
+d'entraînement VisualJEPA sur RTX 5080. Le goulot est le simulateur et non le GPU, d'un
+facteur dix : agrandir le réseau ne coûte presque rien, collecter l'expérience coûte tout.
+Une campagne complète avec vision tient dans l'heure ; la consigne « campagnes visuelles
+~250 min » du brief de juillet ne décrit plus cette machine.
+
+Ce qui ne change pas. Le cadrage D-056 reste la direction : noyau résilient, apprentissage
+intrinsèque, développement incarné, précision motrice secondaire. D-008 tient, simulation
+uniquement, aucun achat ni manipulation. Les banques closes ne sont pas réouvertes, les
+sources gelées ne sont pas modifiées, les acquis conservent leur niveau de preuve et leurs
+limites. Aucune promotion n'est accordée par cette décision. Le registre du noyau reste
+candidat.
+
+Action Codex : ajouter l'axe d'inclinaison et son contrat d'observation, construire la
+tâche C1, exécuter la sonde de marge — témoin trivial contre borne supérieure, quelques
+dizaines de vies, moins d'une heure de calcul — et publier ce seul chiffre. S'arrêter à la
+première porte rouge. Aucun mécanisme cognitif, aucun pré-enregistrement et aucune banque
+de confirmation avant que cette marge existe.
+Action Anthony : aucune ; l'arbitrage demandé est rendu.
+Blocage : aucun. Proposition et argumentaire : `PROPOSITION_SUBSTRAT.md`.

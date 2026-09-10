@@ -12,6 +12,17 @@ La vision technique est définie dans [DEVELOPMENTAL_ARCHITECTURE.md](DEVELOPMEN
 
 ## Jalon Actif
 
+**D-060 — Changement de substrat : la vision dans la boucle, cou à deux axes.** Décidé le
+10 septembre 2026 sur la base de [PROPOSITION_SUBSTRAT.md](PROPOSITION_SUBSTRAT.md). Le
+banc à un axe observé par cinq scalaires n'est plus le substrat des travaux cognitifs :
+neuf campagnes y ont montré le même motif, où la régression réussit toujours et où la
+connaissance de soi et la qualité des choix échouent toujours. L'observation devient image
+plus proprioception ; une articulation d'inclinaison est ajoutée au jumeau MuJoCo. Trois
+capacités enchaînées : retrouver un objet par son apparence, localiser un changement sous
+budget de mouvements, conserver la première en apprenant la seconde. Une sonde de marge
+sur le banc précède toute conception de mécanisme, et son échec suffirait à déclarer ce
+substrat épuisé à son tour. Le jalon suivant est l'historique conservé.
+
 **D-059 — Résultats vécus et choix d'expériences persistants.** RESILIENCE-002
 est terminé : 358 tests, 18 reprises exactes sur six vies dev et douze nouvelles
 vies de validation. L'avantage actif du développement ne se reproduit pas :

@@ -2,7 +2,30 @@
 
 Date: 2026-09-10
 
-## Dernier jalon réalisé — D-059 : RESILIENCE-002 terminé
+## Décision active — D-060 : changement de substrat
+
+Point de reprise courant. Anthony a retenu l'option (a) de `PROPOSITION_SUBSTRAT.md` :
+la vision entre dans la boucle et un axe d'inclinaison est ajouté au jumeau MuJoCo. Le
+banc à un axe et cinq scalaires n'est plus le substrat des travaux cognitifs, parce que
+neuf campagnes y ont montré le même motif — la régression réussit toujours, la
+connaissance de soi et la qualité des choix échouent toujours.
+
+À lire avant de reprendre : `PROPOSITION_SUBSTRAT.md` puis D-060 dans `DECISIONS.md`.
+
+Ordre de travail, arrêt à la première porte rouge : ajouter l'articulation d'inclinaison
+et son contrat d'observation dans `sim3d/bench_model.py` et `sim3d/bench_env.py` ;
+construire la tâche C1 — retrouver un objet désigné par son apparence ; exécuter la sonde
+de marge contre le témoin trivial et une borne supérieure ; publier ce seul chiffre.
+**Aucun mécanisme cognitif, aucun pré-enregistrement et aucune banque de confirmation
+avant que cette marge existe.** Si elle n'existe pas, le substrat est déclaré épuisé.
+
+Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`, `paired_stats`,
+`learning/visual_jepa.py`, le rendu de `sim3d/bench_env.py`. Les banques closes ne sont
+pas réouvertes et les sources gelées ne sont pas modifiées. Cadrage D-056 et D-008
+inchangés. 358 tests verts au moment de la décision. Aucune action Anthony requise.
+Les sections suivantes conservent les acquis antérieurs et leurs limites.
+
+## Jalon antérieur — D-059 : RESILIENCE-002 terminé
 
 Mémoire des résultats vécus, annonces avant action et choix d'expériences désormais
 persistés atomiquement dans le noyau ; 358 tests verts, 18 reprises interprocessus

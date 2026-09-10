@@ -5,7 +5,41 @@ Dernière mise à jour: 2026-09-10
 Codex décide des choix logiciels et expérimentaux sous D-004. Simulation uniquement
 sous D-008.
 
-## Dernier jalon réalisé — D-059 : RESILIENCE-002 terminé
+## Décision active — D-060 : changement de substrat
+
+Anthony a retenu l'option (a) de `PROPOSITION_SUBSTRAT.md` le 10 septembre 2026. Le banc
+à un axe observé par cinq scalaires n'est plus le substrat des travaux cognitifs. La
+vision entre dans la boucle et une articulation d'inclinaison est ajoutée au jumeau
+MuJoCo : l'observation devient image plus proprioception, et l'espace sensorimoteur passe
+d'environ 5,3 vues à une quinzaine de cellules.
+
+Motif : sur les neuf campagnes de LIFE-009 à RESILIENCE-002, la régression réussit
+toujours — jusqu'à 0,0795° — et toute porte mesurant la connaissance de soi ou la qualité
+d'un choix échoue ou ne se réplique pas. Le banc ne contient pas les problèmes que ces
+mécanismes prétendent résoudre.
+
+Trois capacités enchaînées, chacune opposée à son témoin simple le plus fort : C1
+retrouver un objet désigné par son apparence ; C2 localiser un changement sous budget de
+mouvements ; C3 conserver C1 en apprenant C2.
+
+**Règle contraignante nouvelle.** La sonde de marge s'applique au banc avant toute
+conception de mécanisme. Si l'écart entre témoin trivial et borne supérieure n'est pas
+exploitable, la tâche est rejetée avant qu'une ligne de mécanisme ne soit écrite. Si C1
+ne montre pas cette marge, ce substrat est déclaré épuisé à son tour.
+
+**Allègement.** Un pré-enregistrement, un rapport, un journal par capacité. Le
+développement redevient libre ; la confirmation est rare et réservée à une capacité dont
+la marge est établie.
+
+Budget mesuré le 10 septembre : 1 878 pas/s avec rendu 128×128 (37,6× le temps réel) et
+18 720 images/s d'entraînement sur RTX 5080. Le goulot est le simulateur, pas le GPU.
+
+Prochaine action Codex : ajouter l'axe d'inclinaison et son contrat d'observation,
+construire C1, exécuter la sonde de marge, publier ce seul chiffre, s'arrêter à la
+première porte rouge. Cadrage D-056 et D-008 inchangés ; aucune action Anthony requise.
+Les sections suivantes conservent les acquis antérieurs et leurs limites.
+
+## Jalon antérieur — D-059 : RESILIENCE-002 terminé
 
 Mémoire des résultats vécus, annonces avant action et choix d'expériences désormais
 persistés atomiquement dans le noyau ; 358 tests verts, 18 reprises interprocessus
