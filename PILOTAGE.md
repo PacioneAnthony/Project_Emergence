@@ -17,6 +17,10 @@ désaccord entre ce tableau et le registre, c'est le registre qui a raison.
   incarné. La précision motrice est une sonde locale, pas un objectif.
 - **D-060** — La sonde de marge s'applique **au banc** avant toute conception de
   mécanisme, et non à la variante après coup.
+- **D-062** — Un seul rôle d'agent. Codex, Claude ou un autre agent sont
+  interchangeables ; aucun document ne transite par Anthony pour atteindre un autre agent.
+  La revue contradictoire subsiste comme fonction : elle est faite par un agent qui n'a pas
+  produit le travail.
 - **D-061** — Les octets bruts des sources sont l'unité d'audit. `.gitattributes` reste à
   `* -text` ; aucun attribut `text`, `eol` ni `working-tree-encoding` n'est ajouté. Une
   empreinte qui ne correspond plus signale un problème dans les octets et jamais dans le
@@ -67,7 +71,7 @@ vision tient dans l'heure.
 
 ## Actions par acteur
 
-**Codex** — ajouter l'axe d'inclinaison et son contrat d'observation dans
+**L'agent** — ajouter l'axe d'inclinaison et son contrat d'observation dans
 `sim3d/bench_model.py` et `sim3d/bench_env.py` ; construire la tâche C1 ; écrire le seuil
 de marge ; exécuter la sonde et publier ses deux chiffres, faisabilité et marge. S'arrêter
 à la première porte rouge. Aucun mécanisme cognitif, aucun pré-enregistrement et aucune
@@ -79,8 +83,9 @@ AS5600) et `ANT-009` (banc v1.0), sont en sommeil et sans objet sous D-008 et D-
 seule question sans urgence attend dans `ANTHONY_INBOX.md` : les fermer, ou les garder en
 sommeil en vue d'un retour au matériel ?
 
-**Claude** — aucune revue en attente. La prochaine porte à revue est le
-pré-enregistrement de C1, et seulement si la sonde de marge est verte.
+**Revue contradictoire** — aucune en attente. La prochaine porte est le
+pré-enregistrement de C1, et seulement si la sonde de marge est verte. Sous D-062 elle est
+faite par un agent qui n'a pas produit le travail, dans une session distincte.
 
 **Blocage** — aucun.
 

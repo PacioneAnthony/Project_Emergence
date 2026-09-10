@@ -13,7 +13,7 @@ Lire dans cet ordre, et rien de plus pour démarrer :
 1. `PILOTAGE.md` — état courant et règles permanentes
 2. `CODEX_TASK_BRIEF.md` — le prompt de la phase ouverte par D-060
 3. `PROPOSITION_SUBSTRAT.md` — l'argumentaire du changement de substrat
-4. `DECISIONS.md` — D-060 et D-061
+4. `DECISIONS.md` — D-060, D-061 et D-062
 5. `DEVELOPMENTAL_ARCHITECTURE.md` — le cadrage D-056
 
 Le détail d'une campagne close se lit à la demande : chaque entrée de l'historique

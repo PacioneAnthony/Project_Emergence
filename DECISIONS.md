@@ -1656,3 +1656,49 @@ indexé par chemin seul le manque et rend un vert trompeur.
 
 Action Codex : aucune ; D-060 reste la tâche en cours. Action Anthony : aucune.
 Blocage : aucun.
+## D-062 — Un seul rôle d'agent ; la revue contradictoire devient une fonction
+
+2026-09-11. Anthony constate que le protocole du 11 juin a cessé de décrire le travail réel
+et arbitre sa mise à jour. La séparation entre Codex, ingénieur permanent, et Claude,
+contradicteur ponctuel joignable seulement par transmission d'Anthony, n'est plus
+d'actualité.
+
+Ce qui avait déjà cessé d'être vrai. Le protocole affirme que Claude et Codex ne
+communiquent pas et qu'Anthony transporte les dossiers de revue. Dans les faits, ANT-010
+consigne une revue BODY-SCHEMA-002 « rédigée par Codex à la demande d'Anthony en
+remplacement de Claude » ; D-060 est né d'une proposition écrite directement par Claude,
+sans paquet de revue ; et l'incident D-061 a été diagnostiqué puis réparé par Claude en
+ingénierie directe. Le protocole nommait encore « Claude Fable 5 » quand les décisions
+récentes citent Claude Opus 5.
+
+Décision. Il n'y a plus qu'un rôle d'agent. Anthony travaille avec l'agent disponible —
+Codex CLI, Claude — de façon interchangeable ; un agent lit le dépôt, décide, implémente,
+vérifie et documente. Aucun document ne transite plus par Anthony pour atteindre un autre
+agent.
+
+Ce qui est conservé, parce que c'est ce qui a réellement attrapé des erreurs. La revue
+contradictoire subsiste comme **fonction** et non comme personne : une décision à fort
+impact est contredite par un agent qui n'a pas produit le travail, dans une session
+distincte, à partir d'un dossier court. Les conditions de déclenchement restent celles de
+la phase E. Ce qui disparaît est le routage humain, pas la contradiction — c'est elle qui a
+produit les corrections bloquantes de REF-002 et REF-003 ainsi que les portes de la famille
+LIFE.
+
+Ce qui ne change pas. D-004 : les choix logiciels et expérimentaux ne remontent pas à
+Anthony. D-008 : simulation uniquement, aucun achat ni manipulation. L'autorité d'Anthony
+sur le matériel, le budget, les données humaines et l'objectif du projet. La discipline
+scientifique entière : pré-enregistrement avant calcul, baseline simple recevant la même
+information, résultats négatifs conservés, sources gelées non modifiées, banques closes non
+réouvertes, D-060 et D-061. Le dépôt reste la mémoire partagée ; les conversations ne font
+pas foi.
+
+Propagation. `COLLABORATION_PROTOCOL.md` est réécrit. `CODEX_TASK_BRIEF.md`, `PILOTAGE.md`,
+`SESSION_HANDOFF.md` et `ANTHONY_INBOX.md` cessent d'attribuer les prochaines étapes à trois
+acteurs distincts et n'en distinguent plus que deux, Anthony et l'agent. Les documents datés
+ne sont pas retouchés — registre antérieur, `docs/research`, pré-enregistrements dont
+`J0_PROTOCOL.md`, `PROPOSITION_SUBSTRAT.md` et `DIAGNOSTIC_ET_PLAN_DE_DEBLOCAGE.md` : ils
+consignent ce qui a été fait sous le protocole d'alors, et une décision ancienne ne se
+réécrit pas.
+
+Action agent : aucune sur ce point ; D-060 reste la tâche en cours. Action Anthony :
+aucune. Blocage : aucun.

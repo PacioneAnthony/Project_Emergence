@@ -151,9 +151,11 @@ DISCIPLINE QUI CHANGE — D-060
 
 LIVRABLE DE FIN DE SESSION
 
-Action Codex : ce que tu peux faire seul et dois exécuter ensuite.
+Action agent : ce que tu peux faire seul et dois exécuter ensuite.
 Action Anthony : manipulation, observation ou achat précis ; sinon « aucune ».
-Action Claude : revue préparée avec fichier et prompt ; sinon « aucune ».
+Revue contradictoire : ouverte ou non, avec le fichier et le prompt si elle l'est. Sous
+D-062 elle est faite par un agent qui n'a pas produit le travail, dans une session
+distincte — tu l'ouvres toi-même, tu ne la fais pas transiter par Anthony.
 Blocage : condition réelle empêchant la suite ; sinon « aucun ».
 
 Commence par l'étape 1, puis l'étape 2, puis la sonde de l'étape 3, et mets à jour
