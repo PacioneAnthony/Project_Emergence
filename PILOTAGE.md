@@ -71,22 +71,17 @@ vision tient dans l'heure.
 
 ## Actions par acteur
 
-**L'agent** — étape 1 faite le 11 septembre : l'axe d'inclinaison existe et le contrat
-d'observation est à deux consignes. Reste à construire la tâche C1, écrire le seuil de
-marge, exécuter la sonde et publier ses deux chiffres, faisabilité et marge. S'arrêter à la
-première porte rouge. Aucun mécanisme cognitif, aucun pré-enregistrement et aucune banque
-de confirmation avant que la marge existe. Le prompt complet est dans
-`CODEX_TASK_BRIEF.md`.
+**L'agent** — étapes 1 et 2 faites le 11 septembre : l'axe d'inclinaison existe, le contrat
+d'observation est à deux consignes, les quinze cellules ont du contenu et la tâche C1 est
+construite et mesurée. **Reste l'étape 3** : écrire le seuil de marge, puis exécuter la
+sonde — témoin trivial contre oracle — et publier ses deux chiffres, faisabilité et marge.
+Le seuil s'écrit avant que la sonde tourne. Aucun mécanisme cognitif, aucun
+pré-enregistrement et aucune banque de confirmation avant que la marge existe. Le prompt
+complet est dans `CODEX_TASK_BRIEF.md`.
 
-**À traiter dès l'étape 2, mesuré et non supposé.** La grille donne bien 15 cellules
-distinctes, mais le contenu de la pièce n'est que dans la rangée centrale. En visant à
-+30° la caméra voit le haut du mur et le ciel ; à −30° elle voit le plateau uni de la
-table, dont le contraste moyen tombe à 26 contre 46 au centre. Les objets de
-`sample_room_objects` et les panneaux de `sample_wall_panels` sont tous à hauteur de
-caméra. Placer une cible C1 dans une cellule hors rangée centrale la rendrait donc
-invisible — exactement la faute de faisabilité qui a tué REF-002 et REF-003. Le banc gelé
-étant intangible, l'ajout de contenu passe par le paramètre `wall_panels` de
-`build_bench_mjcf`, qui est prévu pour ça.
+**Réserve de l'étape 1, traitée.** Le contenu ne vivait que dans la rangée centrale ;
+il est maintenant placé dans les quinze cellules par `sim3d/bench2_content.py`, via le
+paramètre `wall_panels` de `build_bench_mjcf`, sans toucher au banc gelé.
 
 **Anthony** — rien de bloquant. Les deux demandes matérielles de juin, `ANT-008` (kit
 AS5600) et `ANT-009` (banc v1.0), sont en sommeil et sans objet sous D-008 et D-060. Une

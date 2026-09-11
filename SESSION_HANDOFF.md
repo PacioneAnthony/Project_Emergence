@@ -61,6 +61,53 @@ plateau uni de la table, contraste 26 contre 46 au centre. Une cible C1 hors ran
 centrale serait invisible. C'est la faute de faisabilité de REF-002 et REF-003 ; elle se
 traite en ajoutant du contenu par le paramètre `wall_panels`, sans toucher au banc gelé.
 
+### Étape 2 — faite le 11 septembre 2026
+
+Le contenu d'abord. `sim3d/bench2_content.py` place un objet là où le rayon central d'une
+cellule rencontre la pièce — le plateau de la table juste devant la tête, le sol au-delà,
+ou un mur — toujours par le paramètre `wall_panels` de `build_bench_mjcf`, le banc gelé
+restant intact. Les objets sont dimensionnés **en angle** et non en mètres : une cellule
+vise une surface à 0,19 m vers le bas et 3,5 m vers le haut, et une taille métrique unique
+remplissait la vue en bas pour trois pixels en haut.
+
+`learning/c1_task.py` construit la tâche : exploration des quinze cellules, délai occupé
+par d'autres mouvements, puis une image de référence désigne un objet et la tête doit
+répondre en pointant sa cellule. Les objets peuvent changer de place entre les deux
+visites, avec probabilité réglable.
+
+Trois choix empêchent la tâche d'être résolue pour une mauvaise raison :
+
+- **la référence est rendue sur fond neutre**, pas découpée dans la scène — une référence
+  portant son arrière-plan laisserait la comparaison d'images entières répondre sans que
+  l'apparence serve jamais, ce qui est exactement ce qui a rendu les baselines de REF-001
+  non informatives ;
+- **chaque objet est distracteur des autres** : la cible est tirée du même ensemble, donc
+  « il y a quelque chose ici » réduit la recherche sans y répondre, et des cellules restent
+  vides pour que ne rien voir informe aussi ;
+- **la taille apparente ne fuit pas la réponse** : elle varie par rangée, mais elle ne se
+  voit qu'après avoir regardé la cellule, et l'image de référence est rendue à distance
+  fixe sur fond neutre — elle ne peut rien encoder du placement. C'est un gradient de
+  difficulté, pas une réponse offerte. Un test le verrouille.
+
+Mesuré, pas supposé : 14 à 15 cellules utilisables par pièce, **tous les objets placés
+visibles**, le pire à 7,3 % de la vue centrale ; les huit références se distinguent deux à
+deux ; le brassage déplace bien les objets, 8 fois sur 8.
+
+Trois défauts trouvés en regardant les rendus, tous corrigés et verrouillés par un test :
+un rayon vers le bas rencontre le plateau à 17 cm et non le sol, donc tout objet placé au
+sol y était caché ; les panneaux muraux posés à plat sont vus de biais et rétrécissent,
+donc ils sont désormais orientés vers le banc ; et la branche « sphère » ignorait la
+hauteur calculée, ce qui posait toute sphère de la rangée basse sous la table.
+
+**La leçon de REF-003, retrouvée par l'expérience.** Une sonde générique par cellule
+attrape l'occultation mais pas le contraste local : un cylindre sombre sur un mur sombre
+passe le garde géométrique et reste invisible. Chaque objet est donc mesuré là où il se
+trouve réellement, et déplacé avant que l'épisode commence si sa cellule ne le montre pas.
+C'est une construction de monde valide, jamais un re-tirage après résultat.
+
+Vérification reproductible : `python -m scripts.research.c1_check`.
+Planche de la tâche et des références : `docs/research/c1_task_grid.png`.
+
 Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`,
 `learning/paired_stats.py` pour toutes les portes statistiques, `learning/visual_jepa.py`,
 et le banc `sim3d/bench_model.py` / `sim3d/bench_env.py`, qui contient déjà la pièce

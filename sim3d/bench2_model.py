@@ -68,9 +68,15 @@ class BenchTiltConfig:
 
 @dataclass
 class Bench2Config(BenchConfig):
-    """A `BenchConfig` plus the tilt axis. Every inherited field keeps its value."""
+    """A `BenchConfig` plus the tilt axis. Every inherited field keeps its value.
+
+    `extra_mjcf` is appended to the wall-panel string that `build_bench_mjcf`
+    already accepts, which is how a task puts content in cells without touching
+    the frozen bench. See `sim3d.bench2_content`.
+    """
 
     tilt: BenchTiltConfig = field(default_factory=BenchTiltConfig)
+    extra_mjcf: str = ""
 
 
 # --------------------------------------------------------------------- cells

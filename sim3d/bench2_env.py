@@ -74,7 +74,9 @@ class Bench2HeadEnv(BenchHeadEnv):
         room_rng = self.rng if self.config.randomize_room else np.random.default_rng(0)
         objects = bench_model.sample_room_objects(self.config.room, room_rng)
         panels = bench_model.sample_wall_panels(self.config.room, room_rng)
-        xml = bench2_model.build_bench2_mjcf(self.config, objects, panels)
+        xml = bench2_model.build_bench2_mjcf(
+            self.config, objects, panels + getattr(self.config, "extra_mjcf", "")
+        )
         self.model = mujoco.MjModel.from_xml_string(xml)
         self.data = mujoco.MjData(self.model)
 
