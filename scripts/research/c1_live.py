@@ -21,6 +21,7 @@ and the oracle side by side.
 from __future__ import annotations
 
 import argparse
+import collections
 import math
 import time
 
@@ -47,6 +48,95 @@ def _hex(rgba) -> str:
     return "#" + "".join(f"{int(round(c * 255)):02x}" for c in rgba[:3])
 
 
+# Who answers. The key is the identity the page colours by, and the order fixes
+# each policy's colour for good: when the witnesses of step 3 arrive, the oracle
+# keeps the hue it has today instead of being repainted by rank.
+POLICIES = {
+    "oracle": "oracle",
+    "balayage": "témoin — balayage exhaustif",
+    "dernier_angle": "témoin — dernier angle vu",
+}
+
+
+def wilson(successes: int, trials: int, z: float = 1.96) -> tuple[float, float]:
+    """95 % Wilson score interval for a success rate.
+
+    Honest at the extremes, where the naive p +/- z*sqrt(p(1-p)/n) collapses to
+    a zero-width band: after three successes out of three it says [0.44, 1.00],
+    not [1.00, 1.00].
+    """
+
+    if trials <= 0:
+        return 0.0, 1.0
+    p = successes / trials
+    denominator = 1.0 + z * z / trials
+    centre = (p + z * z / (2 * trials)) / denominator
+    half = z * math.sqrt(p * (1 - p) / trials + z * z / (4 * trials * trials)) / denominator
+    return max(0.0, centre - half), min(1.0, centre + half)
+
+
+class C1Charts:
+    """What the page plots: the outcome per policy, and the simulation's health.
+
+    Pure Python, no MuJoCo, so it is tested on its own. Every series is capped,
+    since the runner can go all night.
+    """
+
+    MAX_STOPS = 600
+    MAX_POINTS = 1000
+
+    def __init__(self, pointing_threshold: float = POINTING_TOLERANCE_DEG):
+        self.pointing_threshold = float(pointing_threshold)
+        self.chance: float | None = None
+        self.visibility_threshold: float | None = None
+        self._stop_index = 0
+        self._stops: collections.deque = collections.deque(maxlen=self.MAX_STOPS)
+        self._visibility: collections.deque = collections.deque(maxlen=self.MAX_POINTS)
+        self._tallies: dict[str, list[int]] = {}
+        self._rows: dict[str, collections.deque] = {}
+
+    def configure(self, chance: float, visibility_threshold: float) -> None:
+        self.chance = float(chance)
+        self.visibility_threshold = float(visibility_threshold)
+
+    def add_stop(self, error_deg: float) -> None:
+        self._stop_index += 1
+        self._stops.append([self._stop_index, float(error_deg)])
+
+    def add_room(self, episode: int, visibility_min: float) -> None:
+        self._visibility.append([int(episode), float(visibility_min)])
+
+    def add_result(self, policy: str, episode: int, success: bool, moves: int) -> None:
+        tally = self._tallies.setdefault(policy, [0, 0])
+        tally[0] += int(bool(success))
+        tally[1] += 1
+        low, high = wilson(*tally)
+        rows = self._rows.setdefault(policy, collections.deque(maxlen=self.MAX_POINTS))
+        rows.append([int(episode), tally[0] / tally[1], low, high, int(moves)])
+
+    def policies(self) -> list[str]:
+        known = [key for key in POLICIES if key in self._rows]
+        return known + [key for key in self._rows if key not in POLICIES]
+
+    def to_dict(self) -> dict:
+        order = self.policies()
+        slots = list(POLICIES)
+        return {
+            "policies": [
+                {"key": key, "label": POLICIES.get(key, key),
+                 "slot": slots.index(key) if key in slots else len(slots) + order.index(key)}
+                for key in order
+            ],
+            "success": {key: [row[:4] for row in self._rows[key]] for key in order},
+            "moves": {key: [[row[0], row[4]] for row in self._rows[key]] for key in order},
+            "chance": self.chance,
+            "pointing": list(self._stops),
+            "pointing_threshold": self.pointing_threshold,
+            "visibility": list(self._visibility),
+            "visibility_threshold": self.visibility_threshold,
+        }
+
+
 class C1LiveObserver:
     """Turns an episode's events into frames, state and log lines."""
 
@@ -63,6 +153,9 @@ class C1LiveObserver:
         self._moved: set = set()
         self._alerts: list[str] = []
         self._gaze = None
+        self.charts = C1Charts()
+        # Set by the runner before each answer: who is answering this episode.
+        self.policy = "oracle"
 
     # ------------------------------------------------------------------ steps
 
@@ -138,6 +231,11 @@ class C1LiveObserver:
         self._alerts = []
         self._gaze = None
         worst = min(episode.object_visibility.values())
+        self.charts.configure(
+            chance=1.0 / len(episode.cells),
+            visibility_threshold=episode.config.min_visible_fraction,
+        )
+        self.charts.add_room(self.tally["episodes"] + 1, worst)
         self.view.update(
             experiment="C1",
             episode=self.tally["episodes"] + 1,
@@ -150,6 +248,7 @@ class C1LiveObserver:
             result=None,
             alerts=[],
             pointing_error_deg=None,
+            charts=self.charts.to_dict(),
         )
         self.view.set_reference(None)
         self.view.log(
@@ -177,6 +276,8 @@ class C1LiveObserver:
             self._alert(f"écart de pointage de {error:.2f}° sur la cellule ({pan:g}, {tilt:+g})")
         if not (np.isfinite(env.data.qpos).all() and np.isfinite(env.data.qvel).all()):
             self._alert("état de la simulation non fini (NaN ou infini)")
+        self.charts.add_stop(error)
+        fields["charts"] = self.charts.to_dict()
         fields["alerts"] = list(self._alerts)
         self.view.update(**fields)
         self._frame(episode)
@@ -225,6 +326,7 @@ class C1LiveObserver:
         result = info["result"]
         self.tally["episodes"] += 1
         self.tally["successes"] += int(result.success)
+        self.charts.add_result(self.policy, self.tally["episodes"], result.success, result.moves)
         self.view.update(
             phase="answer",
             result={
@@ -235,6 +337,7 @@ class C1LiveObserver:
                 "moved": result.moved_between_visits,
             },
             tally=dict(self.tally),
+            charts=self.charts.to_dict(),
         )
         self.view.log(
             f"Réponse : cellule {self._cell(result.answered_cell)} — "
@@ -328,6 +431,7 @@ def main() -> int:
                     phase_label="Réponse — donnée ici par l'oracle, qui connaît la cellule : "
                     "démonstration du déroulé, pas une politique"
                 )
+                observer.policy = "oracle"
                 target = episode.target_cell
                 episode.look_at(*target)
                 episode.answer(*target)

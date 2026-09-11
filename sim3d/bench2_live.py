@@ -15,6 +15,9 @@ It serves one local page with two live streams and the experiment's state:
   30 degree field, and a gold marker over the object to find once one is
   designated.
 
+Below them, four charts follow the episodes as they accumulate -- the outcome per
+policy and the simulation's health; see `sim3d.bench2_live_charts`.
+
 The viewer watches and never changes. It renders from the episode's own MjData
 without stepping it or calling mj_forward, and draws nothing from the episode's
 random generator, so a run with the viewer attached yields the same images and
@@ -43,6 +46,7 @@ import numpy as np
 from PIL import Image
 
 from sim3d import bench_model
+from sim3d.bench2_live_charts import CHARTS_CSS, CHARTS_HTML, CHARTS_JS
 from sim3d.bench2_model import Bench2Config
 
 OVERVIEW_CAMERA = "live_overview"
@@ -285,6 +289,10 @@ class LiveView:
         try:
             if path in ("/", "/index.html"):
                 self._send(request, 200, "text/html; charset=utf-8", PAGE.encode("utf-8"))
+            elif path == "/charts.js":
+                self._send(request, 200, "text/javascript; charset=utf-8", CHARTS_JS.encode("utf-8"))
+            elif path == "/charts.css":
+                self._send(request, 200, "text/css; charset=utf-8", CHARTS_CSS.encode("utf-8"))
             elif path == "/state":
                 body = json.dumps(self.snapshot(), ensure_ascii=False, default=_jsonable)
                 self._send(request, 200, "application/json; charset=utf-8", body.encode("utf-8"))
@@ -391,7 +399,9 @@ td:first-child { color:var(--muted); width:46% }
 #log { font:12px/1.5 ui-monospace, Consolas, monospace; max-height:240px; overflow:auto;
        white-space:pre-wrap; color:#c9cdd6 }
 @media (max-width:900px) { main, .split { grid-template-columns:1fr } }
-</style></head>
+</style>
+<link rel="stylesheet" href="/charts.css">
+</head>
 <body>
 <header>
   <h1>Émergence — vue en direct</h1>
@@ -428,8 +438,10 @@ td:first-child { color:var(--muted); width:46% }
       <div id="alerts"></div>
     </section>
   </div>
+  <!--charts-->
   <section class="panel wide"><h2>Journal</h2><div id="log"></div></section>
 </main>
+<script src="/charts.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 let refVersion = -1, lastLog = "";
@@ -507,6 +519,7 @@ async function tick() {
     $("refnote").textContent = s.target ? `Objet à retrouver : ${s.target.label}.` : "Aucune cible désignée pour l'instant.";
     $("alerts").innerHTML = (s.alerts || []).map(a => `<div>⚠ ${a}</div>`).join("");
     drawGrid(s.grid);
+    if (window.drawCharts) drawCharts(s.charts);
     const text = (s.log || []).join("\n");
     if (text !== lastLog) {
       const el = $("log"), atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
@@ -524,3 +537,6 @@ setInterval(tick, 250); tick();
 </script>
 </body></html>
 """
+
+# The charts live in their own module and slot in just above the log.
+PAGE = PAGE.replace("  <!--charts-->\n", CHARTS_HTML)

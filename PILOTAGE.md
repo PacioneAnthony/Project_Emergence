@@ -107,6 +107,15 @@ les quinze cellules, la phase en cours, la consigne contre l'angle réel, et une
 la tête s'arrête loin de sa cellule ou si l'état de la simulation cesse d'être fini.
 L'affichage tourne à 0,3 fois le temps réel, le vrai servo étant trop rapide pour l'œil.
 
+Sous la grille, quatre graphes suivent les épisodes à mesure qu'ils s'accumulent. Deux
+répondent à « est-ce que ça progresse ? » : le taux de succès cumulé par politique, avec
+son intervalle de confiance à 95 % et le niveau du hasard, et le nombre de mouvements par
+épisode — les deux quantités que la sonde de l'étape 3 comparera entre témoin et oracle.
+Deux répondent à « la simulation fait-elle quelque chose d'absurde ? » : l'écart de
+pointage à chaque arrêt face au seuil d'alerte, et la visibilité de l'objet le moins
+visible de chaque pièce face au seuil du garde. Tant que seul l'oracle répond, les deux
+premiers sont plats par construction : rien n'apprend encore.
+
 Elle regarde sans jamais modifier l'expérience : un test vérifie qu'un épisode observé,
 rendu à chaque pas, produit exactement les mêmes images et le même résultat qu'un épisode
 non observé. La réponse y est pour l'instant donnée par l'oracle — une démonstration du

@@ -115,7 +115,12 @@ robot avec le regard tracé, grille des quinze cellules, état et journal. Lance
 `scripts/research/c1_live.py`, configuration `c1-live` dans `.claude/launch.json`. Un
 épisode peut recevoir un `observer` — `on_phase` et `on_step` — qui ne doit ni faire
 avancer le monde, ni appeler `mj_forward`, ni tirer dans le générateur de l'épisode ; un
-test vérifie qu'observer ne change rien.
+test vérifie qu'observer ne change rien. Sous la grille, quatre graphes tracés sur `<canvas>`
+sans bibliothèque externe (`sim3d/bench2_live_charts.py`) suivent les épisodes : succès
+cumulé avec intervalle de Wilson et mouvements par politique, écart de pointage et
+visibilité face à leurs seuils. Une politique garde sa couleur pour de bon — l'oracle ne
+sera pas repeint quand les témoins arriveront — et la palette est validée par le script
+de visualisation contre le fond réel de la page.
 
 **Orientation, mesurée et non supposée** : un petit pan tourne la tête vers *sa droite*.
 Tête à pan 90, un repère au cap 80 apparaît à droite de l'image, au cap 100 à gauche. Vue

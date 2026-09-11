@@ -150,3 +150,73 @@ def test_streams_deliver_jpeg_frames(view):
             assert response.headers["Content-Type"].startswith("multipart/x-mixed-replace")
             chunk = response.read(256)
             assert b"--frame" in chunk and b"image/jpeg" in chunk and b"\xff\xd8" in chunk
+
+
+# ------------------------------------------------------------------- charts
+
+from scripts.research.c1_live import POLICIES, C1Charts, wilson  # noqa: E402
+
+
+def test_wilson_is_honest_at_the_extremes():
+    """Three out of three is not a certainty: the band must not collapse to 100 %."""
+
+    low, high = wilson(3, 3)
+    assert high == 1.0 and 0.40 < low < 0.45
+    low, high = wilson(0, 10)
+    assert low == 0.0 and 0.25 < high < 0.30
+    assert wilson(0, 0) == (0.0, 1.0)
+
+
+def test_interval_narrows_as_episodes_accumulate():
+    widths = [wilson(n, n)[1] - wilson(n, n)[0] for n in (1, 5, 20, 100)]
+    assert widths == sorted(widths, reverse=True)
+
+
+def test_charts_collect_outcomes_per_policy():
+    charts = C1Charts()
+    charts.configure(chance=1 / 15, visibility_threshold=0.02)
+    charts.add_result("oracle", 1, True, 22)
+    charts.add_result("balayage", 2, False, 30)
+    charts.add_result("oracle", 3, True, 22)
+    data = charts.to_dict()
+    assert [p["key"] for p in data["policies"]] == ["oracle", "balayage"]
+    assert data["success"]["oracle"][-1][:2] == [3, 1.0]
+    assert data["success"]["balayage"][-1][:2] == [2, 0.0]
+    assert data["moves"]["balayage"] == [[2, 30]]
+    assert data["chance"] == pytest.approx(1 / 15)
+
+
+def test_a_policy_keeps_its_colour_whoever_else_is_on_the_chart():
+    """Colour follows the entity: the oracle is not repainted when witnesses arrive."""
+
+    alone = C1Charts()
+    alone.add_result("oracle", 1, True, 22)
+    crowded = C1Charts()
+    crowded.add_result("dernier_angle", 1, False, 9)
+    crowded.add_result("balayage", 1, True, 30)
+    crowded.add_result("oracle", 1, True, 22)
+
+    def slot(data, key):
+        return next(p["slot"] for p in data["policies"] if p["key"] == key)
+
+    oracle = list(POLICIES).index("oracle")
+    assert slot(alone.to_dict(), "oracle") == slot(crowded.to_dict(), "oracle") == oracle
+    assert len({p["slot"] for p in crowded.to_dict()["policies"]}) == 3
+
+
+def test_health_series_are_capped_so_the_runner_can_go_all_night():
+    charts = C1Charts()
+    for _ in range(C1Charts.MAX_STOPS + 50):
+        charts.add_stop(0.001)
+    stops = charts.to_dict()["pointing"]
+    assert len(stops) == C1Charts.MAX_STOPS
+    assert stops[-1][0] == C1Charts.MAX_STOPS + 50
+
+
+def test_page_carries_the_charts(view):
+    body = _get(view.url)[1].decode("utf-8")
+    assert "Au fil des épisodes" in body and "<!--charts-->" not in body
+    for resource in ("charts.js", "charts.css"):
+        status, data = _get(view.url + resource)
+        assert status == 200 and len(data) > 500
+    assert b"drawCharts" in _get(view.url + "charts.js")[1]
