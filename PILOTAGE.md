@@ -94,6 +94,24 @@ faite par un agent qui n'a pas produit le travail, dans une session distincte.
 
 **Blocage** — aucun.
 
+## Suivre les expériences en direct
+
+```
+.venv/Scripts/python.exe -m scripts.research.c1_live
+```
+
+puis ouvrir http://127.0.0.1:8765/ — ou la configuration `c1-live` du navigateur intégré.
+La page montre en direct ce que voit la tête, à la résolution exacte de l'agent ; la pièce
+vue de derrière le robot, avec l'axe du regard et les bords du champ tracés dans la scène ;
+les quinze cellules, la phase en cours, la consigne contre l'angle réel, et une alerte si
+la tête s'arrête loin de sa cellule ou si l'état de la simulation cesse d'être fini.
+L'affichage tourne à 0,3 fois le temps réel, le vrai servo étant trop rapide pour l'œil.
+
+Elle regarde sans jamais modifier l'expérience : un test vérifie qu'un épisode observé,
+rendu à chaque pas, produit exactement les mêmes images et le même résultat qu'un épisode
+non observé. La réponse y est pour l'instant donnée par l'oracle — une démonstration du
+déroulé, pas une politique ; la sonde de l'étape 3 s'y branchera.
+
 ## Acquis conservés
 
 Aucun n'est promu à une qualification universelle ; le registre du noyau reste candidat.

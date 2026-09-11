@@ -92,9 +92,13 @@ class C1Result:
 class C1Episode:
     """One episode. Build it, explore, delay, then answer."""
 
-    def __init__(self, config: C1Config | None = None, seed: int = 0):
+    def __init__(self, config: C1Config | None = None, seed: int = 0, observer=None):
         self.config = config or C1Config()
         self.seed = int(seed)
+        # Anything with on_phase(episode, phase, info) and on_step(episode,
+        # observation) -- the live viewer is one. It watches the episode's own
+        # world only, never the hidden renders used to verify visibility.
+        self.observer = observer
         self.rng = np.random.default_rng(self.seed)
         self.cells = view_cells(self.config.bench)
 
@@ -125,6 +129,8 @@ class C1Episode:
         self.moves = 0
         self.env = None
         self.placement, self.object_visibility = self._place_and_verify()
+        self._attach(self.env)
+        self._notify("setup")
 
     # ------------------------------------------------------------------ world
 
@@ -151,7 +157,10 @@ class C1Episode:
             seed=base.seed if base.seed is not None else self.seed,
             randomize_room=base.randomize_room,
             tilt=base.tilt,
-            extra_mjcf=items_mjcf(items, base),
+            # Keep whatever the caller already put in the bench -- a camera for
+            # the live view, say. Dropping it made that content vanish from the
+            # episode's world while still being present in the bare frames.
+            extra_mjcf=(base.extra_mjcf or "") + items_mjcf(items, base),
         )
 
     def _rebuild(self, placement: dict[int, tuple[float, float]]) -> None:
@@ -161,6 +170,7 @@ class C1Episode:
         self.env.close()
         self.env = Bench2HeadEnv(self._bench_config(placement))
         self.env.reset(seed=self.seed)
+        self._attach(self.env)
         self.env.settle_at(pan, tilt)
 
     # ------------------------------------------------------- visibility guard
@@ -235,34 +245,43 @@ class C1Episode:
         order = list(self.cells)
         if self.config.exploration_order == "random":
             order = [order[i] for i in self.rng.permutation(len(order))]
+        self._notify("exploration")
         for pan, tilt in order:
             observation = self.env.settle_at(pan, tilt)
             self.moves += 1
+            self._notify("look", cell=(pan, tilt))
             yield (pan, tilt), self._render(), observation.proprioception()
 
     def delay(self):
         """Fill time with other movements, and possibly move the objects."""
 
+        self._notify("delay")
         for _ in range(self.config.delay_moves):
             pan, tilt = self.cells[int(self.rng.integers(0, len(self.cells)))]
             self.env.settle_at(pan, tilt)
             self.moves += 1
+            self._notify("look", cell=(pan, tilt))
         if self.rng.random() < self.config.shuffle_probability:
+            before = dict(self.placement)
             self.placement = self._draw_placement()
             self.moved_between_visits = True
             self._rebuild(self.placement)
+            self._notify("shuffle", before=before, after=dict(self.placement))
 
     def designate(self) -> np.ndarray:
         """Pick the object to find and return its reference image."""
 
         self._target = self.appearances[int(self.rng.integers(0, len(self.appearances)))]
-        return reference_image(self._target, self.config)
+        image = reference_image(self._target, self.config)
+        self._notify("designate", target=self._target.index, reference=image)
+        return image
 
     # --------------------------------------------------------------- policy API
 
     def look_at(self, pan_deg: float, tilt_deg: float) -> np.ndarray:
         self.env.settle_at(float(pan_deg), float(tilt_deg))
         self.moves += 1
+        self._notify("look", cell=_nearest_cell(self.cells, pan_deg, tilt_deg))
         return self._render()
 
     def answer(self, pan_deg: float, tilt_deg: float) -> C1Result:
@@ -270,13 +289,15 @@ class C1Episode:
             raise RuntimeError("designate() must be called before answer()")
         answered = _nearest_cell(self.cells, pan_deg, tilt_deg)
         target = self.placement[self._target.index]
-        return C1Result(
+        result = C1Result(
             success=answered == target,
             answered_cell=answered,
             target_cell=target,
             moves=self.moves,
             moved_between_visits=self.moved_between_visits,
         )
+        self._notify("answer", result=result)
+        return result
 
     @property
     def target_cell(self) -> tuple[float, float]:
@@ -290,6 +311,14 @@ class C1Episode:
         return {cell: index for index, cell in self.placement.items()}
 
     # ---------------------------------------------------------------- plumbing
+
+    def _attach(self, env) -> None:
+        if self.observer is not None:
+            env.step_callbacks.append(lambda observation: self.observer.on_step(self, observation))
+
+    def _notify(self, phase: str, **info) -> None:
+        if self.observer is not None:
+            self.observer.on_phase(self, phase, info)
 
     def _render(self) -> np.ndarray:
         size = self.config.image_size

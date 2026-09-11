@@ -53,6 +53,10 @@ class Bench2HeadEnv(BenchHeadEnv):
 
     def __init__(self, config: Bench2Config | None = None):
         super().__init__(config or Bench2Config())
+        # Called with each new observation at the end of step(). A callback must
+        # not step the world, call mj_forward or draw from self.rng: the live
+        # viewer is one, and it may watch an experiment but never change it.
+        self.step_callbacks: list = []
 
     # ------------------------------------------------------------------ setup
 
@@ -169,7 +173,10 @@ class Bench2HeadEnv(BenchHeadEnv):
 
         self.time += self.config.control_dt
         self.step_count += 1
-        return self._read_observation()
+        observation = self._read_observation()
+        for callback in self.step_callbacks:
+            callback(observation)
+        return observation
 
     # ---------------------------------------------------------------- sensing
 

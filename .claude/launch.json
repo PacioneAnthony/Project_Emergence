@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "c1-live",
+      "runtimeExecutable": ".venv/Scripts/python.exe",
+      "runtimeArgs": ["-m", "scripts.research.c1_live", "--port", "8765"],
+      "port": 8765
+    }
+  ]
+}

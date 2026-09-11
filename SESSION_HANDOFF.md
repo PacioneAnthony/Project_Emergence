@@ -108,6 +108,21 @@ C'est une construction de monde valide, jamais un re-tirage après résultat.
 Vérification reproductible : `python -m scripts.research.c1_check`.
 Planche de la tâche et des références : `docs/research/c1_task_grid.png`.
 
+### Vue en direct et orientation
+
+`sim3d/bench2_live.py` sert une page locale : vision de la tête, pièce vue de derrière le
+robot avec le regard tracé, grille des quinze cellules, état et journal. Lanceur C1 :
+`scripts/research/c1_live.py`, configuration `c1-live` dans `.claude/launch.json`. Un
+épisode peut recevoir un `observer` — `on_phase` et `on_step` — qui ne doit ni faire
+avancer le monde, ni appeler `mj_forward`, ni tirer dans le générateur de l'épisode ; un
+test vérifie qu'observer ne change rien.
+
+**Orientation, mesurée et non supposée** : un petit pan tourne la tête vers *sa droite*.
+Tête à pan 90, un repère au cap 80 apparaît à droite de l'image, au cap 100 à gauche. Vue
+comme le robot la voit, la grille a donc le pan *décroissant* de gauche à droite. Les deux
+premières planches contact rangeaient le pan croissant et montraient la pièce en miroir ;
+elles sont régénérées dans le bon sens.
+
 Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`,
 `learning/paired_stats.py` pour toutes les portes statistiques, `learning/visual_jepa.py`,
 et le banc `sim3d/bench_model.py` / `sim3d/bench_env.py`, qui contient déjà la pièce

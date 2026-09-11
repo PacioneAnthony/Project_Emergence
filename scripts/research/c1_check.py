@@ -25,6 +25,7 @@ import collections
 import numpy as np
 
 from learning.c1_task import PALETTE, Appearance, C1Config, C1Episode, reference_image
+from sim3d.bench2_live import columns_as_seen
 
 
 def episode_facts(seed: int, config: C1Config) -> dict | None:
@@ -102,8 +103,11 @@ def contact_sheet(seed: int, path: str, config: C1Config | None = None) -> None:
 
     ref_size = max(1, (cols * size) // len(references))
     sheet = np.zeros(((rows + 1) * size, cols * size, 3), dtype=np.uint8)
-    for k, cell in enumerate(cells):
-        r, c = divmod(k, cols)
+    # As the robot sees it, its left on the left: pan decreases left to right.
+    order = columns_as_seen(sorted({pan for pan, _ in cells}))
+    tilts = sorted({tilt for _, tilt in cells}, reverse=True)
+    for cell in cells:
+        r, c = tilts.index(cell[1]), order.index(cell[0])
         sheet[r * size : (r + 1) * size, c * size : (c + 1) * size] = frames[cell]
     for i, reference in enumerate(references):
         strip = reference[:: max(1, size // ref_size), :: max(1, size // ref_size)]

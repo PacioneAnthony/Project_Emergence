@@ -24,6 +24,7 @@ import argparse
 import numpy as np
 
 from sim3d.bench2_env import Bench2HeadEnv
+from sim3d.bench2_live import columns_as_seen
 from sim3d.bench2_model import Bench2Config, grid_shape, view_cells
 
 
@@ -101,9 +102,14 @@ def contact_sheet(seed: int, path: str, size: int = 128) -> None:
         frames = render_cells(env, cells, size)
     finally:
         env.close()
+    # Laid out as the robot sees it, its left on the left. A small pan turns the
+    # head to its right, so pan *decreases* from left to right; sorting by pan
+    # ascending, as this sheet first did, mirrored the room.
+    order = columns_as_seen(sorted({pan for pan, _ in cells}))
+    tilts = sorted({tilt for _, tilt in cells}, reverse=True)
     sheet = np.zeros((rows * size, cols * size, 3), dtype=np.uint8)
-    for k, frame in enumerate(frames):
-        r, c = divmod(k, cols)
+    for (pan, tilt), frame in zip(cells, frames):
+        r, c = tilts.index(tilt), order.index(pan)
         sheet[r * size : (r + 1) * size, c * size : (c + 1) * size] = frame.astype(np.uint8)
     matplotlib.image.imsave(path, sheet)
 
