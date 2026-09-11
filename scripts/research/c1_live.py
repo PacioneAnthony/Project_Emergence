@@ -27,6 +27,7 @@ import time
 
 import numpy as np
 
+from learning.c1_probe import wilson  # one implementation, shared with the probe
 from learning.c1_task import PALETTE, C1Config, C1Episode
 from sim3d.bench2_content import place_in_cell
 from sim3d.bench2_live import LiveView, SceneRenderer, columns_as_seen, live_camera_mjcf
@@ -56,23 +57,6 @@ POLICIES = {
     "balayage": "témoin — balayage exhaustif",
     "dernier_angle": "témoin — dernier angle vu",
 }
-
-
-def wilson(successes: int, trials: int, z: float = 1.96) -> tuple[float, float]:
-    """95 % Wilson score interval for a success rate.
-
-    Honest at the extremes, where the naive p +/- z*sqrt(p(1-p)/n) collapses to
-    a zero-width band: after three successes out of three it says [0.44, 1.00],
-    not [1.00, 1.00].
-    """
-
-    if trials <= 0:
-        return 0.0, 1.0
-    p = successes / trials
-    denominator = 1.0 + z * z / trials
-    centre = (p + z * z / (2 * trials)) / denominator
-    half = z * math.sqrt(p * (1 - p) / trials + z * z / (4 * trials * trials)) / denominator
-    return max(0.0, centre - half), min(1.0, centre + half)
 
 
 class C1Charts:

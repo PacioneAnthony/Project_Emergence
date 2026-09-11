@@ -46,6 +46,7 @@ import numpy as np
 from PIL import Image
 
 from sim3d import bench_model
+from sim3d.bench2_env import release_renderer
 from sim3d.bench2_live_charts import CHARTS_CSS, CHARTS_HTML, CHARTS_JS
 from sim3d.bench2_model import Bench2Config
 
@@ -190,7 +191,7 @@ class SceneRenderer:
     def close(self) -> None:
         for renderer in (self._head, self._room):
             if renderer is not None:
-                renderer.close()
+                release_renderer(renderer)
         self._head = self._room = None
         self._model = None
 

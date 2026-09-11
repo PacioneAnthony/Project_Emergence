@@ -36,7 +36,7 @@ import numpy as np
 
 from sim3d import bench_model
 from sim3d.bench2_content import items_mjcf, place_in_cell, usable_cells
-from sim3d.bench2_env import Bench2HeadEnv
+from sim3d.bench2_env import Bench2HeadEnv, release_renderer
 from sim3d.bench2_model import Bench2Config, view_cells
 
 # Saturated, well separated hues. Appearance is (shape, colour): the palette is
@@ -128,6 +128,7 @@ class C1Episode:
         self._target: Appearance | None = None
         self.moves = 0
         self.env = None
+        self._measured_frames: dict[int, np.ndarray] = {}
         self.placement, self.object_visibility = self._place_and_verify()
         self._attach(self.env)
         self._notify("setup")
@@ -163,15 +164,6 @@ class C1Episode:
             extra_mjcf=(base.extra_mjcf or "") + items_mjcf(items, base),
         )
 
-    def _rebuild(self, placement: dict[int, tuple[float, float]]) -> None:
-        """Swap the world, keeping the head exactly where it is."""
-
-        pan, tilt = self.env.servo_angle_deg(), self.env.tilt_angle_deg()
-        self.env.close()
-        self.env = Bench2HeadEnv(self._bench_config(placement))
-        self.env.reset(seed=self.seed)
-        self._attach(self.env)
-        self.env.settle_at(pan, tilt)
 
     # ------------------------------------------------------- visibility guard
 
@@ -195,15 +187,17 @@ class C1Episode:
         lo, hi = size // 4, size - size // 4
         env = Bench2HeadEnv(self._bench_config(placement))
         env.reset(seed=self.seed)
-        seen = {}
+        seen, frames = {}, {}
         for appearance in self.appearances:
             cell = placement[appearance.index]
             env.settle_at(*cell)
-            frame = env.render_camera(size, size).astype(np.float32)[lo:hi, lo:hi]
-            reference = self._bare[cell][lo:hi, lo:hi]
-            seen[appearance.index] = float(
-                (np.abs(frame - reference).sum(axis=2) > 25).mean()
-            )
+            full = env.render_camera(size, size).astype(np.float32)
+            frames[appearance.index] = full
+            changed = np.abs(full[lo:hi, lo:hi] - self._bare[cell][lo:hi, lo:hi]).sum(axis=2) > 25
+            seen[appearance.index] = float(changed.mean())
+        # Kept for the perceptual oracle: each object as it looks in its cell, in
+        # exactly the world the episode goes on to use.
+        self._measured_frames = frames
         return seen, env
 
     def _place_and_verify(self):
@@ -263,9 +257,17 @@ class C1Episode:
             self._notify("look", cell=(pan, tilt))
         if self.rng.random() < self.config.shuffle_probability:
             before = dict(self.placement)
-            self.placement = self._draw_placement()
+            pan, tilt = self.env.servo_angle_deg(), self.env.tilt_angle_deg()
+            previous = self.env
+            # The same verification as at construction. The shuffle used to redraw
+            # the placement and skip it, so an object could land in a cell that
+            # cannot show it -- the defect entry 1 of docs/research/c1_journal.md
+            # records, fixed before any probe number was seen.
+            self.placement, self.object_visibility = self._place_and_verify()
+            previous.close()
+            self._attach(self.env)
+            self.env.settle_at(pan, tilt)
             self.moved_between_visits = True
-            self._rebuild(self.placement)
             self._notify("shuffle", before=before, after=dict(self.placement))
 
     def designate(self) -> np.ndarray:
@@ -309,6 +311,22 @@ class C1Episode:
 
     def occupied_cells(self) -> dict[tuple[float, float], int]:
         return {cell: index for index, cell in self.placement.items()}
+
+    def oracle_object_views(self) -> dict[int, tuple[tuple[float, float], np.ndarray, np.ndarray]]:
+        """Each placed object's cell, its current view and its exact pixel mask.
+
+        Privileged, like `target_cell`: for the perceptual oracle and for audit
+        only, never for a policy. The mask follows the visibility guard's own
+        definition -- the pixels that change by more than 25 between this view and
+        the same cell in the room without C1's objects.
+        """
+
+        views = {}
+        for index, cell in self.placement.items():
+            frame = self._measured_frames[index]
+            mask = np.abs(frame - self._bare[cell]).sum(axis=2) > 25
+            views[index] = (cell, frame.astype(np.uint8), mask)
+        return views
 
     # ---------------------------------------------------------------- plumbing
 
@@ -384,7 +402,7 @@ def reference_image(appearance: Appearance, config: C1Config) -> np.ndarray:
         renderer.update_scene(data, camera="ref_cam")
         return renderer.render()
     finally:
-        renderer.close()
+        release_renderer(renderer)
 
 
 def bench_defaults() -> Bench2Config:

@@ -198,3 +198,45 @@ def test_a_room_with_too_few_usable_cells_is_refused():
     config = C1Config(object_count=8, min_visible_fraction=0.99)
     with pytest.raises(RuntimeError, match="usable cells"):
         C1Episode(config, seed=SEED)
+
+
+def test_a_shuffle_goes_through_the_same_visibility_check():
+    """Entry 1 of the C1 journal: shuffling used to skip the per-object check."""
+
+    with C1Episode(C1Config(object_count=8, shuffle_probability=1.0), seed=SEED) as ep:
+        list(ep.exploration())
+        ep.delay()
+        assert ep.moved_between_visits
+        assert set(ep.object_visibility) == set(ep.placement)
+        assert min(ep.object_visibility.values()) >= ep.config.min_visible_fraction
+
+
+def test_the_oracle_sees_each_object_where_it_now_stands():
+    with C1Episode(C1Config(object_count=8, shuffle_probability=1.0), seed=SEED) as ep:
+        list(ep.exploration())
+        ep.delay()
+        views = ep.oracle_object_views()
+        assert set(views) == set(ep.placement)
+        for index, (cell, frame, mask) in views.items():
+            assert cell == ep.placement[index]
+            assert frame.shape == (96, 96, 3) and frame.dtype == np.uint8
+            assert mask.any()
+
+
+def test_after_a_shuffle_the_head_sees_the_world_the_guard_measured():
+    """The check that caught the blanked renders.
+
+    Every image rendered after a shuffle came back black, so the exhaustive scan
+    failed in every shuffled room while the oracle, working from frames captured
+    earlier, did not. What the head sees in an object's cell must be what the
+    guard saw there, up to the few pixels a slightly different settle can move.
+    """
+
+    with C1Episode(C1Config(object_count=8, shuffle_probability=1.0), seed=SEED) as ep:
+        list(ep.exploration())
+        ep.delay()
+        assert ep.moved_between_visits
+        _, (cell, frame, _) = sorted(ep.oracle_object_views().items())[0]
+        seen = ep.look_at(*cell).astype(np.float32)
+        assert seen.mean() > 20.0
+        assert np.abs(seen - frame.astype(np.float32)).mean() < 5.0

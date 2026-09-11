@@ -120,3 +120,60 @@ est décidée ici, avant d'avoir vu le moindre chiffre.
 
 Avant la banque, les sources de la sonde sont gelées — empreintes SHA-256 dans un
 manifeste — et copiées à côté des résultats, selon la convention `source_v1` de D-061.
+
+## Entrée 2 — développement, avant la banque
+
+2026-09-11. Dix pièces de développement, jouées pour déboguer. Les seuils de l'entrée 1 ne
+bougent pas.
+
+### Un bogue de rendu, trouvé par la sonde et corrigé
+
+Premier passage : balayage 3 sur 10, en échec dans *chacune* des pièces brassées, alors qu'il
+regarde des images fraîches après le brassage. Diagnostic sur la pièce `3647248449` : après
+le brassage, toutes ses distances valaient 2,0 — ses images ne contenaient plus un seul pixel
+coloré. La cause a été établie par une expérience minimale, pas supposée. Dans cette version
+de MuJoCo, fermer un moteur de rendu libère ses ressources graphiques dans le contexte
+OpenGL qui se trouve courant. La correction du brassage prévue à l'entrée 1 fermait l'ancien
+monde *après* avoir construit le nouveau : elle libérait donc les ressources du nouveau, dont
+l'image suivante sortait noire, luminance 154 → 0. Rendre courant le contexte du moteur avant
+de le fermer laisse les autres intacts, écart 0.
+
+Correctif : `release_renderer`, utilisé partout où un moteur est fermé — environnement, vue
+en direct, rendu de référence. Trois tests de non-régression, dont celui qui aurait attrapé
+le bogue : après un brassage, la tête doit voir le monde que le garde a mesuré. L'oracle et
+le témoin de mémoire n'étaient pas touchés, puisqu'ils travaillent sur des images capturées
+avant la fermeture. C'est une correction de bogue au sens de l'entrée 1 — le code ne faisait
+pas ce qu'il devait faire — et aucun paramètre de la règle ni aucun seuil n'a changé.
+
+### Second passage, après correction
+
+Oracle perceptif 9 sur 10, témoin « dernier angle vu » 5 sur 10, balayage 7 sur 10 ; six
+pièces brassées sur dix ; coûts de 1, 1 et 16 mouvements. Le témoin de mémoire échoue dans
+quatre des six pièces brassées, et le balayage n'est plus pénalisé par le brassage. Ces
+chiffres ne décident rien : dix pièces ne peuvent pas établir une borne de Wilson à 80 %.
+
+### Une limite de reconnaissance, consignée et non corrigée
+
+Dans la pièce `2563204882`, non brassée, les trois politiques échouent, oracle compris. La
+cible est le cube orange. Sa référence tombe entièrement dans la classe de teinte 3 ; dans la
+pièce, sous l'éclairage de la scène, elle tombe entièrement dans la classe 2. Avec un
+histogramme sans tolérance, deux classes voisines sont à la distance maximale, 2,0, et la
+sphère jaune, qui a de la masse en classe 3, l'emporte à 0,80.
+
+Ce n'est pas un bogue. La règle fait exactement ce que l'entrée 1 écrit, et l'écart
+d'éclairage entre la référence et la scène est une propriété de la tâche telle que
+construite à l'étape 2. Corriger l'une ou l'autre maintenant, après avoir vu ce chiffre,
+reviendrait à régler la porte en voyant les données. Rien n'est donc touché.
+
+Ce que cela laisse prévoir, écrit ici pour que la banque ne surprenne personne : l'orange est
+la cible dans environ une pièce sur huit. Si ces pièces échouent comme celle-ci, l'oracle
+perceptif tombera vers 87 %, sous le seuil. Et le seuil est plus exigeant qu'il n'y paraît :
+sur 60 pièces, 54 succès donnent 90 % mais une borne de Wilson de 79,9 %, sous 80 % ; il en
+faut 55. Cette prévision ne change rien à la suite. La banque se joue telle que gelée, et si
+la faisabilité échoue, l'entrée 1 dit déjà quoi faire : corriger la tâche dans une version 2,
+avec de nouvelles graines, et non concevoir un mécanisme.
+
+### Gel
+
+Sources gelées dans `docs/research/c1_probe_manifest.json` et copiées octet pour octet sous
+`data/processed/experiments/c1_probe/source_v1`, avant la banque.

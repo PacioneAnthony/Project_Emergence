@@ -186,3 +186,26 @@ def test_cells_are_distinct(env):
     for i in range(n):
         nearest = min(range(n), key=lambda j: distance(forward[i], backward[j]))
         assert nearest == i, f"cell {cells[i]} is closer to {cells[nearest]} than to itself"
+
+
+def test_closing_an_older_env_does_not_blank_a_newer_one():
+    """MuJoCo frees a closed renderer's GPU resources in whichever context is current.
+
+    Closing an older env after a newer one had rendered turned the newer one's
+    next image black -- luminance 154 to 0 -- and silently broke every render that
+    followed a C1 shuffle. The env now makes its own context current before closing.
+    """
+
+    older = Bench2HeadEnv(Bench2Config(seed=1))
+    older.reset(seed=1)
+    older.settle_at(90.0, 0.0)
+    older.render_camera(96, 96)
+    newer = Bench2HeadEnv(Bench2Config(seed=2))
+    try:
+        newer.reset(seed=2)
+        newer.settle_at(90.0, 0.0)
+        before = newer.render_camera(96, 96).copy()
+        older.close()
+        assert np.array_equal(newer.render_camera(96, 96), before)
+    finally:
+        newer.close()

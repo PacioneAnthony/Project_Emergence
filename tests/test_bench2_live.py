@@ -220,3 +220,25 @@ def test_page_carries_the_charts(view):
         status, data = _get(view.url + resource)
         assert status == 200 and len(data) > 500
     assert b"drawCharts" in _get(view.url + "charts.js")[1]
+
+
+def test_the_viewer_following_a_new_world_does_not_blank_the_episode():
+    """SceneRenderer drops its old renderers when the model changes; doing so must
+    not blank the renderer of the env the episode goes on using."""
+
+    renderer = SceneRenderer()
+    first = Bench2HeadEnv(Bench2Config(seed=SEED, extra_mjcf=live_camera_mjcf(Bench2Config())))
+    second = Bench2HeadEnv(Bench2Config(seed=SEED + 1, extra_mjcf=live_camera_mjcf(Bench2Config())))
+    try:
+        first.reset(seed=SEED)
+        first.settle_at(90.0, 0.0)
+        renderer.render(first)
+        second.reset(seed=SEED + 1)
+        second.settle_at(90.0, 0.0)
+        before = second.render_camera(96, 96).copy()
+        renderer.render(second)  # the viewer switches worlds and releases its old renderers
+        assert np.array_equal(second.render_camera(96, 96), before)
+    finally:
+        renderer.close()
+        first.close()
+        second.close()

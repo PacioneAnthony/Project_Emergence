@@ -31,6 +31,25 @@ from sim3d.bench_env import BenchHeadEnv
 from sim3d.bench2_model import Bench2Config
 
 
+def release_renderer(renderer) -> None:
+    """Close a mujoco.Renderer without blanking the others that are still alive.
+
+    In this MuJoCo build, Renderer.close() frees its GPU resources in whichever
+    OpenGL context happens to be current. When a newer renderer's context is the
+    current one, it is the newer renderer's resources that get freed, and its next
+    image comes back black -- luminance 154 to 0, measured on 2026-09-11. Making
+    the renderer's own context current first leaves every other renderer intact.
+    Relies on the private `_gl_context`, and falls back to a plain close without it.
+    """
+
+    if renderer is None:
+        return
+    context = getattr(renderer, "_gl_context", None)
+    if context is not None:
+        context.make_current()
+    renderer.close()
+
+
 @dataclass
 class Bench2Observation:
     time: float
@@ -70,7 +89,7 @@ class Bench2HeadEnv(BenchHeadEnv):
             self.viewer.close()
             self.viewer = None
         if self._renderer is not None:
-            self._renderer.close()
+            release_renderer(self._renderer)
             self._renderer = None
             self._renderer_size = None
 
@@ -225,6 +244,23 @@ class Bench2HeadEnv(BenchHeadEnv):
             if settled:
                 break
         return observation
+
+    # -------------------------------------------------------------- rendering
+
+    def render_camera(self, width: int = 128, height: int = 128, camera: str = bench_model.CAMERA_HEAD) -> np.ndarray:
+        # The frozen parent drops its renderer on a size change with a plain
+        # close(); release it safely first so no other renderer is blanked.
+        if self._renderer is not None and self._renderer_size != (width, height):
+            release_renderer(self._renderer)
+            self._renderer = None
+            self._renderer_size = None
+        return super().render_camera(width, height, camera)
+
+    def close(self) -> None:
+        release_renderer(self._renderer)
+        self._renderer = None
+        self._renderer_size = None
+        super().close()
 
 
 def _rate_limited(current: float, target: float, max_delta: float, low: float, high: float) -> float:
