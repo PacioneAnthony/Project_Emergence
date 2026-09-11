@@ -73,10 +73,14 @@ vision tient dans l'heure.
 
 **L'agent** — étapes 1 et 2 faites le 11 septembre : l'axe d'inclinaison existe, le contrat
 d'observation est à deux consignes, les quinze cellules ont du contenu et la tâche C1 est
-construite et mesurée. **Étape 3 en cours.** Le seuil de marge est écrit et commité avant tout calcul, dans
-`docs/research/c1_journal.md`. Reste à corriger le brassage, construire les deux témoins et
-l'oracle perceptif, puis jouer la banque une seule fois et publier ses deux chiffres,
-faisabilité et marge. Aucun mécanisme cognitif, aucun
+construite et mesurée. **Étape 3 faite.** La sonde de marge a joué sa banque une seule fois, après gel :
+faisabilité 54/60, soit 90,0 %, borne de Wilson 79,9 % — sous le seuil de 80 % fixé avant
+tout calcul, à une pièce près. **Verdict : REJETÉE — FAISABILITÉ.** Ce n'est pas le critère
+d'abandon de D-060 : le substrat n'est pas épuisé, c'est la tâche C1 qu'on corrige. Les six
+échecs de l'oracle perceptif sont un seul mécanisme — la référence et la scène décalent la
+teinte du cube orange, une fois celle du vert, au-delà d'une classe. Prochaine étape : une
+version 2 de la tâche, référence rendue sous l'éclairage de la scène, nouvelles graines,
+seuils écrits avant tout chiffre. Détail : `docs/research/c1_journal.md`, entrées 1 à 3. Aucun mécanisme cognitif, aucun
 pré-enregistrement et aucune banque de confirmation avant que la marge existe. Le prompt
 complet est dans `CODEX_TASK_BRIEF.md`.
 

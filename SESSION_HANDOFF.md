@@ -128,6 +128,26 @@ comme le robot la voit, la grille a donc le pan *décroissant* de gauche à droi
 premières planches contact rangeaient le pan croissant et montraient la pièce en miroir ;
 elles sont régénérées dans le bon sens.
 
+### Étape 3 — sonde de marge, faite le 11 septembre 2026
+
+Seuils écrits et commités avant tout code (`6cc7252`), sources gelées avant la banque
+(`cc5d082`), banque de 60 pièces jouée une seule fois. Faisabilité 54/60 = 90,0 %, borne de
+Wilson 79,9 % : sous le seuil de 80 %, verdict **REJETÉE — FAISABILITÉ**. Ce n'est pas
+l'abandon de D-060 ; c'est la tâche qu'on corrige. Les six échecs de l'oracle perceptif sont
+un seul mécanisme, un décalage de teinte entre la référence, rendue sous un autre éclairage,
+et la scène : cube orange 0 sur 5, et une fois le vert. Toutes les autres cibles sont lues à
+100 %.
+
+Deux bogues trouvés et corrigés en route, avant la banque : le brassage sautait la
+vérification de visibilité par objet ; et la correction de ce saut fermait les moteurs de
+rendu dans le mauvais ordre, ce qui rendait noire toute image après un brassage.
+`release_renderer`, dans `sim3d/bench2_env.py`, règle ce second point partout.
+
+Reprendre par une version 2 de C1 : nouvel espace de graines, référence rendue sous
+l'éclairage de la scène, et vérifier d'abord si le balayage perd ses quatorze pièces à cause
+du fouillis coloré — auquel cas les témoins méritent la même fenêtre centrale que l'objet.
+Lanceur : `python -m scripts.research.c1_probe` ; il refuse de rejouer une banque.
+
 Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`,
 `learning/paired_stats.py` pour toutes les portes statistiques, `learning/visual_jepa.py`,
 et le banc `sim3d/bench_model.py` / `sim3d/bench_env.py`, qui contient déjà la pièce

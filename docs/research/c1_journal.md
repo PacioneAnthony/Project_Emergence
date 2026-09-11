@@ -177,3 +177,61 @@ avec de nouvelles graines, et non concevoir un mécanisme.
 
 Sources gelées dans `docs/research/c1_probe_manifest.json` et copiées octet pour octet sous
 `data/processed/experiments/c1_probe/source_v1`, avant la banque.
+
+## Entrée 3 — la banque, et son verdict
+
+2026-09-11. Soixante pièces réservées, jouées une seule fois après le gel (`cc5d082`,
+16:56:35), en 27 secondes. Aucune pièce écartée par les gardes ; contrôle de notation par
+l'oracle de cellule à 100 % ; 53 % des épisodes brassés. Une seconde partie est refusée par
+le lanceur, et c'est vérifié. Résultats complets : `docs/research/c1_probe_results.json`.
+
+### Les deux chiffres
+
+**Faisabilité : 54 sur 60, soit 90,0 %, borne de Wilson à 95 % de 79,9 %.** Le seuil
+demandait 80 % : il manque une pièce, exactement le cas que l'entrée 2 avait écrit avant la
+partie.
+
+**Marge.** Le témoin « dernier angle vu » réussit 35,0 %, écart apparié de +55,0 points
+[BCa +40,0 ; +66,7], pour le même coût que l'oracle. Le balayage exhaustif réussit 66,7 %,
+écart de +23,3 points [BCa +11,7 ; +33,3], pour quinze mouvements de plus.
+
+**Verdict : REJETÉE — FAISABILITÉ.** Selon l'entrée 1, aucune marge n'est revendiquée quand
+la faisabilité échoue, si larges que paraissent les écarts ci-dessus : ils décrivent la
+sonde, ils ne concluent rien. Et ce n'est *pas* le critère d'abandon de D-060, réservé à une
+marge absente : le substrat n'est pas déclaré épuisé. C'est la tâche qu'on corrige.
+
+### Ce qui a échoué — relecture diagnostique
+
+Relecture déterministe des soixante pièces pour identifier les cibles. Elle reproduit tous
+les choix enregistrés, zéro écart, et n'entre pas dans le verdict.
+
+Les six échecs de l'oracle perceptif relèvent d'un seul mécanisme. Le cube orange est la
+cible dans cinq pièces et l'oracle les manque toutes, 0 sur 5 : sa référence tombe en classe
+de teinte 3, son image dans la pièce en classe 1 ou 2, à la distance maximale de sa propre
+référence, et la sphère jaune l'emporte chaque fois. Le sixième échec est le même effet sur
+le cube vert, référence en classe 9 et scène en classe 8. Toutes les autres cibles sont lues
+à 100 %. La faisabilité ne bute donc pas sur des objets indiscernables : elle bute sur un
+décalage de teinte entre la référence et la scène, que la règle sans tolérance traduit en
+distance maximale.
+
+### Ce que la version 2 doit corriger
+
+Trois candidats, dont aucun n'est encore décidé :
+
+- **rendre la référence sous l'éclairage de la scène**, fond neutre conservé — c'est la cause
+  du décalage, et c'est bien la tâche qu'on corrige, comme l'entrée 1 le demande ;
+- donner à la règle une tolérance aux petits décalages de teinte, par un histogramme
+  circulaire et lissé — mais cela change aussi la force des témoins ;
+- retirer de la palette les couleurs trop proches — au prix d'une tâche plus pauvre.
+
+Recommandation : le premier, seul. Il corrige la tâche sans toucher à la règle.
+
+Une seconde observation doit peser sur la v2 : le balayage manque quatorze pièces que
+l'oracle lit. L'hypothèse la plus probable, non vérifiée ici, est le fouillis coloré de la
+pièce, qui pollue l'histogramme de l'image entière alors que l'oracle ne voit que l'objet.
+Si elle tient, une partie de la marge viendrait de témoins trop faibles — le piège de
+REF-001. Une v2 honnête vérifiera cette hypothèse et, si elle tient, donnera aux témoins la
+même fenêtre centrale que celle où se trouvent les objets.
+
+La v2 prend de nouvelles graines et un nouvel espace de noms, et ses seuils s'écrivent avant
+son premier chiffre, comme ceux-ci.
