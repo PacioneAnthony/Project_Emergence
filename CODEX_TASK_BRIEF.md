@@ -74,7 +74,11 @@ ORDRE DE TRAVAIL — arrête-toi à la première porte rouge
    aucun apprentissage et aucun pré-enregistrement. Elle oppose seulement :
    - le témoin trivial : revenir au dernier angle où quelque chose a été vu, et le
      balayage exhaustif ;
-   - une borne supérieure : un oracle qui connaît la cellule de l'objet cible.
+   - une borne supérieure : un oracle *perceptif*, qui connaît la cellule et les pixels
+     de chaque objet placé mais doit encore reconnaître celui que désigne la référence.
+     Un oracle qui connaît seulement la cellule de la cible réussit à 100 % par
+     construction et ne peut rien révéler. Définitions et seuils figés dans
+     docs/research/c1_journal.md, entrée 1.
    Elle produit deux chiffres, pas un :
    - FAISABILITÉ — la performance absolue de l'oracle. Si l'oracle lui-même échoue, la
      tâche est mal construite : les objets ne sont pas distinguables à cette résolution,

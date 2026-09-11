@@ -73,9 +73,10 @@ vision tient dans l'heure.
 
 **L'agent** — étapes 1 et 2 faites le 11 septembre : l'axe d'inclinaison existe, le contrat
 d'observation est à deux consignes, les quinze cellules ont du contenu et la tâche C1 est
-construite et mesurée. **Reste l'étape 3** : écrire le seuil de marge, puis exécuter la
-sonde — témoin trivial contre oracle — et publier ses deux chiffres, faisabilité et marge.
-Le seuil s'écrit avant que la sonde tourne. Aucun mécanisme cognitif, aucun
+construite et mesurée. **Étape 3 en cours.** Le seuil de marge est écrit et commité avant tout calcul, dans
+`docs/research/c1_journal.md`. Reste à corriger le brassage, construire les deux témoins et
+l'oracle perceptif, puis jouer la banque une seule fois et publier ses deux chiffres,
+faisabilité et marge. Aucun mécanisme cognitif, aucun
 pré-enregistrement et aucune banque de confirmation avant que la marge existe. Le prompt
 complet est dans `CODEX_TASK_BRIEF.md`.
 
