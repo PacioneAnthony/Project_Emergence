@@ -92,6 +92,23 @@ def declared_variants() -> tuple[Variant, ...]:
     return tuple(plan)
 
 
+def tuning_variants() -> tuple[Variant, ...]:
+    """The eighteen measurable on the tuning rooms: everything but the table.
+
+    The table is defined by those rooms, so scoring it there would be optimistic
+    by construction. The protocol was corrected on this point before the first
+    measurement was taken.
+    """
+
+    return tuple(v for v in declared_variants() if v.stop != TABLE)
+
+
+def table_variants() -> tuple[Variant, ...]:
+    """The two the tuning rooms define, measured out of sample at the diagnostic."""
+
+    return tuple(v for v in declared_variants() if v.stop == TABLE)
+
+
 def probe_seeds(subspace: str, count: int) -> list[int]:
     """The project's recipe; nothing is reused from the spent or reserved spaces."""
 
@@ -119,6 +136,15 @@ def play_variant(episode, memory, reference, variant: Variant, table=None) -> di
     only to score -- exactly as the frozen probes do.
     """
 
+    if variant.stop == TABLE and table is None:
+        # Checked before anything is played, not inside the fallback branch: a
+        # table variant without a table is a programming error whichever way the
+        # verification goes, and it must fail the same way every time.
+        raise RuntimeError(
+            "the per-appearance table is required for a table variant; the tuning "
+            "rooms define it, so table variants are only played at the diagnostic"
+        )
+
     verification = VERIFICATIONS[variant.verification]
     remembered = [(cell, windowed(image)) for cell, image in memory]
     remembered_distance = {cell: distance(reference, desc) for cell, desc in remembered}
@@ -140,9 +166,8 @@ def play_variant(episode, memory, reference, variant: Variant, table=None) -> di
         }
 
     # Refuted: walk the fourteen others in the variant's order.
-    threshold = table.get(apparent_class(reference)) if variant.stop == TABLE else STOP_RULES[variant.stop]
-    if variant.stop == TABLE and threshold is None and table is None:
-        raise RuntimeError("the per-appearance table is required for the table variant")
+    threshold = (table.get(apparent_class(reference)) if variant.stop == TABLE
+                 else STOP_RULES[variant.stop])
 
     order = [cell for cell in episode.cells if cell != guess]
     if variant.order == "memoire":

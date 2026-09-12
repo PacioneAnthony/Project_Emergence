@@ -63,8 +63,16 @@ croissante à la référence.
 | `table` | s'arrête au premier passage sous un seuil **propre à la classe apparente** de la référence — sa classe de teinte dominante — la table étant calibrée sur les 40 pièces de réglage seulement |
 
 **Plan factoriel.** Sur `comparaison` : 2 ordres × 8 règles d'arrêt = **16 variantes**. Sur
-`s150` : 2 ordres × {`sans_arret`, `a075`} = **4 variantes**. Vingt au total, toutes jouées sur
-les mêmes épisodes, donc appariées.
+`s150` : 2 ordres × {`sans_arret`, `a075`} = **4 variantes**. Vingt au total, jouées sur les
+mêmes épisodes, donc appariées.
+
+**Correction de spécification, avant la première mesure.** Les deux variantes `table` ne sont
+pas mesurables sur les pièces de réglage : ce sont ces pièces qui définissent la table, et
+l'évaluer sur elles serait optimiste par construction. La phase de réglage mesure donc les
+**dix-huit variantes à seuil fixe**, et les deux variantes `table` entrent directement dans la
+phase de diagnostic, **hors échantillon**, sans avoir à survivre à une sélection. Elles s'y
+ajoutent aux survivantes plutôt que de les remplacer : cela augmente le nombre de règles
+simples à battre, donc rend la barre plus haute et jamais plus basse.
 
 **Signal admissible de la table.** La classe apparente est la classe de teinte dominante du
 descripteur de la référence, qui est admissible. Les seuils sont choisis sur les scores
@@ -108,9 +116,11 @@ première de diagnostic `3787161888`.
 
 ## 5. Conduite
 
-Les vingt variantes sont mesurées sur les **40 pièces de réglage**. La table par classe y est
-calibrée. Les variantes non dominées en succès et en coût y sont retenues — **toutes**, sans
-élagage — et rejouées sur les **60 pièces de diagnostic** sans aucun nouveau réglage.
+Les **dix-huit variantes à seuil fixe** sont mesurées sur les **40 pièces de réglage**, et la
+table par classe y est calibrée. Les variantes non dominées en succès et en coût y sont
+retenues — **toutes**, sans élagage — puis rejouées sur les **60 pièces de diagnostic** sans
+aucun nouveau réglage, **augmentées des deux variantes `table`**, qui y sont mesurées hors
+échantillon.
 
 La tâche est `C1EpisodeV3` strictement inchangée, `p(brassage) = 0,5`, palette v3, lecteur
 gelé. Le manifeste recalcule les dix-sept empreintes du gel hybride et refuse l'exécution en

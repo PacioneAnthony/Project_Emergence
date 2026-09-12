@@ -22,6 +22,8 @@ from learning.c1_audit import (
     non_dominated,
     play_episode,
     probe_seeds,
+    table_variants,
+    tuning_variants,
 )
 from learning.c1_task import C1Config
 
@@ -59,6 +61,30 @@ def test_twenty_variants_exactly_as_declared():
     assert len(s150) == 4          # 2 orders x {sans_arret, a075}
     assert {v.stop for v in s150} == {"sans_arret", "a075"}
     assert sum(1 for v in variants if v.stop == TABLE) == 2
+
+
+def test_the_tuning_plan_excludes_the_table_those_rooms_define():
+    """Scoring the table on the rooms that calibrated it would be optimistic.
+
+    The protocol was corrected on this point before the first measurement. The
+    tuning phase measures the eighteen fixed-threshold variants; the two table
+    variants join the diagnostic out of sample.
+    """
+
+    tuning, tables = tuning_variants(), table_variants()
+    assert len(tuning) == 18 and len(tables) == 2
+    assert all(v.stop != TABLE for v in tuning)
+    assert all(v.stop == TABLE for v in tables)
+    assert set(tuning) | set(tables) == set(declared_variants())
+    assert not set(tuning) & set(tables)
+
+
+def test_a_table_variant_without_a_table_fails_loudly():
+    """The crash that exposed the circularity must stay a loud, named error."""
+
+    with pytest.raises(RuntimeError, match="table"):
+        play_episode(C1Config(object_count=8, shuffle_probability=0.0), SEED,
+                     table_variants(), table=None)
 
 
 def test_seeds_are_fresh_against_every_spent_and_reserved_space():

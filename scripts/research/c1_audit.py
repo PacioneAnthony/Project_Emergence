@@ -33,6 +33,8 @@ from learning.c1_audit import (
     play_episode,
     probe_seeds,
     summarise,
+    table_variants,
+    tuning_variants,
 )
 from learning.c1_task import C1Config
 
@@ -81,15 +83,26 @@ def _write_json(path: Path, payload) -> None:
 
 
 def _frozen_choices():
+    """The survivors of the tuning phase, plus the two table variants by construction.
+
+    The table is defined by the tuning rooms, so its variants cannot survive a
+    selection there; they join the diagnostic set out of sample. Adding them can
+    only raise the bar, never lower it.
+    """
+
     if SURVIVORS is None or CALIBRATED_TABLE is None:
         raise SystemExit(
             "phase de diagnostic refusee : variantes survivantes et table non figees. "
             "Jouer d'abord --subspace tune, puis inscrire SURVIVORS et CALIBRATED_TABLE "
             "dans scripts/research/c1_audit.py et les commiter, avant --freeze."
         )
-    table = {int(k): v for k, v in CALIBRATED_TABLE.items()}
     by_name = {v.name: v for v in declared_variants()}
-    return tuple(by_name[name] for name in SURVIVORS), table
+    chosen = tuple(by_name[name] for name in SURVIVORS)
+    if any(v.stop == c1_audit.TABLE for v in chosen):
+        raise SystemExit("SURVIVORS ne peut pas contenir une variante table : elle n'est pas "
+                         "mesurable sur les pieces de reglage")
+    table = {int(k): v for k, v in CALIBRATED_TABLE.items()}
+    return chosen + table_variants(), table
 
 
 def freeze() -> None:
@@ -135,7 +148,9 @@ def run(subspace: str) -> dict:
         if results_path.exists() or PUBLISHED.exists():
             raise SystemExit("diagnostic refuse : deja joue -- une mesure rejouee est une mesure choisie")
     else:
-        variants, table = declared_variants(), None
+        # The table is defined by these very rooms, so its variants are not
+        # measurable here; they join the diagnostic set out of sample.
+        variants, table = tuning_variants(), None
 
     config = C1Config()
     seeds = probe_seeds(subspace, count)
