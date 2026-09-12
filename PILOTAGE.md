@@ -175,6 +175,15 @@ admissible, deux métriques, les marges, 310 graines neuves et la règle d'arrê
 P1 à P4. **Il engage la construction, donc il est lui-même soumis à contradiction sous D-062
 avant tout code de mécanisme.**
 
+**Seconde revue ouverte le 12 septembre**, confiée par Anthony à GPT Astra. Dossier :
+`docs/research/c1_preregistration_review_request.md` ; réponse attendue dans
+`docs/research/c1_preregistration_review.md`. Deux de ses sept points contradictoires peuvent
+faire tomber la campagne : l'hypothèse pourrait n'avoir plus d'objet une fois admises les
+bornes que le pré-enregistrement établit lui-même — brassage uniforme, détection du changement
+déjà résolue —, et l'apprentissage en ligne rend les différences appariées non échangeables,
+ce qui met en cause la validité des intervalles BCa. **Aucun code de mécanisme avant son
+retour.**
+
 La baseline adaptative **égale le balayage exhaustif pour la moitié du prix** — 90,0 % de
 succès pour 8,02 mouvements contre 15,93. Le coin laissé à un mécanisme n'est donc pas le
 contraste 1 contre 16 que suggérait la v3. Sous P1, c'est elle le comparateur primaire, pas

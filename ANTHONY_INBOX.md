@@ -74,11 +74,18 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
   mouvements au lieu de 8,02, ce qui ramène la marge contre l'oracle de 7,02 à **3,52**. Le
   verdict B1 survit, mais le vrai concurrent d'un mécanisme est à 4,5 mouvements, pas 8. Cette
   politique devient une porte du pré-enregistrement, pas une référence protégée.
-- **Ce qui t'attend, si tu le veux** : ce pré-enregistrement engage la construction, donc sous
-  D-062 il est soumis à contradiction par un agent qui ne l'a pas rédigé, avant tout code.
-  Veux-tu le confier de nouveau à GPT Astra ? Dis-le moi et je te prépare le prompt, comme la
-  première fois. Sinon j'ouvre la revue moi-même auprès d'un autre agent.
-- Aucun mécanisme n'est construit avant le retour de cette revue.
+**Réponse Anthony, 2026-09-12 :**
+
+> Oui, prépare le prompt pour GPT Astra
+
+- Intégration : dossier écrit dans `docs/research/c1_preregistration_review_request.md`, au
+  format du protocole §6, avec sept points contradictoires dont deux que je ne sais pas
+  résoudre seul — l'hypothèse pourrait n'avoir plus d'objet une fois les bornes que j'ai
+  moi-même établies prises au sérieux, et l'apprentissage en ligne casse peut-être la validité
+  des intervalles BCa. Revue attendue dans `docs/research/c1_preregistration_review.md`.
+- **Rien ne t'attend d'ici son retour.** Aucun mécanisme n'est construit ; je reviendrai vers
+  toi seulement si la revue refuse, auquel cas la piste C1 se referme et l'arbitrage
+  redeviendra le tien.
 
 ## En sommeil — matériel
 
