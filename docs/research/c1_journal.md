@@ -721,3 +721,92 @@ est commitée avant la première ligne de code de la v3, et la banque de la v3 e
   réinterprétée après coup.
 - **Faisabilité passée et les deux témoins laissant une marge** — MARGE EXPLOITABLE, et le
   pré-enregistrement de C1 s'écrit enfin.
+
+## Entrée 8 — développement de la v3, avant la banque
+
+2026-09-12, dans la nuit. Dix pièces de développement. Les seuils de l'entrée 7 ne bougent
+pas, et aucun paramètre n'a été touché après le premier chiffre ci-dessous.
+
+### Les deux corrections font ce qu'elles promettaient
+
+Sonde de développement : oracle perceptif 10/10, témoin « dernier angle vu » 5/10, balayage
+9/10 ; sept pièces brassées sur dix. Le « ÉCHOUE » qu'affiche le lanceur est un artefact de
+petit échantillon — à dix pièces, la borne de Wilson d'un 10/10 vaut 72,2 % — et l'entrée 7
+dit déjà que dix pièces n'établissent rien.
+
+Mesure bien plus informative, quatre-vingts lectures au lieu de dix tirages de cible :
+
+| Version | Palette et référence | Lecture par objet |
+|---|---|---|
+| v1 | palette d'origine, référence surexposée | 67/80 = 83,8 % |
+| v2 | palette d'origine, référence éclairée par la pièce | 73/80 = 91,2 % |
+| v3 | teintes à 3 classes, saturation uniforme | **79/80 = 98,8 %** |
+
+Sept objets sur huit sont lus 10/10 ; le huitième, le cube violet, 9/10. Aucune référence
+n'est illisible.
+
+La correction 2 tient elle aussi, et exactement : **zéro objet placé illisible** sur 80,
+contre 1,2 % en v2, et **zéro pièce écartée** par le garde plus strict. C'est ce que la
+carte de lisibilité annonçait en montrant que le pire objet disposait de 10 cellules sur 15
+pour 8 à pourvoir.
+
+438 tests verts, dont dix nouveaux.
+
+### Ce que la règle de verdict renverra, démontré et non supposé
+
+La règle gelée, appliquée à trois jeux de chiffres synthétiques du type attendu :
+
+| Chiffres | Verdict |
+|---|---|
+| oracle 99 %, mémoire 50 %, balayage 95 % | MARGE EXPLOITABLE |
+| oracle 99 %, mémoire 50 %, **balayage à parité, 99 %** | **MARGE EXPLOITABLE** |
+| oracle 99 %, **mémoire à parité, 99 %**, balayage 95 % | REJETÉE — MARGE |
+
+C'est la confirmation chiffrée de ce que l'entrée 7 avait établi en raisonnant : la porte est
+portée par le seul témoin de mémoire. **Même un balayage exactement aussi juste que l'oracle
+laisse le verdict au vert**, parce qu'il paie quinze mouvements.
+
+L'entrée 7 a examiné ce point et conservé la règle, et je maintiens ce choix : un témoin
+juste mais coûteux laisse effectivement la place à un mécanisme juste *et* économe. Mais la
+conséquence doit être écrite avant la banque, sans quoi un verdict vert se lira pour plus
+qu'il ne dit.
+
+**Ce que MARGE EXPLOITABLE voudra dire :** aucun témoin simple n'est à la fois aussi juste
+que l'oracle et aussi économe. La mémoire est économe et fausse après un brassage ; le
+balayage est juste et paie quinze mouvements. Le coin « juste et économe » est vide, et
+c'est ce coin qu'un mécanisme devrait occuper.
+
+**Ce que cela ne voudra pas dire :** que C1 résiste aux politiques simples. Si le balayage
+atteint la parité, alors une politique triviale résout bel et bien C1 — au prix de quinze
+fois le coût. Cela ne voudra pas dire non plus qu'un mécanisme est apprenable, seulement
+qu'il y a de la place pour un.
+
+### Prédiction avant la banque
+
+Écrite ici pour que la banque ne surprenne personne, comme aux entrées 2 et 5.
+
+**Faisabilité : 97 à 100 % attendus sur 300 pièces.** À 98,8 % de lecture par objet, le
+seuil ponctuel de 90 % passe avec une large marge. Ce n'est pas une découverte, c'est la
+construction annoncée à l'entrée 7.
+
+**Marge.** Le témoin de mémoire est vers 50 % avec un écart d'environ +50 points : sa marge
+en succès devrait s'établir sans difficulté, donc il ne sera pas proche. Le balayage est à
+90 % contre un oracle à 100 % en développement ; à 300 pièces son intervalle BCa vaudra
+environ ±3 points, et j'attends son écart de succès entre 0 et +10 points — donc sa marge en
+succès est incertaine, tandis que sa marge en coût, +15 mouvements, est structurelle.
+
+**Le verdict attendu est donc MARGE EXPLOITABLE**, porté par le témoin de mémoire. Je
+l'écris avant de jouer pour qu'il ne puisse pas être présenté ensuite comme une surprise, et
+pour que sa limite ci-dessus se lise en même temps que lui.
+
+Le chiffre qui méritera vraiment d'être lu n'est pas le verdict : c'est **l'écart de succès
+du balayage**. Il valait +23,3 points en v1, +6,5 en v2. S'il atteint zéro en v3, la lecture
+honnête est que C1 se résout par la force brute et que la seule monnaie restante est le coût
+en mouvements.
+
+### Gel
+
+Quinze sources : les trois de la v3, les trois de la v2 et les neuf de la v1, ces douze
+dernières hachées pour certifier qu'elles n'ont pas bougé. Manifeste
+`docs/research/c1_probe_v3_manifest.json`, archive
+`data/processed/experiments/c1_probe_v3/source_v1`, convention `source_v1` de D-061.
