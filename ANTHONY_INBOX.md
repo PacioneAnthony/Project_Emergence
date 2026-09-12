@@ -8,12 +8,34 @@ arbitrages dans `DECISIONS.md`.
 
 ## En attente aujourd'hui
 
-**Rien de bloquant.** Le travail courant — D-060, substrat visuel à deux axes — se fait
-entièrement en simulation sous D-008. Il ne demande ni achat, ni manipulation physique,
-ni information.
+**Une décision t'attend, sans urgence** : `ANT-011`, juste en dessous. La sonde de marge de
+C1 est verte, ce qui ouvre la phase que D-060 interdisait jusqu'ici. Rien n'est bloqué en
+attendant : la porte est franchie et documentée, et aucun mécanisme ne sera construit avant
+ta réponse.
 
-Deux demandes matérielles de juin sont en sommeil. Une seule question leur est posée,
-juste en dessous.
+Le travail lui-même se fait entièrement en simulation sous D-008 et ne demande ni achat, ni
+manipulation physique, ni information.
+
+Deux demandes matérielles de juin restent en sommeil, avec leur propre question.
+
+### ANT-011 — Ouvrir la phase des mécanismes sur C1
+
+- Statut : `à arbitrer`, 2026-09-12.
+- Contexte : la sonde de marge de C1 a joué trois banques, chacune avec ses seuils écrits et
+  commités avant tout chiffre. v1 rejetée sur la faisabilité à une pièce près, v2 rejetée à
+  deux pièces, **v3 verte** : faisabilité 298/300 = 99,3 %, verdict **MARGE EXPLOITABLE**.
+- Ce que cela change : D-060 interdisait tout mécanisme, tout pré-enregistrement et toute
+  banque de confirmation « avant que la marge existe ». Elle existe désormais.
+- Ce que cela ne change pas, et qu'il faut lire avec : le balayage exhaustif résout 88,3 %
+  des pièces sans mémoire ni apprentissage, pour quinze mouvements au lieu d'un. Le coin à
+  prendre est « juste **et** économe », il est étroit, et rien ne prouve encore qu'un
+  mécanisme saura l'occuper.
+- **Question :** j'ouvre la phase des mécanismes sur C1 — pré-enregistrement, puis
+  construction — ou tu veux d'abord autre chose ?
+- Point de procédure : sous D-062, une décision à fort impact est contredite par un agent qui
+  n'a pas produit le travail, dans une session distincte. Celle-ci en est une. Je peux ouvrir
+  cette revue moi-même avant de construire ; dis-moi si tu préfères la lire d'abord.
+- Détail : `docs/research/c1_journal.md`, entrées 1 à 9 ; `PILOTAGE.md` pour l'état courant.
 
 ## En sommeil — matériel
 

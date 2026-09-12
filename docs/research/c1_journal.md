@@ -810,3 +810,113 @@ Quinze sources : les trois de la v3, les trois de la v2 et les neuf de la v1, ce
 dernières hachées pour certifier qu'elles n'ont pas bougé. Manifeste
 `docs/research/c1_probe_v3_manifest.json`, archive
 `data/processed/experiments/c1_probe_v3/source_v1`, convention `source_v1` de D-061.
+
+## Entrée 9 — la banque de la v3, et le premier verdict vert
+
+2026-09-12. Trois cents pièces réservées, jouées une seule fois après le gel (`b668872`,
+gelé à 02:51:42), en 132 secondes. Aucune pièce écartée par les gardes ; contrôle de
+notation 100 % ; 49 % des épisodes brassés. Une seconde partie est refusée. Après la banque,
+les quinze sources gelées sont intactes, ainsi que les manifestes de la v1 et de la v2.
+Résultats : `docs/research/c1_probe_v3_results.json`.
+
+### Les deux chiffres
+
+**Faisabilité : 298 sur 300, soit 99,3 %**, borne de Wilson à 95 % [97,6 % ; 99,8 %], contre
+un seuil ponctuel de 90 % et une borne de 80 %. **Elle passe.**
+
+**Marge**, contre l'oracle perceptif :
+
+| Témoin | Succès | Écart apparié | Coût | Marge |
+|---|---|---|---|---|
+| dernier angle vu | 49,3 % | +50,0 pts [BCa +44,0 ; +55,3] | 1,0 (+0,0) | en succès |
+| balayage exhaustif | 88,3 % | +11,0 pts [BCa +7,7 ; +14,7] | 16,0 (+15,0) | en coût |
+
+Le balayage n'établit **pas** de marge en succès : sa borne BCa vaut +7,7 points, sous le
+seuil de +10. Sa marge est celle du coût, et elle est structurelle.
+
+**VERDICT : MARGE EXPLOITABLE.** C'est le premier verdict vert du programme ouvert par
+D-060.
+
+### La prédiction de l'entrée 8, confrontée
+
+| Écrit avant la banque | Mesuré |
+|---|---|
+| faisabilité 97 à 100 % | 99,3 % |
+| mémoire vers 50 %, écart vers +50 points | 49,3 %, +50,0 |
+| balayage : écart entre 0 et +10 points | **+11,0, au-dessus de la bande** |
+
+Le seul écart à la prédiction va dans le sens qui compte. Je craignais, aux entrées 7 et 8,
+que le balayage converge vers la parité à mesure que la tâche devenait lisible. **Il s'en
+éloigne** : +23,3 points en v1, +6,5 en v2, +11,0 en v3. L'explication est mesurable : entre
+la v2 et la v3 le balayage progresse, de 82,5 % à 88,3 %, mais l'oracle progresse davantage,
+de 89,0 % à 99,3 %. La crainte est réfutée, et il faut le dire aussi nettement qu'elle avait
+été écrite.
+
+### La vérification qui pouvait tout invalider
+
+Un verdict vert doit être lu plus sévèrement qu'un rouge. La question qui décide : **la marge
+vient-elle du mécanisme que C1 prétend mesurer**, ou d'autre chose ?
+
+| | Pièces | Oracle | Mémoire | Balayage |
+|---|---|---|---|---|
+| objets immobiles | 153 | 98,7 % | 86,3 % | 86,3 % |
+| objets déplacés | 147 | 100 % | **10,9 %** | 90,5 % |
+
+Le témoin de mémoire tombe de 86,3 % à **10,9 %** quand les objets ont bougé. Le balayage ne
+bouge pas, de 86,3 % à 90,5 % : il n'a pas de mémoire à tromper. La marge vient donc
+exactement de ce que la tâche affirme isoler — se souvenir ne suffit pas quand le monde a
+changé — et non d'un artefact de lisibilité ou de coût.
+
+Cohérence interne, gratuite et rassurante : dans les pièces stables, mémoire et balayage
+marquent **exactement le même score, 132 sur 153**. C'est attendu — dans une pièce inchangée,
+l'image mémorisée d'une cellule et une image fraîche de la même cellule mènent au même choix
+— et cela confirme que les deux politiques lisent bien la même chose.
+
+### Où le balayage perd ses pièces
+
+Trente-cinq échecs sur 300, dont **deux seulement** partagés avec l'oracle : trente-trois lui
+sont propres. Quand il échoue, la distance qu'il retient est *plus petite* que quand il
+réussit — médiane 0,776 contre 0,995. Il ne manque donc pas d'information : **il trouve un
+faux ami**, plus ressemblant que la vraie cible.
+
+C'est précisément la différence entre lire les pixels exacts d'un objet, ce que l'oracle a le
+droit de faire, et lire une cellule entière, ce qu'un agent doit faire. **Cette différence
+est toute la marge en succès**, et elle est de nature perceptive, pas mnésique. Un mécanisme
+qui voudrait la prendre devrait apprendre à isoler un objet de sa cellule.
+
+### Les deux pièces manquées par l'oracle, et un défaut de ma palette
+
+Relecture déterministe conforme. Les deux échecs sont le même objet, le cube vert
+`(0,095 ; 0,950 ; 0,309)` : référence en classe 9, objet vu en classe 8.
+
+En cherchant pourquoi, je trouve un défaut de conception que je n'avais pas vu en écrivant
+l'entrée 7. Espacer huit teintes à `k/8` du cercle avec 24 classes place chaque teinte
+exactement sur une **frontière** de classe, puisque `k/8 × 24 = 3k` est entier. Les huit
+couleurs de la v3 sont donc toutes au plus mauvais endroit possible vis-à-vis de l'arrondi,
+et le moindre décalage infra-classe les fait basculer. Le vert tombe à 9,0012.
+
+Cela n'a coûté que deux pièces sur trois cents, parce que le décalage est le plus souvent
+identique du côté de la référence et du côté de la scène. Mais c'était évitable : décaler la
+palette d'une demi-classe mettrait les huit teintes au centre de leur classe. C'est ce qu'une
+v4 corrigerait, et aucune v4 n'est nécessaire pour la marge.
+
+### Ce que ce verdict autorise, et ce qu'il n'autorise pas
+
+L'entrée 8 l'a écrit avant la banque ; il vaut maintenant.
+
+**Il autorise le pré-enregistrement de C1.** D-060 interdisait tout mécanisme, tout
+pré-enregistrement et toute banque de confirmation « avant que la marge existe ». Elle
+existe, elle est chiffrée, et elle vient du bon mécanisme.
+
+**Il n'autorise pas** d'affirmer que C1 résiste aux politiques simples. Le balayage exhaustif
+résout 88,3 % des pièces sans mémoire, sans apprentissage et sans mécanisme ; il paie
+seulement quinze mouvements au lieu d'un. Le coin vide est « juste **et** économe », et c'est
+un coin étroit. Il ne dit rien non plus de l'apprenabilité : il dit qu'il y a de la place,
+pas qu'un mécanisme saura l'occuper.
+
+### Ce qui doit précéder la construction
+
+Sous D-062, une décision à fort impact est contredite par un agent qui n'a pas produit le
+travail, dans une session distincte. Ouvrir la phase des mécanismes sur C1 en est une : elle
+engage le reste du programme sur ce substrat. Le dossier de revue est ce journal, entrées 1
+à 9, et les trois résultats publiés.

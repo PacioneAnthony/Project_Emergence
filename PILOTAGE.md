@@ -73,7 +73,7 @@ vision tient dans l'heure.
 
 **L'agent** — étapes 1 et 2 faites le 11 septembre : l'axe d'inclinaison existe, le contrat
 d'observation est à deux consignes, les quinze cellules ont du contenu et la tâche C1 est
-construite et mesurée. **Étape 3 faite, deux sondes jouées.** Chacune a écrit ses seuils
+construite et mesurée. **Étape 3 faite, trois sondes jouées.** Chacune a écrit ses seuils
 avant tout chiffre, gelé ses sources avant sa banque, et joué cette banque une seule fois.
 
 - **v1**, 60 pièces : faisabilité 54/60 = 90,0 %, borne de Wilson 79,9 % contre 80 %. Échec
@@ -83,7 +83,7 @@ avant tout chiffre, gelé ses sources avant sa banque, et joué cette banque une
   178/200 = **89,0 %**, Wilson [83,9 % ; 92,6 %]. La borne passe largement ; c'est le taux
   lui-même qui manque, **de deux pièces**. Relecture déterministe : zéro écart sur 200.
 
-**Verdict des deux : REJETÉE — FAISABILITÉ.** Ce n'est pas le critère d'abandon de D-060,
+**Verdict des deux premières : REJETÉE — FAISABILITÉ.** Ce n'est pas le critère d'abandon de D-060,
 réservé à une marge absente : le substrat n'est pas épuisé, c'est la tâche C1 qu'on corrige.
 
 Les 22 échecs de la v2 tiennent à **deux objets sur huit** ; les six autres sont lus 153 fois
@@ -92,31 +92,58 @@ teinte 2, objet vu en classe 1 — et le cylindre magenta 7 fois pour une raison
 dont 5 où son descripteur est vide alors que le garde de visibilité l'avait accepté. Réparer
 l'un **ou** l'autre suffisait à passer la porte.
 
-À surveiller, et non conclu : l'écart de succès du balayage exhaustif est tombé de +23,3
-points en v1 à +6,5 en v2 pendant que la tâche devenait plus lisible. C'est la marge, et non
-la lisibilité, qui deviendra la question si une v3 répare les deux objets.
+Crainte écrite avant la v3, puis **réfutée par elle** : l'écart de succès du balayage était
+tombé de +23,3 points en v1 à +6,5 en v2 pendant que la tâche devenait plus lisible, et je
+m'attendais à le voir atteindre la parité. Il remonte à +11,0 en v3, l'oracle ayant progressé
+plus vite que lui.
 
-Prochaine étape : **v3**, deux corrections déjà nommées avant de connaître le chiffre de la
-v2 — le garde de visibilité doit mesurer dans les termes du lecteur, et la règle de
-comparaison sans tolérance doit être reconsidérée, sachant qu'une règle tolérante renforce
-aussi les témoins. Nouvelles graines, nouvel espace de noms, seuils écrits d'abord.
+- **v3**, 300 pièces, palette aux teintes séparées de trois classes et à saturation uniforme,
+  garde de visibilité mesurant dans les termes du lecteur : faisabilité 298/300 = **99,3 %**,
+  Wilson [97,6 % ; 99,8 %]. **Elle passe.** Marge : témoin de mémoire 49,3 %, écart +50,0
+  points [BCa +44,0 ; +55,3] à coût égal ; balayage exhaustif 88,3 %, écart +11,0 points
+  [BCa +7,7 ; +14,7] pour quinze mouvements de plus.
 
-Détail : `docs/research/c1_journal.md`, entrées 1 à 6. Aucun mécanisme cognitif, aucun
-pré-enregistrement et aucune banque de confirmation avant que la marge existe. Le prompt
-complet est dans `CODEX_TASK_BRIEF.md`.
+**VERDICT DE LA v3 : MARGE EXPLOITABLE** — le premier verdict vert du programme D-060.
+
+La vérification qui pouvait l'invalider tient : **le témoin de mémoire tombe de 86,3 % à
+10,9 % quand les objets ont bougé**, tandis que le balayage, qui n'a pas de mémoire à
+tromper, reste à 86,3 % puis 90,5 %. La marge vient donc du mécanisme que C1 prétend isoler
+et non d'un artefact. Dans les pièces stables, mémoire et balayage marquent exactement le
+même score, 132 sur 153.
+
+**Ce que ce verdict autorise** : le pré-enregistrement de C1. D-060 l'interdisait « avant que
+la marge existe » ; elle existe désormais, chiffrée et attribuée.
+
+**Ce qu'il n'autorise pas** : dire que C1 résiste aux politiques simples. Le balayage résout
+88,3 % des pièces sans mémoire ni apprentissage — il paie quinze mouvements au lieu d'un. Le
+coin vide est « juste **et** économe », et il est étroit. Rien n'est dit de l'apprenabilité :
+il y a de la place, pas la preuve qu'un mécanisme saura l'occuper.
+
+Où se trouve la marge en succès, mesuré : le balayage perd 33 pièces que l'oracle lit, et
+quand il échoue la distance qu'il retient est *plus petite* que quand il réussit — il trouve
+un faux ami. C'est l'écart entre lire les pixels exacts d'un objet et lire une cellule
+entière. Un mécanisme qui viserait cette marge devrait apprendre à isoler un objet de sa
+cellule.
+
+Détail : `docs/research/c1_journal.md`, entrées 1 à 9. Le prompt complet est dans
+`CODEX_TASK_BRIEF.md`.
 
 **Réserve de l'étape 1, traitée.** Le contenu ne vivait que dans la rangée centrale ;
 il est maintenant placé dans les quinze cellules par `sim3d/bench2_content.py`, via le
 paramètre `wall_panels` de `build_bench_mjcf`, sans toucher au banc gelé.
 
-**Anthony** — rien de bloquant. Les deux demandes matérielles de juin, `ANT-008` (kit
-AS5600) et `ANT-009` (banc v1.0), sont en sommeil et sans objet sous D-008 et D-060. Une
-seule question sans urgence attend dans `ANTHONY_INBOX.md` : les fermer, ou les garder en
-sommeil en vue d'un retour au matériel ?
+**Anthony** — rien de bloquant, mais une décision attend : `ANT-011` dans
+`ANTHONY_INBOX.md` — ouvrir ou non la phase des mécanismes sur C1, maintenant que la marge
+existe. Aucun mécanisme ne sera construit avant sa réponse. Les deux demandes matérielles de
+juin, `ANT-008` (kit AS5600) et `ANT-009` (banc v1.0), restent en sommeil et sans objet sous
+D-008 et D-060, avec leur propre question : les fermer, ou les garder en sommeil en vue d'un
+retour au matériel ?
 
-**Revue contradictoire** — aucune en attente. La prochaine porte est le
-pré-enregistrement de C1, et seulement si la sonde de marge est verte. Sous D-062 elle est
-faite par un agent qui n'a pas produit le travail, dans une session distincte.
+**Revue contradictoire** — **une est due.** La sonde de marge est verte, donc la porte
+suivante, le pré-enregistrement de C1, est ouverte — et l'ouvrir engage le reste du programme
+sur ce substrat. Sous D-062 elle est faite par un agent qui n'a pas produit le travail, dans
+une session distincte. Dossier : `docs/research/c1_journal.md`, entrées 1 à 9, et les trois
+résultats publiés.
 
 **Blocage** — aucun.
 

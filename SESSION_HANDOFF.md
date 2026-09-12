@@ -176,13 +176,51 @@ le réparer aurait augmenté la faisabilité après qu'un chiffre de développem
 c'est-à-dire dans la direction que la discipline interdit. Il est pré-enregistré comme la
 première correction de la v3.
 
-Reprendre par la **v3** : nouvel espace de graines, garde de visibilité mesurant dans les
-termes du lecteur, et règle de comparaison sans tolérance à reconsidérer — en sachant qu'une
-règle tolérante renforce aussi les témoins, donc que ses seuils doivent être écrits avant son
-premier chiffre. Lanceur : `python -m scripts.research.c1_probe_v2`, qui refuse lui aussi de
-rejouer une banque. La v2 étend la v1 sans la toucher : ses modules importent le lecteur,
-l'oracle et les seuils gelés au lieu d'en tenir copie, et onze tests le vérifient par
-identité d'objet.
+Lanceur : `python -m scripts.research.c1_probe_v2`, qui refuse lui aussi de rejouer une
+banque. La v2 étend la v1 sans la toucher : ses modules importent le lecteur, l'oracle et les
+seuils gelés au lieu d'en tenir copie, et onze tests le vérifient par identité d'objet.
+
+### Étape 3, version 3 — faite le 12 septembre 2026, **verdict vert**
+
+Seuils avant tout code v3 (`5be9c8b`), développement (`0081425`), gel (`b668872`), banque de
+300 pièces jouée une seule fois en 132 s. **Faisabilité 298/300 = 99,3 %**, Wilson
+[97,6 % ; 99,8 %] : elle passe. **Marge : MARGE EXPLOITABLE** — mémoire 49,3 %, écart +50,0
+points à coût égal ; balayage 88,3 %, écart +11,0 points [BCa +7,7 ; +14,7] pour quinze
+mouvements de plus. Le balayage n'établit pas de marge en succès (borne +7,7 sous le seuil de
++10) ; sa marge est celle du coût.
+
+Ce qui a fait la différence, et qui avait été pré-enregistré avant d'être mesuré : **la
+palette était le problème, pas la règle.** La tolérance que l'entrée 4 avait pré-enregistrée
+a été réfutée par la mesure avant d'être adoptée — lisser l'histogramme ne change rien, une
+distance circulaire dégrade — parce que l'orange et le jaune n'étaient séparés que de
+1,23 classe quand le décalage de rendu en vaut une. Huit teintes à trois classes d'écart et à
+saturation uniforme 0,90 corrigent les deux objets fautifs à la fois, le second pour une
+raison arithmétique : le lecteur exige une saturation de 0,45 **après** rendu et le rendu ne
+peut que la baisser, or l'ancien magenta partait de 0,588.
+
+Lecture par objet à travers les trois versions : 83,8 % → 91,2 % → **98,8 %**.
+
+**La vérification qui pouvait invalider le verdict vert tient.** Le témoin de mémoire tombe
+de 86,3 % à **10,9 %** quand les objets bougent ; le balayage reste stable, 86,3 % puis
+90,5 %. La marge vient du mécanisme que la tâche prétend isoler.
+
+Reprendre par le **pré-enregistrement de C1** — ce que le verdict autorise et rien de plus.
+Le balayage exhaustif résout 88,3 % des pièces sans mémoire ni apprentissage, pour quinze
+mouvements : le coin à prendre est « juste **et** économe », et il est étroit. La marge en
+succès, elle, est perceptive : le balayage perd 33 pièces en retenant un faux ami plus
+ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les pixels
+exacts d'un objet.
+
+**Avant de construire, une revue contradictoire est due** (D-062) : ouvrir la phase des
+mécanismes engage le reste du programme sur ce substrat. Dossier : `docs/research/c1_journal.md`,
+entrées 1 à 9, et les trois résultats publiés.
+
+Un défaut connu et non corrigé, sans conséquence sur la marge : espacer huit teintes à `k/8`
+avec 24 classes les place toutes exactement sur une frontière de classe. Les deux seuls
+échecs de l'oracle viennent de là. Une v4 décalerait la palette d'une demi-classe ; elle
+n'est pas nécessaire.
+
+Lanceur : `python -m scripts.research.c1_probe_v3`.
 
 Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`,
 `learning/paired_stats.py` pour toutes les portes statistiques, `learning/visual_jepa.py`,
@@ -190,7 +228,7 @@ et le banc `sim3d/bench_model.py` / `sim3d/bench_env.py`, qui contient déjà la
 meublée, les panneaux contrastés, l'éclairage, l'objet externe sur rail, la caméra
 embarquée de 30° et son rendu.
 
-État au moment de la reprise : 428 tests verts. Aucun processus, aucune réservation de
+État au moment de la reprise : 438 tests verts. Aucun processus, aucune réservation de
 budget et aucune simulation ne restent actifs sur les campagnes closes ; leurs registres
 `budget.sqlite` sont soldés.
 
