@@ -584,3 +584,140 @@ renforce aussi les témoins, et c'est la marge qui en paiera le prix. C'est pré
 pourquoi ses seuils doivent être écrits avant son premier chiffre.
 
 La v3 prend de nouvelles graines et un nouvel espace de noms.
+
+## Entrée 7 — seuils de la version 3, écrits avant tout chiffre
+
+2026-09-12, dans la nuit. La v2 est publiée et close. Aucun code de v3 n'existe et aucune
+graine de v3 n'a été jouée. Cette entrée est commitée avant la première ligne de code de la
+v3 ; l'horodatage du commit en fait foi.
+
+### Ce que la v2 a réfuté, et qu'il faut acter
+
+L'entrée 4 pré-enregistrait qu'un échec sur le mécanisme de teinte justifierait de
+reconsidérer, dans une v3, une règle qui met deux classes voisines à la distance maximale.
+**Cette correction est réfutée par la mesure avant d'avoir été adoptée.** Trois règles
+comparées sur les mêmes pixels, dix pièces de développement :
+
+| Règle | Lecture par l'oracle |
+|---|---|
+| dure — L1 sur histogrammes durs, la règle gelée | 73/80 = 91,2 % |
+| lissée — convolution circulaire (¼, ½, ¼) | 73/80 = **91,2 %** |
+| circulaire — distance du transport optimal | 68/80 = **85,0 %** |
+
+Le lissage ne change rien et le transport optimal dégrade. L'arithmétique dit pourquoi : le
+cube orange tombe en classe 1,88 et la sphère jaune en 3,11, soit **1,23 classe d'écart**,
+le même ordre de grandeur que le décalage de rendu d'une classe. La référence de l'orange
+est à une classe de l'orange en scène *et* à une classe du jaune en scène. Aucune tolérance
+ne sépare une cible d'un distracteur situé à la même distance ; elle les rapproche des deux
+côtés à la fois.
+
+Ce n'est donc pas la règle qui est fautive. **C'est la palette.**
+
+### Correction 1 — une palette séparée en teinte et uniformément saturée
+
+C'est le candidat restant de l'entrée 3, que j'avais écarté « au prix d'une tâche plus
+pauvre ». Il n'appauvrit rien : huit teintes également réparties sur le cercle sont à trois
+classes l'une de l'autre, et il y a toujours huit objets.
+
+Mesuré sur les couleurs brutes : séparation minimale **1,23 classe** pour la palette
+actuelle, **3,00 classes** pour la candidate. Rendues par le vrai moteur de référence, les
+huit références de la candidate tombent en classes 0, 3, 6, 9, 12, 15, 18 et 20 — la
+dernière décalée d'une classe, comme le rendu le fait — donc la séparation minimale *après
+rendu* est de deux classes, encore le double du décalage.
+
+Elle corrige aussi le second objet, et pour une raison également arithmétique. Le lecteur
+exige une saturation ≥ 0,45 **après** rendu, et le rendu ajoute de la lumière blanche, ce
+qui ne peut que faire baisser la saturation. Saturations brutes de la palette actuelle :
+minimum **0,588**, le cylindre magenta, médiane 0,889. Le magenta dispose donc d'une marge
+de +0,138 au-dessus du seuil là où les sept autres ont entre +0,32 et +0,50 — et c'est
+exactement pourquoi lui seul devient illisible dans les cellules sombres ou lointaines. La
+palette candidate donne les huit à S = 0,900, marge +0,45.
+
+Mesure indépendante qui confirme, sur six pièces : chaque objet est lisible dans 13 à 14
+cellules sur 15, **sauf le magenta, lisible dans 10**, alors qu'il est *visible* dans 14.
+
+La palette de la v3, figée ici :
+
+```python
+("box",      (0.950, 0.095, 0.095, 1.0)),   ("cylinder", (0.950, 0.736, 0.095, 1.0)),
+("sphere",   (0.522, 0.950, 0.095, 1.0)),   ("box",      (0.095, 0.950, 0.309, 1.0)),
+("cylinder", (0.095, 0.950, 0.950, 1.0)),   ("sphere",   (0.095, 0.309, 0.950, 1.0)),
+("box",      (0.522, 0.095, 0.950, 1.0)),   ("cylinder", (0.950, 0.095, 0.736, 1.0)),
+```
+
+### Correction 2 — le garde de visibilité mesure dans les termes du lecteur
+
+Pré-enregistrée à l'entrée 5 et conservée : un objet n'est accepté dans une cellule que si
+son descripteur y existe, et pas seulement si ses pixels y ont changé.
+
+Vérifié avant adoption, parce qu'un garde plus strict peut rejeter des pièces et que le
+seuil n'en tolère que 10 % : sur six pièces, le pire objet est lisible dans 10 cellules sur
+15 et le garde doit en trouver 8 distinctes. La marge est suffisante et aucun rejet n'est
+attendu. Avec la nouvelle palette ce garde devient un filet de sécurité plutôt que la
+correction principale, ce qui est sa juste place.
+
+### Ce qui ne change pas
+
+La règle de comparaison reste celle de l'entrée 1, importée et jamais recopiée. La référence
+reste rendue sous l'éclairage de la pièce. La fenêtre centrale des témoins reste, sans être
+créditée de rien. Tous les seuils restent : faisabilité ≥ 0,90 avec borne de Wilson ≥ 0,80
+et au plus 10 % de pièces rejetées ; marge en succès si la borne BCa ≥ 0,10 ; marge en coût
+si ≥ 3 mouvements ; une marge non établie compte comme absente.
+
+### La règle de verdict, examinée puis conservée
+
+Le balayage exhaustif ne peut jamais être déclaré « proche de l'oracle », puisque son écart
+de coût vaut toujours environ +15 et que sa marge en coût est donc toujours établie. J'ai
+d'abord pris cela pour un défaut. Ce n'en est pas un, c'est le propos : un témoin juste mais
+coûteux laisse effectivement la place à un mécanisme juste *et* économe. Et le témoin de
+mémoire, lui, coûte exactement ce que coûte l'oracle, donc sa marge en coût n'est jamais
+établie et il est « proche » précisément quand sa marge en succès échoue. La porte est donc
+portée par le témoin de mémoire — celui qui occupe déjà le coût de l'oracle —, et c'est
+correct. **Rien n'est touché.**
+
+### Ce que la v3 teste réellement, et ce qu'elle ne teste plus
+
+À écrire avant les chiffres, sans quoi le résultat se lira mal. **La v3 est construite pour
+que la faisabilité passe.** Les deux mécanismes d'échec de la v2 sont traités à leur racine,
+et une faisabilité élevée ne sera donc pas une découverte : ce sera une construction. Elle
+reste une porte — si elle échoue, c'est qu'un troisième mécanisme existe que je n'ai pas vu
+— mais elle cesse d'être informative.
+
+**Ce que la v3 teste, c'est la marge**, et le signe que donne la v2 est défavorable :
+l'écart de succès du balayage est tombé de +23,3 à +6,5 points pendant que la tâche devenait
+plus lisible. Une palette encore plus lisible peut très bien porter le balayage à parité
+avec l'oracle, et rapprocher aussi le témoin de mémoire. Si cela arrive, le critère
+d'abandon de D-060 sera atteint pour de bon, et ce sera un résultat.
+
+### Graines et banque
+
+Espace de noms `c1-margin-probe/v3`, même recette. Développement : sous-espace `"dev"`, i de
+0 à 9. Banque : sous-espace `"bank"`, i de 0 à 299, soit **300 pièces**. Trois cents et non
+deux cents parce que la question est désormais la marge : à 200 pièces, l'intervalle BCa sur
+l'écart de succès était large d'environ ±3,2 points, et c'est cette précision-là qui
+décidera.
+
+Vérifié à l'écriture : 310 graines toutes distinctes, toutes supérieures à 100 000, aucune
+collision avec les 1 696 995 littéraux entiers des 6 660 fichiers Python du dépôt, et aucune
+réutilisation des 280 graines déjà dépensées par la v1 et la v2. Première graine de
+développement `3541371033` ; première de banque `2205167222`.
+
+Budget attendu : environ 130 secondes.
+
+### Divulgation
+
+La palette de la v3 a été conçue en regardant les mesures de la v2 — ses dix pièces de
+développement et la relecture de sa banque. C'est du développement légitime, et c'est aussi
+exactement le genre de choix qui doit être daté plutôt que passé sous silence : cette entrée
+est commitée avant la première ligne de code de la v3, et la banque de la v3 est neuve.
+
+### Ce que chaque issue voudra dire
+
+- **Faisabilité échouée** — un troisième mécanisme existe, que ni la v1 ni la v2 n'ont
+  montré. On corrige encore la tâche ; on ne conçoit toujours pas de mécanisme.
+- **Faisabilité passée et un témoin proche de l'oracle** — c'est le critère d'abandon de
+  D-060. Le substrat est déclaré épuisé pour C1 et aucun mécanisme n'y est construit. C'est
+  l'issue que la v2 rend la plus probable, et elle est écrite ici pour ne pas pouvoir être
+  réinterprétée après coup.
+- **Faisabilité passée et les deux témoins laissant une marge** — MARGE EXPLOITABLE, et le
+  pré-enregistrement de C1 s'écrit enfin.
