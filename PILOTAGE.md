@@ -156,19 +156,33 @@ empreintes du manifeste v3 et tous les chiffres publiés à partir du résultat 
 ses recommandations n'est rejetée ; son arithmétique a été revérifiée contre les données
 brutes avant intégration.
 
-- **B1, bloquante** — le témoin simple le plus fort disponible n'a jamais été joué :
-  « mémoriser, vérifier la seule cellule mémorisée, ne balayer qu'après réfutation ». Il
-  occupe précisément le compromis revendiqué. Une sonde complémentaire de 100 pièces neuves
-  est exigée sur `C1EpisodeV3` **strictement inchangé**, espace `c1-margin-hybrid/v1`, avant
-  tout pré-enregistrement. Si cette baseline n'établit de marge sur aucun axe, elle est proche
-  de l'oracle : le critère d'abandon de D-060 s'applique et la décision devient REFUSER.
+- **B1, bloquante — LEVÉE le 12 septembre.** Le témoin simple le plus fort disponible
+  — « mémoriser, vérifier la seule cellule mémorisée, ne balayer qu'après réfutation » — a été
+  joué sur 100 pièces neuves, `C1EpisodeV3` strictement inchangé, avec les quatre variantes
+  non dominées retenues sur graines de développement. Faisabilité 99/100 ; **aucune variante
+  n'est proche de l'oracle**, la plus économe gardant une marge en coût de +7,02 mouvements
+  [BCa +5,53] contre un seuil durci de 3. Verdict **MARGE EXPLOITABLE**.
 - **B2, bloquante** — resserrer explicitement la portée à C1 v3 à `p = 0,5`. Faite, ci-dessus.
 - **P1 à P4** — à intégrer dans le pré-enregistrement de C1 une fois B1 levée : baseline
   adaptative comme comparateur primaire, séparation stricte information admissible / oracle /
   notation, distinction entre gain mnésique et gain perceptif, et gel du défaut de frontière
   de la palette plutôt que sa correction silencieuse.
 
-**Aucun mécanisme n'est construit tant que B1 n'est pas levée.**
+**B1 et B2 sont levées ; le pré-enregistrement de C1 peut s'écrire, avec P1 à P4.** C'est tout
+ce que ce verdict autorise, et deux mesures de la sonde complémentaire en resserrent la portée.
+
+La baseline adaptative **égale le balayage exhaustif pour la moitié du prix** — 90,0 % de
+succès pour 8,02 mouvements contre 15,93. Le coin laissé à un mécanisme n'est donc pas le
+contraste 1 contre 16 que suggérait la v3 : il vaut **+9 points de succès et −7 mouvements**
+contre une politique qui n'apprend rien. Sous P1, c'est elle le comparateur primaire, pas
+l'oracle.
+
+Et une règle de vérification triviale est déjà un **détecteur de changement quasi parfait** :
+elle accepte la réponse mémorisée dans 90,9 % des pièces stables et 4,4 % des pièces brassées.
+« Se souvenir, et ne vérifier que lorsque c'est utile » s'écrit donc en trois lignes. Les
+erreurs qui restent sont perceptives et non mnésiques — les politiques adaptatives réussissent
+mieux quand les objets ont bougé (93,3 %) que quand ils sont restés en place (87,3 %), parce
+qu'une pièce stable leur fait hériter des erreurs de lecture de la mémoire.
 
 **Blocage** — aucun.
 

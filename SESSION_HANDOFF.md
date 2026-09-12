@@ -208,21 +208,35 @@ de 86,3 % à **10,9 %** quand les objets bougent ; le balayage reste stable, 86,
 verdict **AUTORISER AVEC CORRECTIONS BLOQUANTES**. Elle a revérifié l'ordre des commits, les
 quinze empreintes et tous les chiffres depuis le résultat brut. Rien n'y est rejeté.
 
-**Reprendre par B1, et par rien d'autre.** Le témoin simple le plus fort disponible n'a jamais
-été joué : « mémoriser, vérifier la seule cellule mémorisée, ne balayer qu'après réfutation ».
-Il occupe exactement le compromis que la marge revendique, et D-060 exige le témoin le plus
-fort disponible — c'est de baselines trop faibles que REF-001 est mort. Sonde complémentaire
-de 100 pièces neuves, espace `c1-margin-hybrid/v1`, sur `C1EpisodeV3` **strictement
-inchangé** ; la règle de vérification se choisit sur graines de développement et se gèle avant
-la banque, et **toutes les variantes non dominées** partent dans la même banque — sans quoi il
-suffirait de choisir une règle stricte pour garder la porte verte. Si cette baseline
-n'établit de marge sur aucun axe, D-060 s'applique et le substrat est refusé pour C1.
+### B1 — sonde complémentaire, faite le 12 septembre 2026, **B1 levée**
 
-Caractéristique calculée avant de jouer, comme l'exige la leçon de la v1 : avec la règle de
-coût durcie par B1 — borne basse à 95 % de l'écart de coût ≥ 3 — la marge en coût cesse
-d'être établie au-delà de **70,4 %** d'acceptation. La mémoire ayant raison dans 49,3 % des
-pièces, une vérification honnête se situe loin sous cette bascule, donc le dispositif peut
-passer à sa propre cible.
+Seuils avant tout code (`3fbac61`), développement et figeage des variantes (`0acb914`), gel
+(`bb1b712`), banque de 100 pièces jouée une seule fois en 79 s, sur `C1EpisodeV3` strictement
+inchangé — les quinze empreintes de la v3 sont revérifiées par le manifeste hybride.
+
+Sept règles de vérification pré-enregistrées, quatre non dominées emportées dans la banque, y
+compris les deux plus économes qui ressortaient « proches de l'oracle » en développement :
+les écarter aurait conservé une marge en coût **par sélection**, ce que la clause de la revue
+interdit. Faisabilité 99/100 ; **aucune variante n'est proche de l'oracle** ; verdict
+**MARGE EXPLOITABLE**.
+
+Deux mesures comptent plus que le verdict :
+
+- la baseline adaptative **égale le balayage exhaustif pour la moitié du prix**, 90,0 % de
+  succès pour 8,02 mouvements contre 15,93. Le coin laissé à un mécanisme vaut donc **+9 points
+  et −7 mouvements**, et non le contraste 1 contre 16 de la v3. Sous P1, c'est elle le
+  comparateur primaire d'un futur mécanisme ;
+- une règle de vérification triviale est déjà un **détecteur de changement quasi parfait** :
+  elle accepte dans 90,9 % des pièces stables et 4,4 % des pièces brassées. Les erreurs qui
+  restent sont perceptives — les adaptatives font mieux en pièce brassée (93,3 %) qu'en pièce
+  stable (87,3 %), où elles héritent des erreurs de lecture de la mémoire.
+
+La caractéristique calculée avant de jouer s'est vérifiée : la marge en coût s'effondrerait
+au-delà de 70,4 % d'acceptation, les variantes pivots ont accepté 52 et 53 %, et leur borne
+basse projetée de 4,5 est sortie à 5,68 et 5,53.
+
+**Reprendre par le pré-enregistrement de C1**, avec P1 à P4 de la revue intégrées. C'est la
+seule chose que ce verdict autorise. Lanceur : `python -m scripts.research.c1_probe_hybrid`.
 
 La marge en succès, elle, est **perceptive** : le balayage perd 33 pièces en retenant un faux
 ami plus ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les

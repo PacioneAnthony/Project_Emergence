@@ -53,13 +53,20 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
   réfutation ». Il occupe exactement le compromis que la marge revendique. C'était le point
   que j'avais moi-même inscrit au dossier ; la revue le fait passer de « à considérer » à
   « bloquant », et D-060 exige bien le témoin le plus fort *disponible*.
-- **La question de fond reste ouverte, mais elle ne t'attend plus** : elle se tranche
-  désormais par une mesure. Une sonde complémentaire de 100 pièces neuves est
-  pré-enregistrée (journal, entrée 10) et je l'exécute. Si cette baseline n'établit de marge
-  sur aucun axe, le critère d'abandon de D-060 s'applique, C1 est refusée et **je reviendrai
-  vers toi** — c'est la seule issue qui redemande ton avis. Si elle laisse une marge, j'écris
-  le pré-enregistrement de C1 sous D-004 et je te le signale.
-- Aucun mécanisme n'est construit tant que cette sonde n'a pas parlé.
+- **Sonde complémentaire jouée le 12 septembre : B1 est levée.** Cent pièces neuves,
+  faisabilité 99/100, aucune des quatre variantes adaptatives n'est proche de l'oracle.
+  Verdict **MARGE EXPLOITABLE**. La marge survit donc au témoin simple le plus fort
+  disponible, ce qui était la seule chose qui manquait.
+- **Ce que la mesure a resserré, et qu'il faut avoir en tête** : la baseline adaptative égale
+  le balayage exhaustif pour la moitié du prix — 90,0 % de succès en 8,0 mouvements contre
+  15,9. Le coin laissé à un mécanisme vaut **+9 points de succès et −7 mouvements** contre une
+  politique qui n'apprend rien, et non le contraste 1 contre 16 que la v3 laissait croire. Une
+  règle de vérification de trois lignes détecte déjà le changement de monde neuf fois sur dix.
+- **Statut : la question ne t'attend toujours pas.** Sous D-004 j'écris le pré-enregistrement
+  de C1 avec les corrections P1 à P4 de la revue, et je te le signalerai. Tu n'as à intervenir
+  que si tu veux arbitrer autrement — par exemple arrêter là et considérer que ce coin est trop
+  étroit pour valoir une campagne.
+- Aucun mécanisme n'est construit avant que ce pré-enregistrement soit écrit et commité.
 
 ## En sommeil — matériel
 

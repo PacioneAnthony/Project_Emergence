@@ -1138,3 +1138,100 @@ Dix-sept sources : les deux de la sonde complémentaire, et les quinze de la v3,
 certifier qu'elles n'ont pas bougé — la correction B1 exige un `C1EpisodeV3` strictement
 inchangé. Manifeste `docs/research/c1_probe_hybrid_manifest.json`, archive
 `data/processed/experiments/c1_probe_hybrid/source_v1`, convention `source_v1` de D-061.
+
+## Entrée 12 — la banque de la sonde complémentaire : B1 est levée
+
+2026-09-12. Cent pièces réservées, jouées une seule fois après le gel (`bb1b712`), en
+79 secondes, avec les quatre variantes non dominées. Aucune pièce écartée ; contrôle de
+notation 100 % ; 45 % des épisodes brassés. Seconde partie refusée. Après la banque, les
+quatre manifestes sont intacts — hybride 17/17, v3 15/15, v2 12/12, v1 9/9 — et 456 tests
+sont verts. Résultats : `docs/research/c1_probe_hybrid_results.json`.
+
+### Les chiffres
+
+**Faisabilité : 99 sur 100, soit 99,0 %**, Wilson [94,6 % ; 99,8 %]. Elle passe, et elle est
+sans intérêt : l'entrée 7 avait annoncé qu'elle serait construite.
+
+Marge, règle de coût durcie — borne basse à 95 % ≥ 3 :
+
+| Témoin | Succès | Écart de succès | Coût | Écart de coût | Marge |
+|---|---|---|---|---|---|
+| dernier angle vu | 50,0 % | +49,0 [BCa +38,0] | 1,00 | +0,00 [BCa +0,00] | succès |
+| balayage exhaustif | 90,0 % | +9,0 [BCa +4,0] | 15,93 | +14,93 [BCa +14,85] | coût |
+| `adaptatif_s025` | 90,0 % | +9,0 [BCa +4,0] | 13,57 | +12,57 [BCa +11,24] | coût |
+| `adaptatif_s050` | 90,0 % | +9,0 [BCa +4,0] | 13,27 | +12,27 [BCa +10,93] | coût |
+| **`adaptatif_s150`** | 90,0 % | +9,0 [BCa +4,0] | **8,17** | +7,17 [BCa **+5,68**] | coût |
+| **`adaptatif_comparaison`** | 90,0 % | +9,0 [BCa +4,0] | **8,02** | +7,02 [BCa **+5,53**] | coût |
+
+**VERDICT : MARGE EXPLOITABLE.** Aucun témoin simple, adaptatif compris, n'est à la fois aussi
+juste que l'oracle et aussi économe. **B1 est levée.**
+
+### La prédiction de l'entrée 11, confrontée
+
+| Écrit avant la banque | Mesuré |
+|---|---|
+| faisabilité proche de 100 % | 99,0 % |
+| `s025` et `s050` : borne basse de coût autour de 10 | 11,24 et 10,93 |
+| `s150` et la comparaison : borne projetée 4,5 contre un seuil de 3 | **5,68 et 5,53** |
+
+Les trois tiennent. La borne des deux variantes pivots est même un peu meilleure que projetée,
+parce que leur taux d'acceptation est descendu de 60 % en développement à 52 et 53 % ici, ce
+qui creuse l'écart de coût. La bascule calculée avant de jouer, 70,4 %, n'a jamais été
+approchée.
+
+Contrairement au développement, `s150` et la règle sans paramètre **ne donnent pas les mêmes
+résultats** : 8,17 contre 8,02 de coût, 52 % contre 53 % d'acceptation, 87,3 % contre 89,1 %
+dans les pièces stables. Les emporter toutes les deux était le bon choix.
+
+### Ce que la banque apprend vraiment, et qui n'est pas le verdict
+
+**1. La baseline adaptative égale le balayage exhaustif pour la moitié du prix.** Les deux
+atteignent 90,0 % ; l'un coûte 15,93 mouvements, l'autre 8,02. Le témoin simple le plus fort
+disponible n'était donc pas celui que la v3 avait joué, et la revue avait raison de bloquer
+là-dessus. Sa propre estimation, « autour de neuf mouvements », tombe à 8,0 : elle était juste.
+
+Conséquence directe sur ce que la marge veut dire. Le coin laissé à un mécanisme n'est plus le
+contraste 1 contre 16 que suggérait la v3 : il vaut **+9 points de succès et −7 mouvements**
+contre une politique qui n'apprend rien. C'est réel, c'est mesuré, et c'est étroit.
+
+**2. Une règle de vérification triviale est déjà un détecteur de changement quasi parfait.**
+Taux d'acceptation de la vérification, par condition :
+
+| Variante | Global | Pièces stables | Pièces brassées |
+|---|---|---|---|
+| `s025` | 16,0 % | 29,1 % | 0,0 % |
+| `s050` | 18,0 % | 32,7 % | 0,0 % |
+| `s150` | 52,0 % | **90,9 %** | **4,4 %** |
+| `comparaison` | 53,0 % | **90,9 %** | **6,7 %** |
+
+Un seuil sur une distance d'histogramme sait, neuf fois sur dix, si le monde a changé depuis
+l'exploration. « Se souvenir, et ne vérifier que lorsque c'est utile » — la phrase de l'entrée 1
+qui décrivait ce que C1 devait faire émerger — est donc déjà obtenue par une règle qu'on écrit
+en trois lignes. Ce qu'un mécanisme appris pourrait ajouter s'en trouve resserré d'autant, et
+il vaut mieux l'écrire maintenant qu'après avoir construit quelque chose.
+
+**3. Les erreurs qui restent sont perceptives, pas mnésiques.** Taux conditionnels, publiés
+ensemble comme la correction B2 l'exige :
+
+| | Pièces | Oracle | Mémoire | Balayage | `s150` | `comparaison` |
+|---|---|---|---|---|---|---|
+| stables | 55 | 100 % | 87,3 % | 87,3 % | 87,3 % | 89,1 % |
+| brassées | 45 | 97,8 % | 4,4 % | 93,3 % | 93,3 % | 91,1 % |
+
+Les politiques adaptatives réussissent **mieux** quand les objets ont bougé (93,3 %) que quand
+ils sont restés en place (87,3 %). Ce n'est pas un paradoxe : une pièce brassée fait échouer la
+vérification, donc déclenche le balayage complet et récupère sa justesse ; une pièce stable
+fait accepter la réponse mémorisée, avec les erreurs de lecture qu'elle contient déjà. Le
+plafond de ces politiques est donc fixé par la **perception**, exactement ce que la correction
+P3 demandera de distinguer d'un gain mnésique.
+
+### Ce qui est autorisé maintenant
+
+B1 et B2 sont levées. Le pré-enregistrement de C1 peut s'écrire, avec P1 à P4 intégrées, et
+c'est la seule chose que ce verdict autorise. En particulier, P1 prend tout son sens : le
+comparateur primaire d'un futur mécanisme est la **baseline adaptative gelée ici**, à 90,0 %
+pour 8,02 mouvements — et non l'oracle, ni le balayage, ni le témoin de mémoire.
+
+Ce que rien n'autorise encore à dire : qu'un mécanisme saura prendre ces neuf points et ces
+sept mouvements. La marge existe, elle est étroite, et une part de ce qu'elle contient est un
+problème de perception que la mémoire ne résoudra pas.

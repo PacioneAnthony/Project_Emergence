@@ -1,0 +1,159 @@
+{
+  "summary": {
+    "verdict": "MARGE EXPLOITABLE",
+    "reason": "aucun témoin simple, adaptatif compris, n'est à la fois aussi juste et aussi économe",
+    "feasibility": {
+      "success_rate": 0.99,
+      "successes": 99,
+      "episodes": 100,
+      "wilson_95": [
+        0.9455124752390653,
+        0.9982326134344526
+      ],
+      "rejected_rooms": 0,
+      "rejected_fraction": 0.0,
+      "passes": true
+    },
+    "oracle_cost": 1.0,
+    "witnesses": {
+      "dernier_angle": {
+        "success_rate": 0.5,
+        "success_gap": 0.49,
+        "success_gap_bca_95": [
+          0.38,
+          0.58
+        ],
+        "cost_mean": 1.0,
+        "cost_gap": 0.0,
+        "cost_gap_bca_95": [
+          0.0,
+          0.0
+        ],
+        "success_margin": true,
+        "cost_margin": false,
+        "close_to_oracle": false
+      },
+      "balayage": {
+        "success_rate": 0.9,
+        "success_gap": 0.09,
+        "success_gap_bca_95": [
+          0.04,
+          0.14
+        ],
+        "cost_mean": 15.93,
+        "cost_gap": 14.93,
+        "cost_gap_bca_95": [
+          14.85,
+          14.96
+        ],
+        "success_margin": false,
+        "cost_margin": true,
+        "close_to_oracle": false
+      },
+      "adaptatif_s025": {
+        "success_rate": 0.9,
+        "success_gap": 0.09,
+        "success_gap_bca_95": [
+          0.04,
+          0.14
+        ],
+        "cost_mean": 13.57,
+        "cost_gap": 12.57,
+        "cost_gap_bca_95": [
+          11.24,
+          13.48
+        ],
+        "success_margin": false,
+        "cost_margin": true,
+        "close_to_oracle": false
+      },
+      "adaptatif_s050": {
+        "success_rate": 0.9,
+        "success_gap": 0.09,
+        "success_gap_bca_95": [
+          0.04,
+          0.14
+        ],
+        "cost_mean": 13.27,
+        "cost_gap": 12.27,
+        "cost_gap_bca_95": [
+          10.93,
+          13.28
+        ],
+        "success_margin": false,
+        "cost_margin": true,
+        "close_to_oracle": false
+      },
+      "adaptatif_s150": {
+        "success_rate": 0.9,
+        "success_gap": 0.09,
+        "success_gap_bca_95": [
+          0.04,
+          0.14
+        ],
+        "cost_mean": 8.17,
+        "cost_gap": 7.17,
+        "cost_gap_bca_95": [
+          5.68,
+          8.54
+        ],
+        "success_margin": false,
+        "cost_margin": true,
+        "close_to_oracle": false
+      },
+      "adaptatif_comparaison": {
+        "success_rate": 0.9,
+        "success_gap": 0.09,
+        "success_gap_bca_95": [
+          0.04,
+          0.15
+        ],
+        "cost_mean": 8.02,
+        "cost_gap": 7.02,
+        "cost_gap_bca_95": [
+          5.53,
+          8.49
+        ],
+        "success_margin": false,
+        "cost_margin": true,
+        "close_to_oracle": false
+      }
+    },
+    "cell_oracle_control": 1.0,
+    "moved_fraction": 0.45,
+    "conditional": {
+      "stable": {
+        "episodes": 55,
+        "oracle_perceptif": 1.0,
+        "dernier_angle": 0.8727272727272727,
+        "balayage": 0.8727272727272727,
+        "adaptatif_s025": 0.8727272727272727,
+        "adaptatif_s050": 0.8727272727272727,
+        "adaptatif_s150": 0.8727272727272727,
+        "adaptatif_comparaison": 0.8909090909090909
+      },
+      "brassee": {
+        "episodes": 45,
+        "oracle_perceptif": 0.9777777777777777,
+        "dernier_angle": 0.044444444444444446,
+        "balayage": 0.9333333333333333,
+        "adaptatif_s025": 0.9333333333333333,
+        "adaptatif_s050": 0.9333333333333333,
+        "adaptatif_s150": 0.9333333333333333,
+        "adaptatif_comparaison": 0.9111111111111111
+      }
+    }
+  },
+  "threshold_commit": "3fbac61",
+  "bank_rules": [
+    "adaptatif_s025",
+    "adaptatif_s050",
+    "adaptatif_s150",
+    "adaptatif_comparaison"
+  ],
+  "manifest_sha256": "ae58e46f536e02feb30179327709e7d70733126278e265b01d6f613067dcbaf0",
+  "frozen_at": "2026-09-12T15:53:05+0200",
+  "rooms": 100,
+  "seconds": 79.3,
+  "full_results": "data/processed/experiments/c1_probe_hybrid/bank/results.json"
+}
