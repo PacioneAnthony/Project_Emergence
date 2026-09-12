@@ -389,3 +389,105 @@ graine de banque `2956972568`, dernière `1504345451`.
   n'y est construit. Il est écrit ici pour ne pas pouvoir être réinterprété après coup.
 - **Faisabilité passée et les deux témoins laissant une marge** — MARGE EXPLOITABLE, et le
   pré-enregistrement de C1 peut enfin s'écrire.
+
+## Entrée 5 — développement de la v2, avant la banque
+
+2026-09-12. Dix pièces de développement. Les seuils de l'entrée 4 ne bougent pas, et aucun
+paramètre n'a été touché après le premier chiffre ci-dessous.
+
+### L'hypothèse de surexposition : confirmée en direction, insuffisante en ampleur
+
+Mesuré, et non supposé. Pour chaque objet de la palette, dans les dix pièces de
+développement, la comparaison que fait l'oracle perceptif : sa référence désigne-t-elle bien
+l'objet lui-même parmi les huit placés ?
+
+| Objet | Référence v1 | Référence éclairée par la pièce |
+|---|---|---|
+| 6 cube orange `(0,95 ; 0,50 ; 0,10)` | 0/10 | **4/10** |
+| 3 cube vert `(0,10 ; 0,70 ; 0,25)` | 8/10 | **10/10** |
+| 4 cylindre magenta | 9/10 | 9/10 |
+| les cinq autres | 10/10 | 10/10 |
+| **total** | **67/80 = 83,8 %** | **73/80 = 91,2 %** |
+
+La direction prédite à l'entrée 4 est confirmée : sous l'éclairage de la pièce, la référence
+de l'orange passe de la classe de teinte 3 à la classe 2. Mais la scène le montre en
+classe 1. Avec un histogramme sans tolérance, deux classes voisines sans recouvrement
+restent à la distance maximale de 2,0, et la sphère jaune l'emporte encore. **La correction
+est réelle et elle ne suffit pas.**
+
+Rien ne se dégrade : aucun objet ne recule, et la sphère jaune passe d'une distance de 0,668
+à 0,005. Le cube vert, dont l'entrée 4 annonçait qu'il resterait fragile parce que sa teinte
+tombe exactement sur la frontière `0,375 × 24 = 9,000`, est lu 10/10 ici — ce qui ne retire
+rien à la fragilité, seulement à sa fréquence sur dix pièces.
+
+### La fenêtre centrale ne change rien, et cela doit être écrit
+
+Les deux témoins, sur les mêmes dix pièces, chaque image décrite deux fois à partir des
+mêmes pixels : témoin de mémoire 4/10 dans les deux cas, balayage 7/10 dans les deux cas.
+
+L'hypothèse de l'entrée 3 — le fouillis coloré de la pièce polluant l'histogramme de l'image
+entière — **n'est pas soutenue**. La fenêtre est conservée : elle est inoffensive, elle va
+dans le sens conservateur, et elle supprime un facteur de confusion. Mais elle ne doit être
+créditée de rien, et la marge de la v2 ne pourra pas s'en réclamer.
+
+### La sonde de développement
+
+Oracle perceptif 7/10, témoin « dernier angle vu » 4/10, balayage 7/10 ; quatre pièces
+brassées sur dix ; coûts de 1, 1 et 15,9 mouvements. Dix pièces n'établissent rien : les
+seuils de l'entrée 4 en demandent 200.
+
+### Les trois échecs, attribués et non supposés
+
+Relecture déterministe, nommant la cible et la réponse. Deux mécanismes, pas un.
+
+- **Pièces `3583313364` et `1158679384`** — le cube orange, le mécanisme connu. Référence en
+  classe 2, cible vue en classe 1, distance 2,000 ; la sphère jaune répond à 0,729 et 1,899.
+- **Pièce `1064561201`**, brassée — le cylindre magenta, et **un mécanisme que la v1 n'a
+  jamais consigné**. Son descripteur est *vide*. Le masque du garde isole 220 pixels et le
+  garde a mesuré 8,7 % de la vue centrale changée, bien au-dessus de son seuil de 2 % — mais
+  moins de vingt de ces pixels passent le filtre de saturation du lecteur. L'oracle lit donc
+  une cellule vide là où la tâche vient de certifier un objet, se retrouve à égalité à 2,000
+  avec les autres candidats vides, et répond au premier dans l'ordre de balayage.
+
+### Un défaut trouvé, nommé, et non corrigé
+
+Les deux gardes ne font pas le même test. Le garde de visibilité compte les pixels qui ont
+*changé* de plus de 25 entre la pièce avec l'objet et la pièce sans lui. Le lecteur gelé
+compte les pixels *saturés*, saturation ≥ 0,45 et valeur ≥ 0,25. Un objet à l'ombre, ou
+délavé par la distance, passe le premier et échoue au second. C'est la leçon de REF-003 sous
+une forme nouvelle : un garde qui ne mesure pas dans les termes qui comptent en aval.
+
+Fréquence mesurée : **un objet illisible sur 80 placés, soit 1,2 %**, sur les dix pièces de
+développement.
+
+**Il n'est pas corrigé, et la raison importe plus que le défaut.** Le réparer rendrait
+davantage de pièces lisibles, donc augmenterait la faisabilité — après qu'un chiffre de
+développement a été vu. L'entrée 4 n'admet un changement décidé après avoir vu les données
+que lorsqu'il rend la porte **plus dure** à passer ; celui-ci la rendrait plus facile. Cette
+asymétrie est exactement ce qui rendait la fenêtre centrale admissible et qui rend
+celui-ci inadmissible. Il est pré-enregistré ici comme la première correction d'une
+éventuelle v3.
+
+### Prédiction avant la banque
+
+Écrite ici pour que la banque ne surprenne personne, comme l'entrée 2 l'avait fait.
+
+L'orange est la cible dans environ une pièce sur huit et n'est lu que quatre fois sur dix :
+environ 7 points de faisabilité perdus. Le magenta en coûte environ 1, et l'objet illisible
+environ 1 de plus. La faisabilité attendue se situe donc **entre 85 et 91 %, contre un seuil
+ponctuel de 90 %**. La banque peut très bien échouer de nouveau. Les 7/10 du développement
+sont un tirage bas sous n'importe lequel de ces taux, mais pas un tirage impossible.
+
+Si elle échoue sur le mécanisme de l'orange, l'entrée 4 dit déjà ce que cela voudra dire :
+un résultat sur la fragilité d'un histogramme sans tolérance, et une v3 dont les seuils
+s'écriront d'abord. Rien n'est réglé maintenant.
+
+### Gel
+
+Douze sources : les trois de la v2, et les neuf de la v1, hachées pour certifier qu'elles
+n'ont pas bougé. Manifeste `docs/research/c1_probe_v2_manifest.json`, archive
+`data/processed/experiments/c1_probe_v2/source_v1`, convention `source_v1` de D-061.
+
+428 tests verts, dont onze nouveaux qui vérifient par identité d'objet — et non par égalité
+de valeurs — que la v2 importe le lecteur, l'oracle perceptif, le verdict et chacun des
+seuils depuis le module v1 gelé, au lieu d'en tenir une copie.
