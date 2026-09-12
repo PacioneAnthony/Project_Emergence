@@ -139,11 +139,12 @@ juin, `ANT-008` (kit AS5600) et `ANT-009` (banc v1.0), restent en sommeil et san
 D-008 et D-060, avec leur propre question : les fermer, ou les garder en sommeil en vue d'un
 retour au matériel ?
 
-**Revue contradictoire** — **une est due.** La sonde de marge est verte, donc la porte
-suivante, le pré-enregistrement de C1, est ouverte — et l'ouvrir engage le reste du programme
-sur ce substrat. Sous D-062 elle est faite par un agent qui n'a pas produit le travail, dans
-une session distincte. Dossier : `docs/research/c1_journal.md`, entrées 1 à 9, et les trois
-résultats publiés.
+**Revue contradictoire** — **ouverte le 12 septembre**, confiée par Anthony à GPT Astra, qui
+n'a pas produit ce travail. Elle porte sur une question unique : la marge mesurée sur C1
+autorise-t-elle l'ouverture de la phase des mécanismes ? Dossier :
+`docs/research/c1_margin_review_request.md`. Réponse attendue dans
+`docs/research/c1_margin_review.md`, verdict `AUTORISER`, `AUTORISER AVEC CORRECTIONS
+BLOQUANTES` ou `REFUSER`. **Aucun mécanisme n'est construit avant son retour.**
 
 **Blocage** — aucun.
 

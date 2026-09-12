@@ -33,9 +33,18 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
 - **Question :** j'ouvre la phase des mécanismes sur C1 — pré-enregistrement, puis
   construction — ou tu veux d'abord autre chose ?
 - Point de procédure : sous D-062, une décision à fort impact est contredite par un agent qui
-  n'a pas produit le travail, dans une session distincte. Celle-ci en est une. Je peux ouvrir
-  cette revue moi-même avant de construire ; dis-moi si tu préfères la lire d'abord.
+  n'a pas produit le travail, dans une session distincte. Celle-ci en est une.
 - Détail : `docs/research/c1_journal.md`, entrées 1 à 9 ; `PILOTAGE.md` pour l'état courant.
+
+**Réponse Anthony, 2026-09-12 :**
+
+> Je vais demander à GPT Astra de faire la revue. Donne moi le prompt à lui transmettre.
+
+- Intégration : dossier de revue écrit dans `docs/research/c1_margin_review_request.md`,
+  au format du protocole §6, avec sept points contradictoires obligatoires que j'ai dressés
+  contre ma propre conclusion. Revue attendue dans `docs/research/c1_margin_review.md`.
+- **La question de fond reste ouverte** : ouvrir ou non la phase des mécanismes. Elle se
+  tranchera après la revue. Aucun mécanisme n'est construit d'ici là.
 
 ## En sommeil — matériel
 
