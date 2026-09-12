@@ -1,0 +1,66 @@
+{
+  "summary": {
+    "verdict": "REJETÉE — FAISABILITÉ",
+    "reason": "l'oracle perceptif ne lit pas la tâche telle que construite : c'est elle qu'on corrige",
+    "feasibility": {
+      "success_rate": 0.89,
+      "successes": 178,
+      "episodes": 200,
+      "wilson_95": [
+        0.8390720169908702,
+        0.9262280983928396
+      ],
+      "rejected_rooms": 0,
+      "rejected_fraction": 0.0,
+      "passes": false
+    },
+    "oracle_cost": 1.0,
+    "witnesses": {
+      "dernier_angle": {
+        "success_rate": 0.44,
+        "success_gap": 0.45,
+        "success_gap_bca_95": [
+          0.375,
+          0.515
+        ],
+        "gap_signs": {
+          "positive": 90,
+          "negative": 0,
+          "zero": 110
+        },
+        "cost_mean": 1.0,
+        "cost_gap": 0.0,
+        "success_margin": true,
+        "cost_margin": false,
+        "close_to_oracle": false
+      },
+      "balayage": {
+        "success_rate": 0.825,
+        "success_gap": 0.065,
+        "success_gap_bca_95": [
+          0.035,
+          0.1
+        ],
+        "gap_signs": {
+          "positive": 13,
+          "negative": 0,
+          "zero": 187
+        },
+        "cost_mean": 15.955,
+        "cost_gap": 14.955,
+        "success_margin": false,
+        "cost_margin": true,
+        "close_to_oracle": false
+      }
+    },
+    "cell_oracle_control": 1.0,
+    "moved_fraction": 0.51,
+    "reference_empty": 0
+  },
+  "threshold_commit": "86a03c8",
+  "manifest_sha256": "ea97118300b1048768a1082c60c44228574730f263347851e6fe0b4da85104a2",
+  "frozen_at": "2026-09-12T02:30:36+0200",
+  "rooms": 200,
+  "seconds": 85.5,
+  "full_results": "data/processed/experiments/c1_probe_v2/bank/results.json"
+}

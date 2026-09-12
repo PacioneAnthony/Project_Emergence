@@ -1,6 +1,6 @@
 # Émergence — Tableau de pilotage
 
-Dernière mise à jour : 2026-09-10.
+Dernière mise à jour : 2026-09-12.
 
 Ce document dit où en est le projet **aujourd'hui** : la décision active, les règles qui
 tiennent, ce qui est acquis, ce qui est fermé. L'historique détaillé campagne par campagne
@@ -73,14 +73,35 @@ vision tient dans l'heure.
 
 **L'agent** — étapes 1 et 2 faites le 11 septembre : l'axe d'inclinaison existe, le contrat
 d'observation est à deux consignes, les quinze cellules ont du contenu et la tâche C1 est
-construite et mesurée. **Étape 3 faite.** La sonde de marge a joué sa banque une seule fois, après gel :
-faisabilité 54/60, soit 90,0 %, borne de Wilson 79,9 % — sous le seuil de 80 % fixé avant
-tout calcul, à une pièce près. **Verdict : REJETÉE — FAISABILITÉ.** Ce n'est pas le critère
-d'abandon de D-060 : le substrat n'est pas épuisé, c'est la tâche C1 qu'on corrige. Les six
-échecs de l'oracle perceptif sont un seul mécanisme — la référence et la scène décalent la
-teinte du cube orange, une fois celle du vert, au-delà d'une classe. Prochaine étape : une
-version 2 de la tâche, référence rendue sous l'éclairage de la scène, nouvelles graines,
-seuils écrits avant tout chiffre. Détail : `docs/research/c1_journal.md`, entrées 1 à 3. Aucun mécanisme cognitif, aucun
+construite et mesurée. **Étape 3 faite, deux sondes jouées.** Chacune a écrit ses seuils
+avant tout chiffre, gelé ses sources avant sa banque, et joué cette banque une seule fois.
+
+- **v1**, 60 pièces : faisabilité 54/60 = 90,0 %, borne de Wilson 79,9 % contre 80 %. Échec
+  à une pièce près, et sur la borne — un défaut de puissance, puisqu'à 60 pièces le
+  dispositif ne pouvait pas passer à sa propre cible.
+- **v2**, 200 pièces, référence rendue sous l'éclairage de la pièce : faisabilité
+  178/200 = **89,0 %**, Wilson [83,9 % ; 92,6 %]. La borne passe largement ; c'est le taux
+  lui-même qui manque, **de deux pièces**. Relecture déterministe : zéro écart sur 200.
+
+**Verdict des deux : REJETÉE — FAISABILITÉ.** Ce n'est pas le critère d'abandon de D-060,
+réservé à une marge absente : le substrat n'est pas épuisé, c'est la tâche C1 qu'on corrige.
+
+Les 22 échecs de la v2 tiennent à **deux objets sur huit** ; les six autres sont lus 153 fois
+sur 153. Le cube orange rate 15 fois sur 15 de façon identique — référence en classe de
+teinte 2, objet vu en classe 1 — et le cylindre magenta 7 fois pour une raison photométrique,
+dont 5 où son descripteur est vide alors que le garde de visibilité l'avait accepté. Réparer
+l'un **ou** l'autre suffisait à passer la porte.
+
+À surveiller, et non conclu : l'écart de succès du balayage exhaustif est tombé de +23,3
+points en v1 à +6,5 en v2 pendant que la tâche devenait plus lisible. C'est la marge, et non
+la lisibilité, qui deviendra la question si une v3 répare les deux objets.
+
+Prochaine étape : **v3**, deux corrections déjà nommées avant de connaître le chiffre de la
+v2 — le garde de visibilité doit mesurer dans les termes du lecteur, et la règle de
+comparaison sans tolérance doit être reconsidérée, sachant qu'une règle tolérante renforce
+aussi les témoins. Nouvelles graines, nouvel espace de noms, seuils écrits d'abord.
+
+Détail : `docs/research/c1_journal.md`, entrées 1 à 6. Aucun mécanisme cognitif, aucun
 pré-enregistrement et aucune banque de confirmation avant que la marge existe. Le prompt
 complet est dans `CODEX_TASK_BRIEF.md`.
 

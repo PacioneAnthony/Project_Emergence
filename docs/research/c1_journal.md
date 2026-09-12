@@ -491,3 +491,96 @@ n'ont pas bougé. Manifeste `docs/research/c1_probe_v2_manifest.json`, archive
 428 tests verts, dont onze nouveaux qui vérifient par identité d'objet — et non par égalité
 de valeurs — que la v2 importe le lecteur, l'oracle perceptif, le verdict et chacun des
 seuils depuis le module v1 gelé, au lieu d'en tenir une copie.
+
+## Entrée 6 — la banque de la v2, et son verdict
+
+2026-09-12. Deux cents pièces réservées, jouées une seule fois après le gel (`91cf236`,
+gelé à 02:30:36), en 86 secondes. Aucune pièce écartée par les gardes ; contrôle de notation
+par l'oracle de cellule à 100 % ; 51 % des épisodes brassés. Une seconde partie est refusée
+par le lanceur, et c'est vérifié. Les douze sources gelées sont intactes après la banque, et
+les neuf de la v1 aussi. Résultats : `docs/research/c1_probe_v2_results.json`.
+
+### Le chiffre
+
+**Faisabilité : 178 sur 200, soit 89,0 %, borne de Wilson à 95 % [83,9 % ; 92,6 %].** Le
+seuil ponctuel demandait 90,0 % : **il manque deux pièces.**
+
+La réparation de puissance décidée à l'entrée 4 a fait exactement ce qu'elle promettait, et
+c'est la seule partie du dispositif qui se soit comportée comme annoncé : la borne de Wilson
+franchit son seuil de près de quatre points, et c'est l'estimation ponctuelle qui décide. La
+v1 avait échoué sur la borne à une pièce près ; la v2 échoue sur le taux lui-même. Ce n'est
+plus un défaut de conception, c'est une mesure.
+
+**La prédiction de l'entrée 5 était juste.** Elle annonçait une faisabilité entre 85 et 91 %
+et disait que la banque pouvait très bien échouer de nouveau. Elle vaut 89,0 %.
+
+### Ce qui a échoué — relecture déterministe
+
+Relecture des deux cents pièces, reproduisant chaque choix enregistré : **zéro écart**. La
+banque est reproductible, et rien de ce qui suit n'entre dans le verdict.
+
+Les vingt-deux échecs tiennent à **deux objets, et à eux seuls**. Les six autres sont lus
+sans une faute, 153 fois sur 153.
+
+| Objet | Fois cible | Fois lue | Taux |
+|---|---|---|---|
+| 6 cube orange `(0,95 ; 0,50 ; 0,10)` | 21 | 6 | **28,6 %** |
+| 4 cylindre magenta `(0,85 ; 0,35 ; 0,85)` | 26 | 19 | **73,1 %** |
+| 0, 1, 2, 3, 5, 7 | 153 | 153 | **100 %** |
+
+- **Le cube orange, quinze échecs, tous le même.** Référence en classe de teinte 2, objet vu
+  dans la pièce en classe 1 — dans les quinze cas, sans une exception. Ce n'est pas du
+  bruit : c'est un décalage d'exactement une classe, parfaitement systématique. L'éclairage
+  de la pièce a rapproché la référence d'une classe, de 3 à 2, sans jamais la faire
+  coïncider. La correction allait dans le bon sens et s'est arrêtée une classe trop tôt.
+- **Le cylindre magenta, sept échecs, photométriques.** Cinq fois son descripteur est
+  *vide* — le défaut que l'entrée 5 a nommé et délibérément laissé en place. Deux fois il
+  survit, mais réparti dans des classes qui ne sont pas les siennes (56 % en classe 9 et
+  42 % en classe 2 ; ailleurs 64 % en classe 7), signe qu'il ne reste qu'une poignée de
+  pixels non représentatifs de sa couleur.
+
+Arithmétique qui situe l'enjeu : la porte demandait 180 pièces sur 200. Réparer le seul cube
+orange en aurait donné 193, soit 96,5 % ; réparer le seul cylindre magenta, 185, soit
+92,5 %. **Chacune des deux corrections suffisait à passer, séparément.**
+
+### Verdict
+
+**REJETÉE — FAISABILITÉ.** Aucune marge n'est revendiquée, selon la règle de l'entrée 1
+reprise par l'entrée 4. Ce n'est toujours pas le critère d'abandon de D-060, réservé à une
+marge absente : le substrat n'est pas déclaré épuisé, et c'est encore la tâche qu'on corrige.
+
+### Les témoins, en description seule
+
+Le témoin « dernier angle vu » réussit 44,0 %, écart apparié de +45,0 points
+[BCa +37,5 ; +51,5], au même coût que l'oracle. Le balayage exhaustif réussit 82,5 %, écart
+de +6,5 points [BCa +3,5 ; +10,0], pour quinze mouvements de plus.
+
+Un fait mérite d'être relevé, parce qu'il porte sur la question même que D-060 pose.
+**L'écart de succès du balayage s'est effondré**, de +23,3 points en v1 à +6,5 ici, pendant
+que la tâche devenait plus lisible : le balayage passe de 66,7 % à 82,5 %. C'est attendu —
+un oracle et un balayage qui lisent mieux convergent — mais cela dit où se jouera la marge.
+Si une v3 répare les deux objets restants, le balayage pourrait atteindre la parité en
+succès et ne plus se distinguer que par le coût. Ce n'est pas un résultat et rien n'en est
+conclu ; c'est ce qu'il faudra surveiller, et c'est la première fois que ce substrat donne
+un signe sur la question de la marge plutôt que sur celle de la lisibilité.
+
+### Ce que la v3 doit corriger
+
+Deux corrections, une par mécanisme, toutes deux **nommées avant de connaître ce chiffre** :
+
+1. **Le garde de visibilité doit mesurer dans les termes du lecteur.** Pré-enregistré à
+   l'entrée 5 comme première correction d'une v3 : un objet n'est accepté dans une cellule
+   que si son descripteur y existe. Aujourd'hui le garde compte des pixels changés et le
+   lecteur exige des pixels saturés, et rien ne garantit le second quand le premier passe.
+2. **La règle sans tolérance doit être reconsidérée.** Pré-enregistré à l'entrée 4 : un
+   échec sur le mécanisme de teinte est « un résultat sur la fragilité d'un histogramme sans
+   tolérance, et il justifierait de la reconsidérer dans une v3 dont les seuils s'écriraient
+   d'abord ». Le décalage mesuré ici est d'exactement une classe et il est systématique ;
+   l'éclairage l'a réduit sans le refermer. Une règle qui met deux classes voisines à la
+   distance maximale ne mesure pas une différence d'apparence, elle mesure un arrondi.
+
+Attention à ne pas se tromper de sens en corrigeant le second point : une règle tolérante
+renforce aussi les témoins, et c'est la marge qui en paiera le prix. C'est précisément
+pourquoi ses seuils doivent être écrits avant son premier chiffre.
+
+La v3 prend de nouvelles graines et un nouvel espace de noms.

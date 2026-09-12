@@ -1,6 +1,6 @@
 # Émergence — Handoff de session
 
-Date : 2026-09-10.
+Date : 2026-09-12.
 
 Ce document dit **comment reprendre** et **ce qui a déjà été essayé**, campagne par
 campagne. L'état courant — décision active, acquis, fermetures, actions par acteur — est
@@ -143,10 +143,46 @@ vérification de visibilité par objet ; et la correction de ce saut fermait les
 rendu dans le mauvais ordre, ce qui rendait noire toute image après un brassage.
 `release_renderer`, dans `sim3d/bench2_env.py`, règle ce second point partout.
 
-Reprendre par une version 2 de C1 : nouvel espace de graines, référence rendue sous
-l'éclairage de la scène, et vérifier d'abord si le balayage perd ses quatorze pièces à cause
-du fouillis coloré — auquel cas les témoins méritent la même fenêtre centrale que l'objet.
 Lanceur : `python -m scripts.research.c1_probe` ; il refuse de rejouer une banque.
+
+### Étape 3, version 2 — faite le 12 septembre 2026
+
+Seuils écrits et commités avant toute ligne de code v2 (`86a03c8`), développement consigné
+(`89e0b68`), sources gelées avant la banque (`91cf236`), banque de 200 pièces jouée une seule
+fois en 86 s. **Faisabilité 178/200 = 89,0 %**, Wilson [83,9 % ; 92,6 %] : la borne passe
+largement, le taux manque de deux pièces. Verdict **REJETÉE — FAISABILITÉ**, et toujours pas
+l'abandon de D-060.
+
+Trois corrections étaient pré-enregistrées, et il faut retenir ce que chacune a donné, parce
+que deux sur trois ont démenti ce qu'on en attendait :
+
+- **référence rendue sous l'éclairage de la pièce** — effet réel mais insuffisant. Le cube
+  orange passe de 0/10 à 4/10 en développement, le vert est réparé, rien ne recule. Dans la
+  banque, la référence de l'orange est en classe de teinte 2 et l'objet vu en classe 1, 15
+  fois sur 15 : un décalage d'exactement une classe, systématique, que l'éclairage réduit
+  sans le refermer ;
+- **fenêtre centrale pour les témoins** — **aucun effet mesurable**. Les deux témoins
+  marquent à l'identique avec et sans. L'hypothèse du fouillis coloré de l'entrée 3 n'est pas
+  soutenue ; la fenêtre est conservée parce qu'elle est inoffensive et conservatrice, et elle
+  n'est créditée de rien ;
+- **banque portée de 60 à 200 pièces** — a fonctionné exactement comme annoncé. À 60 pièces,
+  le dispositif ne pouvait pas passer à sa propre cible.
+
+Un second mécanisme d'échec, que la v1 n'avait jamais consigné : le garde de visibilité
+compte les pixels *changés*, le lecteur gelé exige des pixels *saturés*, et un objet peut
+passer le premier en laissant le second lire une cellule vide. Mesuré à 1,2 % des objets
+placés en développement, il coûte 5 des 22 échecs de la banque. **Il n'a pas été corrigé** :
+le réparer aurait augmenté la faisabilité après qu'un chiffre de développement a été vu,
+c'est-à-dire dans la direction que la discipline interdit. Il est pré-enregistré comme la
+première correction de la v3.
+
+Reprendre par la **v3** : nouvel espace de graines, garde de visibilité mesurant dans les
+termes du lecteur, et règle de comparaison sans tolérance à reconsidérer — en sachant qu'une
+règle tolérante renforce aussi les témoins, donc que ses seuils doivent être écrits avant son
+premier chiffre. Lanceur : `python -m scripts.research.c1_probe_v2`, qui refuse lui aussi de
+rejouer une banque. La v2 étend la v1 sans la toucher : ses modules importent le lecteur,
+l'oracle et les seuils gelés au lieu d'en tenir copie, et onze tests le vérifient par
+identité d'objet.
 
 Réutiliser sans le réécrire : le noyau persistant, `FunctionalStore`,
 `learning/paired_stats.py` pour toutes les portes statistiques, `learning/visual_jepa.py`,
@@ -154,7 +190,7 @@ et le banc `sim3d/bench_model.py` / `sim3d/bench_env.py`, qui contient déjà la
 meublée, les panneaux contrastés, l'éclairage, l'objet externe sur rail, la caméra
 embarquée de 30° et son rendu.
 
-État au moment de la reprise : 358 tests verts. Aucun processus, aucune réservation de
+État au moment de la reprise : 428 tests verts. Aucun processus, aucune réservation de
 budget et aucune simulation ne restent actifs sur les campagnes closes ; leurs registres
 `budget.sqlite` sont soldés.
 
