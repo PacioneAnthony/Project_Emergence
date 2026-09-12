@@ -1015,7 +1015,7 @@ et il peut aussi échouer — ce qui est exactement ce qu'on attend d'une porte.
 **Graines.** Espace de noms `c1-margin-hybrid/v1`, même recette du projet. Développement :
 sous-espace `"dev"`, i de 0 à 9. Banque : sous-espace `"bank"`, i de 0 à 99, soit **100
 pièces**, jouées une seule fois après le gel. Vérifié à l'écriture : 110 graines distinctes,
-toutes supérieures à 100 000, minimum `8620304`, **aucune réutilisation des 570 graines déjà
+toutes supérieures à 100 000, minimum `8620304`, **aucune réutilisation des 590 graines déjà
 dépensées** par les trois sondes C1, et aucune collision avec les littéraux entiers du dépôt —
 ni avec les 1 697 413 de 6 664 fichiers, périmètre des entrées 1, 4 et 7, ni avec les 25 795
 des seules sources du projet. Première graine de développement `3874359381` ; première de
@@ -1052,3 +1052,89 @@ vérifie que la politique ne bouge pas ; le gain mnésique et le gain perceptif 
 séparément sur les quatre cellules `candidat/baseline × stable/brassé` ; et le défaut de
 frontière de la palette v3 reste **gelé et déclaré**, une palette décalée définissant une
 nouvelle tâche qui redemanderait sa propre sonde de marge.
+
+## Entrée 11 — développement de la sonde complémentaire, avant la banque
+
+2026-09-12. Dix pièces de développement, les sept variantes de la famille jouées. Les seuils
+de l'entrée 10 ne bougent pas.
+
+### Un décompte faux dans l'entrée 10, corrigé
+
+Mon propre test l'a attrapé, et il vaut mieux l'écrire que le laisser passer : les graines déjà
+dépensées par les trois sondes C1 sont **590**, et non 570 — 70, 210 et 310, graines de
+développement comprises. Les scripts avaient bien vérifié l'absence de réutilisation contre les
+590 ; seule ma prose comptait mal. L'entrée 10 est corrigée sur ce point, et sur lui seul.
+
+### Ce que le développement donne
+
+Oracle perceptif 10/10, témoin de mémoire 5/10, balayage 9/10 ; cinq pièces brassées sur dix.
+
+| Variante | Succès | Coût moyen |
+|---|---|---|
+| `s025` | 90 % | 13,0 |
+| `s050` | 90 % | 13,0 |
+| `s075` | 80 % | 11,5 |
+| `s100` | 80 % | 11,5 |
+| `s125` | 80 % | 10,0 |
+| **`s150`** | 80 % | **7,0** |
+| **`comparaison`** | 80 % | **7,0** |
+
+Trois variantes sont dominées : `s075`, `s100` et `s125` sont égalées en succès et battues en
+coût par `s150`. **Les quatre non dominées partent dans la banque** — `s025`, `s050`, `s150` et
+la règle sans paramètre — et le sous-ensemble est figé dans `BANK_RULES` par le commit qui
+porte cette entrée, avant le gel des sources.
+
+Deux d'entre elles, `s150` et la comparaison, ressortent déjà **« proche de l'oracle »** sur ces
+dix pièces. Elles partent quand même. C'est précisément le point de la clause de la revue :
+ne garder que les variantes chères conserverait une marge en coût **par sélection**, et ce
+serait la manœuvre exacte que cette clause existe pour interdire.
+
+### Pourquoi « proche de l'oracle » ne veut rien dire à dix pièces
+
+La règle de coût durcie demande une borne basse d'intervalle, et un intervalle a besoin
+d'épisodes.
+
+| Variante | Écart de coût | Écart-type | BCa à n = 10 | Projection à n = 100 |
+|---|---|---|---|---|
+| balayage | +15,00 | 0,00 | 15,00 | 15,00 |
+| `s025`, `s050` | +12,00 | 6,32 | 4,50 | 10,76 |
+| `s150`, `comparaison` | +6,00 | 7,75 | **1,50** | **4,48** |
+
+À dix pièces, la borne basse de `s150` vaut 1,50 pour un écart moyen de 6,0 : l'intervalle est
+trop large pour établir quoi que ce soit contre un seuil de 3. Le même artefact se lit sur la
+faisabilité, affichée « ÉCHOUE » sur un 10/10 parce que la borne de Wilson y vaut 72,2 %. **Ces
+étiquettes de développement ne sont pas prédictives ; seuls les points le sont.** La projection
+suppose le même taux d'acceptation sur cent pièces et n'est pas un résultat.
+
+Le point, lui, valide le calcul pré-enregistré : `s150` accepte **60 %** du temps, sous la
+bascule de 70,4 % calculée à l'entrée 10 avant de jouer, et la projection donne 4,48 — l'ordre
+de 5 à 6 qui y était annoncé. Le modèle de coût se comporte comme écrit, ce qui est la seule
+raison de lui accorder du crédit maintenant.
+
+`s150` et la règle sans paramètre donnent des résultats identiques sur les dix pièces, succès
+et coût. Elles pourraient se confondre en pratique ; les deux sont conservées, et la banque le
+dira.
+
+### Prédiction avant la banque
+
+Écrite ici pour que la banque ne surprenne personne, comme aux entrées 2, 5 et 8.
+
+Faisabilité proche de 100 %, et sans intérêt : elle est construite, l'entrée 7 l'a déjà dit.
+`s025` et `s050` devraient établir largement leur marge en coût, borne basse autour de 10.
+
+**Tout se joue sur `s150` et la règle sans paramètre.** Leur borne basse projetée vaut 4,5
+contre un seuil de 3, donc la marge tiendrait. Mais elle dépend entièrement de leur taux
+d'acceptation, mesuré à 60 % sur dix pièces seulement, alors que la marge en coût s'effondre
+au-delà de 70,4 %. **Dix points d'écart sur ce taux renversent le verdict.**
+
+**Verdict attendu : MARGE EXPLOITABLE, et sans confiance.** Si le taux d'acceptation monte, ces
+deux variantes deviennent proches de l'oracle, le critère d'abandon de D-060 s'applique, C1 est
+refusée et aucun mécanisme n'est construit. C'est l'issue que la revue jugeait possible, et
+rien dans ce développement ne l'écarte.
+
+### Gel
+
+Dix-sept sources : les deux de la sonde complémentaire, et les quinze de la v3, hachées pour
+certifier qu'elles n'ont pas bougé — la correction B1 exige un `C1EpisodeV3` strictement
+inchangé. Manifeste `docs/research/c1_probe_hybrid_manifest.json`, archive
+`data/processed/experiments/c1_probe_hybrid/source_v1`, convention `source_v1` de D-061.
