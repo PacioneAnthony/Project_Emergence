@@ -195,11 +195,33 @@ tirage et non en loi finale ; la détection du changement n'est pas « résolue 
 taux de vérification ; et « B1 survit puisque 3,52 > 3 » ne peut pas certifier une politique
 jamais jouée, B1 exigeant une borne basse et non un coût idéal.
 
-**La contrainte qui peut fermer la campagne** : sur l'axe du coût, le candidat doit satisfaire
-`C_M ≤ min_j C_j − 1,5`, soit une fenêtre praticable de **[1,00 ; 3,02]** avec une porte 3
-estimée à 4,52. **Si la porte 3 mesurée tombe sous 2,50, la supériorité en coût devient
-impossible par construction.** Si le diagnostic ne montre aucun manque compatible, C1-M1
-s'arrête avant construction — sans que B1 soit annulée ni le substrat déclaré épuisé.
+**Diagnostic joué le 12 septembre : 40 pièces de réglage puis 60 hors échantillon.
+C1-M1 s'arrête avant construction.** Les deux volets de l'hypothèse sont réfutés par la mesure.
+
+- **L'ordre ne rapporte rien.** Rang de première visite de la cible : 7,45 en ordre raster,
+  8,30 en ordre par distance mémorisée, contre une prédiction sous échangeabilité de 7,5. Les
+  deux y tombent, et celui qui devait exploiter la mémoire est le plus mauvais.
+- **La calibration par apparence ne rapporte rien.** À succès identique (86,7 %), la table
+  coûte 4,77 mouvements contre 3,68 pour un seuil global : elle a ajusté le bruit des
+  40 pièces, comme la faiblesse déclarée d'avance l'annonçait.
+- **Le coin est vide.** Il faudrait `C_M ≤ 2,18` avec `S_M ≥ 86,3 %`. Un repli coûtant 8,32
+  mouvements même sous reconnaissance parfaite, atteindre 2,18 exigerait d'accepter sans
+  chercher dans 83,8 % des pièces — alors que la cellule mémorisée n'est la bonne que dans
+  53,3 %. Le succès plafonnerait à 68,0 % : dix-huit points cédés pour gagner 1,5 mouvement,
+  contre une tolérance de deux.
+
+**Aucune ligne de code de mécanisme n'a été écrite**, et l'espace `c1-mechanism/v1` reste
+réservé et non ouvert.
+
+**Ce que cela ne dit pas.** B1 reste valide, la tâche n'est pas modifiée, et le substrat
+**n'est pas déclaré épuisé** : le critère d'abandon de D-060 vise une marge absente, et la
+marge existe. Ce qui est établi est plus précis : **la marge de C1 est réelle et déjà prise
+par des politiques qui n'apprennent rien.**
+
+**Ce que le diagnostic rapporte quand même** : une bien meilleure baseline — 86,7 % pour
+**3,68 mouvements**, là où la porte gelée par B1 coûtait 8,02 — et le plancher mesuré d'une
+recherche après réfutation, 8,32 mouvements sous reconnaissance parfaite. Toute conception
+future sur cette tâche part de ces deux chiffres.
 
 La baseline adaptative **égale le balayage exhaustif pour la moitié du prix** — 90,0 % de
 succès pour 8,02 mouvements contre 15,93. Le coin laissé à un mécanisme n'est donc pas le

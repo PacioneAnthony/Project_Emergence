@@ -1,0 +1,127 @@
+{
+  "summary": {
+    "comparaison|raster|a100": {
+      "success_rate": 0.8833333333333333,
+      "cost_mean": 4.883333333333334,
+      "fallback_rate": 0.36666666666666664,
+      "false_acceptance": 6,
+      "target_rejected": 0,
+      "stopped_rate": 0.8666666666666667,
+      "ideal_cost_mean": 3.85,
+      "rank_mean": 7.761904761904762,
+      "stable": {
+        "episodes": 30,
+        "success_rate": 0.9,
+        "cost_mean": 1.0
+      },
+      "brassee": {
+        "episodes": 30,
+        "success_rate": 0.8666666666666667,
+        "cost_mean": 8.766666666666667
+      }
+    },
+    "comparaison|raster|a150": {
+      "success_rate": 0.8666666666666667,
+      "cost_mean": 3.683333333333333,
+      "fallback_rate": 0.36666666666666664,
+      "false_acceptance": 6,
+      "target_rejected": 0,
+      "stopped_rate": 1.0,
+      "ideal_cost_mean": 3.683333333333333,
+      "rank_mean": 7.45,
+      "stable": {
+        "episodes": 30,
+        "success_rate": 0.9,
+        "cost_mean": 1.0
+      },
+      "brassee": {
+        "episodes": 30,
+        "success_rate": 0.8333333333333334,
+        "cost_mean": 6.366666666666666
+      }
+    },
+    "comparaison|memoire|a150": {
+      "success_rate": 0.8666666666666667,
+      "cost_mean": 3.8,
+      "fallback_rate": 0.36666666666666664,
+      "false_acceptance": 6,
+      "target_rejected": 0,
+      "stopped_rate": 1.0,
+      "ideal_cost_mean": 3.8,
+      "rank_mean": 8.3,
+      "stable": {
+        "episodes": 30,
+        "success_rate": 0.9,
+        "cost_mean": 1.0
+      },
+      "brassee": {
+        "episodes": 30,
+        "success_rate": 0.8333333333333334,
+        "cost_mean": 6.6
+      }
+    },
+    "comparaison|raster|table": {
+      "success_rate": 0.8666666666666667,
+      "cost_mean": 4.766666666666667,
+      "fallback_rate": 0.36666666666666664,
+      "false_acceptance": 6,
+      "target_rejected": 0,
+      "stopped_rate": 0.8833333333333333,
+      "ideal_cost_mean": 3.716666666666667,
+      "rank_mean": 7.571428571428571,
+      "stable": {
+        "episodes": 30,
+        "success_rate": 0.9,
+        "cost_mean": 1.0
+      },
+      "brassee": {
+        "episodes": 30,
+        "success_rate": 0.8333333333333334,
+        "cost_mean": 8.533333333333333
+      }
+    },
+    "comparaison|memoire|table": {
+      "success_rate": 0.8666666666666667,
+      "cost_mean": 4.783333333333333,
+      "fallback_rate": 0.36666666666666664,
+      "false_acceptance": 6,
+      "target_rejected": 0,
+      "stopped_rate": 0.8833333333333333,
+      "ideal_cost_mean": 3.95,
+      "rank_mean": 8.380952380952381,
+      "stable": {
+        "episodes": 30,
+        "success_rate": 0.9,
+        "cost_mean": 1.0
+      },
+      "brassee": {
+        "episodes": 30,
+        "success_rate": 0.8333333333333334,
+        "cost_mean": 8.566666666666666
+      }
+    }
+  },
+  "protocol_commit": "998637a",
+  "survivors": [
+    "comparaison|raster|a100",
+    "comparaison|raster|a150",
+    "comparaison|memoire|a150",
+    "comparaison|raster|table",
+    "comparaison|memoire|table"
+  ],
+  "table": {
+    "0": 1.0,
+    "3": 0.25,
+    "6": 1.5,
+    "9": 0.25,
+    "12": 1.25,
+    "15": 0.25,
+    "18": 0.5,
+    "20": 1.25
+  },
+  "manifest_sha256": "96afd742542aebac4d3e2fd35ba8684953f8f5c3750448e2278b95a7a304bbdd",
+  "frozen_at": "2026-09-12T20:29:46+0200",
+  "rooms": 60,
+  "seconds": 30.6,
+  "full_results": "data/processed/experiments/c1_prereg_audit/diag/results.json"
+}

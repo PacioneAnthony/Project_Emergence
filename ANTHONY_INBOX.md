@@ -94,11 +94,28 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
   « résolue », ce sont des taux de vérification ; et « B1 survit puisque 3,52 > 3 » ne peut
   pas certifier une politique jamais jouée, puisque B1 exigeait une borne basse d'intervalle
   et non un coût idéal moyen.
-- **L'issue qui te reviendrait** : si le diagnostic ne montre aucun manque mesurable
-  compatible avec les marges, C1-M1 s'arrête avant construction. B1 resterait valide et le
-  substrat ne serait pas épuisé — le résultat serait que la marge de C1 est réelle mais déjà
-  prise par des politiques simples. Je te le signalerai, et l'arbitrage sur la suite —
-  chercher ailleurs sur C1, ou passer à C2 — serait le tien.
+- **Diagnostic joué le 12 septembre : C1-M1 s'arrête avant construction.** C'est l'issue que
+  je t'avais annoncée comme possible, et elle s'est produite. Les deux volets de l'hypothèse
+  sont réfutés par la mesure, hors échantillon : réordonner la recherche ne rapporte rien
+  (rang 8,30 pour l'ordre « intelligent » contre 7,45 pour l'ordre bête, prédiction du hasard
+  7,5), et calibrer par apparence coûte plus cher à succès égal. Le coin visé est vide : il
+  faudrait céder dix-huit points de succès pour gagner 1,5 mouvement, contre une tolérance de
+  deux.
+- **Aucune ligne de code de mécanisme n'a été écrite**, et l'espace de graines réservé n'a pas
+  été ouvert.
+- **Ce que cela ne dit pas** : B1 reste valide, la tâche n'est pas modifiée, et le substrat
+  n'est **pas** déclaré épuisé — le critère d'abandon de D-060 vise une marge absente, et la
+  marge existe. Le résultat, plus précis et moins flatteur, est que **la marge de C1 est réelle
+  et déjà prise par des politiques qui n'apprennent rien**.
+- **Ce que la journée rapporte quand même** : une bien meilleure baseline — 86,7 % de succès
+  pour 3,68 mouvements, contre 8,02 pour celle que la revue avait fait geler — et le plancher
+  mesuré d'une recherche après réfutation, 8,32 mouvements même sous reconnaissance parfaite.
+
+**Question à Anthony, l'arbitrage te revient :** chercher un autre angle sur C1, passer à C2,
+ou arrêter là ? Je n'ai pas de recommandation forte. Ce que je peux dire : C1 s'est révélée
+lisible et honnêtement mesurée, mais peu profonde — trois lignes de règle simple en prennent
+l'essentiel. C2 pose une question différente, l'allocation d'un budget de mouvements sous
+changement, et rien de ce qui précède ne dit qu'elle sera aussi plate.
 
 ## En sommeil — matériel
 

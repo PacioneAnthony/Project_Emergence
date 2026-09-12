@@ -290,6 +290,37 @@ transmet aujourd'hui la cible, le placement et le résultat noté ; contrat d'é
 d'ordre et de rejets avec étude de puissance ; ablations pré-enregistrées, l'attribution ne
 découlant pas du lecteur gelé.
 
+### Diagnostic — fait le 12 septembre 2026, **C1-M1 s'arrête avant construction**
+
+Protocole commité avant la première mesure (`998637a`, corrigé en `ee83265`), variantes et
+table gelées (`27e3326`). 40 pièces de réglage sur 18 variantes à seuil fixe, puis 60 pièces
+hors échantillon sur 3 survivantes plus les 2 variantes `table`. 46 s et 31 s, aucune pièce
+écartée.
+
+**Les deux volets de l'hypothèse sont réfutés par la mesure.** L'ordre par distance mémorisée
+donne un rang de 8,30 contre 7,45 pour raster, la prédiction sous échangeabilité étant 7,5 :
+réordonner ne rapporte rien et l'ordre « intelligent » est le plus mauvais. La table par
+apparence, à succès identique de 86,7 %, coûte 4,77 mouvements contre 3,68 pour un seuil
+global : elle a ajusté le bruit de ses 40 pièces, comme annoncé.
+
+**Le coin est vide sur l'axe déclaré.** Il faudrait `C_M ≤ 2,18` avec `S_M ≥ 86,3 %` ; un repli
+coûtant 8,32 mouvements même sous reconnaissance parfaite, il faudrait accepter sans chercher
+dans 83,8 % des pièces, alors que la cellule mémorisée n'est la bonne que dans 53,3 %. Le
+succès plafonnerait à 68,0 %.
+
+**Aucune ligne de code de mécanisme n'existe** et `c1-mechanism/v1` reste réservé, non ouvert.
+B1 reste valide, la tâche n'est pas modifiée, le substrat n'est pas déclaré épuisé : la marge
+de C1 est réelle et **déjà prise par des politiques qui n'apprennent rien**.
+
+**Deux chiffres à conserver pour toute suite sur cette tâche.** La meilleure politique simple
+connue vaut 86,7 % pour **3,68 mouvements** — la porte gelée par B1 en coûtait 8,02. Et le
+plancher d'une recherche après réfutation vaut **8,32 mouvements** sous reconnaissance
+parfaite.
+
+**Reprendre par un arbitrage d'Anthony** (`ANTHONY_INBOX.md`, ANT-011) : chercher un autre
+angle sur C1, passer à C2, ou autre chose. Lanceur du diagnostic :
+`python -m scripts.research.c1_audit`.
+
 La marge en succès, elle, est **perceptive** : le balayage perd 33 pièces en retenant un faux
 ami plus ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les
 pixels exacts d'un objet. L'écart oracle–balayage ne mesure donc pas la place d'un mécanisme

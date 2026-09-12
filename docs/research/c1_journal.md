@@ -1367,3 +1367,84 @@ avant construction.** Ce n'est ni un échec de la sonde de marge, ni l'épuiseme
 B1 reste valide, la tâche n'est pas modifiée, et le résultat serait que la marge de C1 est
 réelle mais déjà prise par des politiques simples. Cette issue est écrite ici avant le premier
 chiffre du diagnostic.
+
+## Entrée 15 — le diagnostic : C1-M1 s'arrête avant construction
+
+2026-09-12. Quarante pièces de réglage puis soixante de diagnostic, espace
+`c1-prereg-audit/v1`, protocole commité avant la première mesure (`998637a`, corrigé en
+`ee83265`), variantes et table gelées (`27e3326`). Réglage 46 s, diagnostic 31 s, aucune pièce
+écartée, 475 tests verts.
+
+### Les soixante pièces hors échantillon
+
+| Variante | Succès | Coût | Idéal | Rang |
+|---|---|---|---|---|
+| `raster｜a150` | 86,7 % | **3,68** | 3,68 | **7,45** |
+| `memoire｜a150` | 86,7 % | 3,80 | 3,80 | **8,30** |
+| `raster｜table` | 86,7 % | 4,77 | 3,72 | 7,57 |
+| `memoire｜table` | 86,7 % | 4,78 | 3,95 | 8,38 |
+| `raster｜a100` | **88,3 %** | 4,88 | 3,85 | 7,76 |
+
+### Les deux volets de H1, tous deux réfutés
+
+**L'ordre.** Le rang de première visite de la vraie cible vaut 7,45 pour l'ordre raster et
+8,30 pour l'ordre par distance mémorisée, contre une prédiction sous échangeabilité de **7,5**.
+Les deux ordres tombent sur la prédiction, et celui qui devait exploiter la mémoire est
+**plus mauvais**. Le modèle de la revue tient pour cette distribution : réordonner la recherche
+ne rapporte rien, et l'exclusion mutuelle ne crée pas de marge d'ordre. Le volet « ordre » de
+H1 n'a pas d'objet.
+
+**La calibration.** La table par apparence, calibrée sur les 40 pièces de réglage, atteint le
+même succès que le seuil global — 86,7 % — pour **4,77 mouvements contre 3,68**. Elle est
+dominée hors échantillon. C'est exactement la faiblesse déclarée à l'avance : cinq pièces par
+classe suffisent à ajuster du bruit, pas à calibrer une fiabilité. Le volet « fiabilité par
+apparence » de H1 n'a pas d'objet non plus, du moins par cette voie.
+
+### Le coin, fermé par l'arithmétique
+
+Les portes mesurées donnent un coût minimal de 3,68 et un succès maximal de 88,3 %. Sur l'axe
+déclaré — le coût — un mécanisme devrait donc atteindre **C_M ≤ 2,18 avec S_M ≥ 86,3 %**.
+
+La politique la moins chère accepte sans chercher dans 63,3 % des pièces, et **un repli coûte
+8,32 mouvements même sous reconnaissance parfaite**. Pour ramener la moyenne à 2,18, il
+faudrait donc accepter dans **83,8 %** des pièces. Or la cellule mémorisée n'est la bonne que
+dans **53,3 %** d'entre elles :
+
+| Accepté sans chercher | Succès plafond |
+|---|---|
+| 63,3 % (niveau actuel) | 87,0 % |
+| 70 % | 80,6 % |
+| 80 % | 71,5 % |
+| **83,8 %** (requis) | **68,0 %** |
+
+Il faudrait céder **dix-huit points de succès pour gagner 1,5 mouvement**, contre une tolérance
+de deux points. Le coin sur l'axe du coût est **vide**, et il ne l'est pas de peu.
+
+### Verdict
+
+**C1-M1 s'arrête avant construction.** C'est la règle que j'ai écrite au §7 du protocole avant
+le premier chiffre, et celle de la revue : « si le diagnostic ne fournit aucun manque mesuré
+d'un témoin simple compatible avec les portes, ne pas construire C1-M1 ».
+
+Aucune ligne de code de mécanisme n'a été écrite, et aucune ne le sera. L'espace de graines
+`c1-mechanism/v1` reste réservé et non ouvert.
+
+### Ce que cela ne dit pas
+
+B1 reste valide : la marge de C1 contre les témoins de son époque est mesurée et publiée. Le
+substrat **n'est pas déclaré épuisé** — le critère d'abandon de D-060 vise une marge absente,
+et la marge existe. La tâche n'est pas modifiée. Ce qui est établi est plus précis et moins
+flatteur : **la marge de C1 est réelle, et déjà prise par des politiques qui n'apprennent
+rien.**
+
+### Ce que le diagnostic rapporte quand même
+
+Il produit une bien meilleure baseline. `raster｜a150` atteint 86,7 % pour **3,68 mouvements**,
+là où la porte primaire gelée par B1 coûtait 8,02. La revue l'avait prévu : « un gain de la
+seule règle fixe améliore la baseline ; il ne justifie pas un mécanisme apprenant ». C'est
+exactement ce qui s'est produit, et c'est le résultat le plus utile de la journée : le coût
+d'une recherche compétente sur C1 est de l'ordre de 3,7 mouvements, pas de 8 ni de 16.
+
+Il confirme aussi, par la mesure et non par le raisonnement, que le plancher d'une recherche
+après réfutation vaut **8,32 mouvements sous reconnaissance parfaite**. Toute conception
+future sur cette tâche part de là.
