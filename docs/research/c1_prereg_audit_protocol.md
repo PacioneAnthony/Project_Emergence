@@ -66,12 +66,24 @@ croissante à la référence.
 `s150` : 2 ordres × {`sans_arret`, `a075`} = **4 variantes**. Vingt au total, toutes jouées sur
 les mêmes épisodes, donc appariées.
 
-**Signal admissible de la table.** La classe apparente se lit dans la référence, qui est
-admissible. Les seuils sont choisis sur les scores **agrégés** des 40 pièces de réglage, ce que
-la correction C6 autorise comme sélection externe de variantes déclarées ; **aucune étiquette
-par épisode ne rejoint un état ou une table**. Si aucun signal admissible ne permet de calibrer
-la fiabilité par apparence, c'est un **résultat négatif** sur cette composante de H1, et il se
-publie comme tel.
+**Signal admissible de la table.** La classe apparente est la classe de teinte dominante du
+descripteur de la référence, qui est admissible. Les seuils sont choisis sur les scores
+**agrégés** des 40 pièces de réglage, ce que la correction C6 autorise comme sélection externe
+de variantes déclarées ; **aucune étiquette par épisode ne rejoint un état ou une table**. Si
+aucun signal admissible ne permet de calibrer la fiabilité par apparence, c'est un **résultat
+négatif** sur cette composante de H1, et il se publie comme tel.
+
+**Règle de calibration, fixée ici avant la première mesure.** Pour chaque classe apparente `c`,
+sur les seules pièces de réglage dont la référence appartient à `c`, et à ordre `raster` et
+vérification `comparaison` fixés : parmi les huit règles d'arrêt de la grille, retenir celle de
+**coût moyen minimal** parmi celles dont le succès moyen est ≥ (meilleur succès de la classe
+− 0,02). Départage : le seuil le plus strict, puis `sans_arret` en dernier. Une classe absente
+des pièces de réglage reçoit `sans_arret`.
+
+*Faiblesse déclarée d'avance :* quarante pièces pour huit apparences font environ cinq pièces
+par classe. C'est très mince, et la table peut n'être qu'un ajustement au bruit. Le diagnostic
+le montrera en la rejouant sur les 60 pièces sans réglage — et si elle ne s'y tient pas, c'est
+un résultat sur la calibration par apparence, pas un échec de mesure.
 
 **Diagnostic privilégié, jamais un témoin.** Un « arrêt idéal » qui s'arrête au premier passage
 sur la vraie cible mesure le rang que l'ordre atteint réellement. Il utilise la vérité terrain,
