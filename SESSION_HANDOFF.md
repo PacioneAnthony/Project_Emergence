@@ -235,8 +235,34 @@ La caractéristique calculée avant de jouer s'est vérifiée : la marge en coû
 au-delà de 70,4 % d'acceptation, les variantes pivots ont accepté 52 et 53 %, et leur borne
 basse projetée de 4,5 est sortie à 5,68 et 5,53.
 
-**Reprendre par le pré-enregistrement de C1**, avec P1 à P4 de la revue intégrées. C'est la
-seule chose que ce verdict autorise. Lanceur : `python -m scripts.research.c1_probe_hybrid`.
+Lanceur : `python -m scripts.research.c1_probe_hybrid`.
+
+### Pré-enregistrement C1-M1 — écrit le 12 septembre 2026
+
+`docs/research/c1_preregistration.md`, commité avant la première ligne de code du mécanisme.
+Hypothèse : deux régularités non exploitées par les comparateurs — l'exclusion mutuelle des
+placements et la fiabilité de lecture par apparence — sont apprenables et suffisent à réduire
+le coût sans perdre en justesse.
+
+Ce qu'il verrouille : **trois portes** et non une, l'axe de gain déclaré avant la banque,
+supériorité à borne basse BCa ≥ 1,5 mouvement ou ≥ +3 points, non-infériorité à borne haute
+≤ 2 points et ≤ 0,5 mouvement, intersection sur les trois portes, une banque de 300 pièces
+jouée une fois, apprentissage en ligne avec reprise déterministe, et un test de dépendance
+bloquant qui falsifie chaque champ privilégié pour prouver que la politique ne le lit pas.
+
+**Une objection portée contre notre propre baseline y est intégrée.** Le repli adaptatif
+visite les quatorze cellules restantes sans s'arrêter ; s'arrêter au premier bon appariement
+coûterait 4,52 mouvements au lieu de 8,02 et ramènerait la marge contre l'oracle de 7,02 à
+3,52. B1 survit, mais cette politique devient la **porte 3**, gelée sur graines de
+développement avec la clause des variantes non dominées.
+
+Deux bornes mesurées, écrites avant de concevoir : le placement après brassage est **uniforme**
+— rien n'est apprenable sur où un objet est parti — et la détection du changement est **déjà
+résolue** par une règle à un seuil, 90,9 % contre 4,4 %. Ce qui reste exploitable est la seule
+conduite de la recherche après réfutation.
+
+**Reprendre par la revue contradictoire de ce pré-enregistrement** (D-062), puis seulement par
+le mécanisme. Aucun code de mécanisme avant son retour.
 
 La marge en succès, elle, est **perceptive** : le balayage perd 33 pièces en retenant un faux
 ami plus ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les

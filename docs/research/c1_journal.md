@@ -1235,3 +1235,52 @@ pour 8,02 mouvements — et non l'oracle, ni le balayage, ni le témoin de mémo
 Ce que rien n'autorise encore à dire : qu'un mécanisme saura prendre ces neuf points et ces
 sept mouvements. La marge existe, elle est étroite, et une part de ce qu'elle contient est un
 problème de perception que la mémoire ne résoudra pas.
+
+## Entrée 13 — le pré-enregistrement de C1, et une objection contre ma propre baseline
+
+2026-09-12. `docs/research/c1_preregistration.md`, écrit et commité avant la première ligne de
+code du mécanisme. Il fixe la question, l'hypothèse, les comparateurs, l'information
+admissible, les métriques, les marges, les graines et la règle d'arrêt, et intègre les quatre
+corrections non bloquantes P1 à P4 de la revue.
+
+### Une objection que je porte contre mon propre travail
+
+En rédigeant la section des comparateurs, j'ai relu l'implémentation du repli de la baseline
+adaptative : elle visite les quatorze cellules restantes **sans jamais s'arrêter**, puis
+choisit la meilleure. C'est ce que la correction B1 spécifiait, et je l'ai implémenté
+fidèlement. Mais une politique qui s'arrête au premier appariement suffisant visiterait 7,5
+cellules en moyenne, pour un coût total attendu de **4,52 mouvements au lieu de 8,02**.
+
+Conséquence directe : **la marge en coût contre l'oracle tomberait de 7,02 à 3,52 mouvements**,
+et la moitié de l'espace annoncé à l'entrée 12 est un artefact de ma baseline plutôt qu'une
+place réelle pour un mécanisme.
+
+Deux choses en découlent, et aucune n'est confortable.
+
+B1 **survit** : 3,52 reste au-dessus du seuil durci de 3, donc aucune des conclusions publiées
+n'est retirée. Mais le vrai concurrent d'un mécanisme se situe vers 4,5 mouvements, pas 8,0, et
+le pré-enregistrement en fait sa **porte 3** — pas une référence. La classer référence pour la
+mettre à l'abri serait la faute exacte qui a rendu REF-001 non informative, et que la revue
+vient de me reprocher sur un témoin voisin. Elle se conçoit et se gèle sur graines de
+développement, avec la même clause qu'en B1 : toutes ses variantes non dominées partent dans
+la banque, et le mécanisme doit battre chacune d'elles.
+
+### Deux bornes mesurées, écrites avant de concevoir
+
+**Le placement après brassage est uniforme** — `_draw_placement` tire sans remise et sans
+structure. Rien n'est apprenable sur *où* un objet est parti, donc aucun mécanisme ne gagnera
+en devinant la destination.
+
+**La détection du changement est déjà résolue** par une règle à un seuil, qui accepte dans
+90,9 % des pièces stables et 4,4 % des brassées. Savoir *quand* vérifier ne demande aucun
+apprentissage.
+
+Ce qui reste exploitable est donc étroit et nommé : la conduite de la recherche après
+réfutation, via l'exclusion mutuelle des placements et la fiabilité de lecture par apparence.
+Le lecteur gelé étant partagé par toutes les politiques, **aucun gain perceptif n'est possible
+par construction** — ce qui satisfait P3 structurellement plutôt que par déclaration.
+
+### Ce qui vient ensuite
+
+Le pré-enregistrement engage la construction, donc il est lui-même soumis à contradiction
+sous D-062 avant la première ligne de code du mécanisme. Aucun mécanisme n'est écrit d'ici là.

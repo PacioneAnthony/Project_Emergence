@@ -168,14 +168,25 @@ brutes avant intégration.
   notation, distinction entre gain mnésique et gain perceptif, et gel du défaut de frontière
   de la palette plutôt que sa correction silencieuse.
 
-**B1 et B2 sont levées ; le pré-enregistrement de C1 peut s'écrire, avec P1 à P4.** C'est tout
-ce que ce verdict autorise, et deux mesures de la sonde complémentaire en resserrent la portée.
+**B1 et B2 sont levées, et le pré-enregistrement de C1 est écrit** :
+`docs/research/c1_preregistration.md`, campagne **C1-M1**, commité avant la première ligne de
+code du mécanisme. Il fixe la question, l'hypothèse, trois portes de comparaison, l'information
+admissible, deux métriques, les marges, 310 graines neuves et la règle d'arrêt, et intègre
+P1 à P4. **Il engage la construction, donc il est lui-même soumis à contradiction sous D-062
+avant tout code de mécanisme.**
 
 La baseline adaptative **égale le balayage exhaustif pour la moitié du prix** — 90,0 % de
 succès pour 8,02 mouvements contre 15,93. Le coin laissé à un mécanisme n'est donc pas le
-contraste 1 contre 16 que suggérait la v3 : il vaut **+9 points de succès et −7 mouvements**
-contre une politique qui n'apprend rien. Sous P1, c'est elle le comparateur primaire, pas
+contraste 1 contre 16 que suggérait la v3. Sous P1, c'est elle le comparateur primaire, pas
 l'oracle.
+
+**Et il est plus étroit encore que cela, par une objection que l'agent porte contre son propre
+travail.** Le repli de cette baseline visite les quatorze cellules restantes sans jamais
+s'arrêter. Une politique qui s'arrête au premier appariement suffisant coûterait **4,52
+mouvements au lieu de 8,02**, ramenant la marge en coût contre l'oracle de 7,02 à **3,52**.
+B1 survit — 3,52 reste au-dessus du seuil durci de 3 — mais la moitié de l'espace annoncé
+était un artefact de la baseline. Cette politique devient la **porte 3** du
+pré-enregistrement, jamais une simple référence.
 
 Et une règle de vérification triviale est déjà un **détecteur de changement quasi parfait** :
 elle accepte la réponse mémorisée dans 90,9 % des pièces stables et 4,4 % des pièces brassées.

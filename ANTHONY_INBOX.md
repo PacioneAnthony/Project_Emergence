@@ -66,7 +66,19 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
   de C1 avec les corrections P1 à P4 de la revue, et je te le signalerai. Tu n'as à intervenir
   que si tu veux arbitrer autrement — par exemple arrêter là et considérer que ce coin est trop
   étroit pour valoir une campagne.
-- Aucun mécanisme n'est construit avant que ce pré-enregistrement soit écrit et commité.
+- **Pré-enregistrement écrit le 12 septembre** : `docs/research/c1_preregistration.md`,
+  campagne C1-M1, commité avant la première ligne de code du mécanisme, avec P1 à P4 intégrées.
+- **Une objection que je porte contre mon propre travail y figure**, et elle réduit de moitié
+  ce que je t'ai annoncé : le repli de ma baseline visite les quatorze cellules restantes sans
+  jamais s'arrêter. Une politique qui s'arrête au premier bon appariement coûterait 4,52
+  mouvements au lieu de 8,02, ce qui ramène la marge contre l'oracle de 7,02 à **3,52**. Le
+  verdict B1 survit, mais le vrai concurrent d'un mécanisme est à 4,5 mouvements, pas 8. Cette
+  politique devient une porte du pré-enregistrement, pas une référence protégée.
+- **Ce qui t'attend, si tu le veux** : ce pré-enregistrement engage la construction, donc sous
+  D-062 il est soumis à contradiction par un agent qui ne l'a pas rédigé, avant tout code.
+  Veux-tu le confier de nouveau à GPT Astra ? Dis-le moi et je te prépare le prompt, comme la
+  première fois. Sinon j'ouvre la revue moi-même auprès d'un autre agent.
+- Aucun mécanisme n'est construit avant le retour de cette revue.
 
 ## En sommeil — matériel
 
