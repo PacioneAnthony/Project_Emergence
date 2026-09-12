@@ -1284,3 +1284,86 @@ par construction** — ce qui satisfait P3 structurellement plutôt que par déc
 
 Le pré-enregistrement engage la construction, donc il est lui-même soumis à contradiction
 sous D-062 avant la première ligne de code du mécanisme. Aucun mécanisme n'est écrit d'ici là.
+
+## Entrée 14 — la revue du pré-enregistrement : le mécanisme n'est pas autorisé
+
+2026-09-12. Revue rendue par GPT Astra (`docs/research/c1_preregistration_review.md`, commit
+`184612a`). **Verdict : AUTORISER AVEC CORRECTIONS BLOQUANTES**, huit corrections C1 à C8,
+toutes exigibles **avant la première ligne de code du mécanisme**, plus un diagnostic préalable
+sur une centaine de pièces neuves de développement.
+
+C'est la deuxième revue d'affilée où je n'ai rien à rejeter. Les deux ont trouvé des défauts
+réels que j'avais introduits, et celle-ci en trouve davantage que la première.
+
+### Ce que j'ai vérifié avant d'intégrer
+
+- **Son arithmétique sur mon chiffre de 4,52.** Le taux de repli mesuré de `comparaison` vaut
+  47 %, et `1 + 0,47 × 7,5 = 4,525`. Elle a raison sur le calcul, et raison de rappeler qu'il
+  ignore les faux appariements, les cibles rejetées à la vérification et le pointage final
+  quand aucun seuil ne passe.
+- **Ses voies de fuite.** `_notify` transmet `target=self._target.index` à la désignation,
+  `before` et `after` du placement complet au brassage, et `result` après notation. `answer()`
+  ne déplace pas la tête. `look_at` accepte des angles continus. Les quatre points sont exacts.
+- **Son objection sur l'uniformité.** `_draw_placement` tire dans `self.usable` et non dans les
+  quinze cellules, puis `_place_and_verify` déplace les objets défaillants vers des cellules
+  libres, et `C1EpisodeV3._measure` ajoute un garde de lisibilité dépendant de l'apparence.
+  La loi finale du placement n'est donc pas celle du tirage.
+- **Le taux d'acceptation en pièce brassée** vaut 4,4 % pour `s150` et **6,7 %** pour
+  `comparaison`. J'ai cité 4,4 % comme s'il valait pour les deux.
+
+Tout concorde. Le fichier de la revue est en UTF-8 sans BOM ni CRLF.
+
+### Trois choses que j'ai affirmées trop vite, et qui sont corrigées ici
+
+L'entrée 13 n'est pas réécrite — un registre daté se complète. Mais trois de ses formulations
+ne tiennent pas.
+
+1. **« Le placement après brassage est uniforme. »** Vrai du tirage, faux de la loi finale.
+   L'invariance des ordres de recherche devient donc une *hypothèse nulle analytique*, pas un
+   fait mesuré. Le volet « exclusion mutuelle » de H1 est sans objet **sous ses propres
+   simplifications** ; il pourrait en retrouver un si la loi réelle s'écarte de l'échangeabilité,
+   ce qui n'est pas mesuré.
+2. **« La détection du changement est déjà résolue. »** Trop fort. Ce sont des taux de
+   vérification, pas une identification du régime, et un objet peut rester dans sa cellule
+   après un brassage.
+3. **« B1 survit puisque 3,52 reste au-dessus de 3. »** Cette phrase ne peut pas certifier une
+   politique qui n'a jamais été jouée : B1 exigeait une **borne basse** d'intervalle, pas un
+   coût idéal moyen. Les résultats publiés de B1 restent valides ; c'est ma projection qui ne
+   vaut rien tant que la porte 3 n'est pas mesurée.
+
+### La contrainte qui peut fermer la campagne, calculée
+
+La revue demande de vérifier que le coin visé est atteignable. Sur l'axe du coût, le candidat
+doit satisfaire `C_M ≤ min_j C_j − 1,5` : avec les portes 1 et 2 à 8,02 et 8,17, et la porte 3
+*estimée* à 4,52, la fenêtre praticable est **[1,00 ; 3,02]**, non vide mais étroite. **Si la
+porte 3 mesurée tombe sous 2,50, la supériorité en coût de 1,5 devient impossible par
+construction.** Sur l'axe du succès, la fenêtre `[0,93 ; 0,99]` reste ouverte.
+
+C'est précisément pourquoi la revue refuse que la porte 3 reste « à concevoir » : la
+faisabilité de la question dépend d'un chiffre que personne n'a mesuré.
+
+### Ce qui est exigé, dans l'ordre
+
+**Avant toute ligne de code du mécanisme** — C1 : un diagnostic sur pièces neuves de
+développement, et une H1 restreinte au manque réellement observé. C2 : abandonner le BCa des
+lignes, dont la couverture n'est pas justifiée pour une politique apprenante, au profit d'un
+intervalle de type martingale sur la trajectoire, avec estimand explicite. C3 : spécifier,
+mesurer et geler la porte 3, et contrôler la faisabilité du coin. C4 : justifier l'utilité de
+chaque marge séparément de la capacité à l'établir. C5 : corriger le sens des issues — une
+borne trop large suffit à faire échouer la non-infériorité. C6 : interface à liste blanche,
+contrat d'actions fermé, signal d'apprentissage défini, isolation des politiques. C7 : contrat
+d'état initial, d'ordre et de rejets, et une véritable étude de puissance. C8 : ablations
+pré-enregistrées, l'attribution ne découlant pas du lecteur gelé.
+
+**Le diagnostic vient en premier** et conditionne tout le reste : 40 pièces de réglage puis 60
+de diagnostic, indices disjoints, une seule collecte chacune, grille de seuils fixée avant les
+chiffres, comparaison à arrêt égal entre ordres puis à ordre égal entre règles d'arrêt.
+Plafond de dix minutes de simulation.
+
+### L'issue que cela rend possible
+
+**Si le diagnostic ne montre aucun manque mesurable compatible avec les marges, C1-M1 s'arrête
+avant construction.** Ce n'est ni un échec de la sonde de marge, ni l'épuisement du substrat :
+B1 reste valide, la tâche n'est pas modifiée, et le résultat serait que la marge de C1 est
+réelle mais déjà prise par des politiques simples. Cette issue est écrite ici avant le premier
+chiffre du diagnostic.

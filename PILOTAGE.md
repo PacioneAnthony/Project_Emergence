@@ -175,14 +175,31 @@ admissible, deux métriques, les marges, 310 graines neuves et la règle d'arrê
 P1 à P4. **Il engage la construction, donc il est lui-même soumis à contradiction sous D-062
 avant tout code de mécanisme.**
 
-**Seconde revue ouverte le 12 septembre**, confiée par Anthony à GPT Astra. Dossier :
-`docs/research/c1_preregistration_review_request.md` ; réponse attendue dans
-`docs/research/c1_preregistration_review.md`. Deux de ses sept points contradictoires peuvent
-faire tomber la campagne : l'hypothèse pourrait n'avoir plus d'objet une fois admises les
-bornes que le pré-enregistrement établit lui-même — brassage uniforme, détection du changement
-déjà résolue —, et l'apprentissage en ligne rend les différences appariées non échangeables,
-ce qui met en cause la validité des intervalles BCa. **Aucun code de mécanisme avant son
-retour.**
+**Seconde revue rendue le 12 septembre** par GPT Astra
+(`docs/research/c1_preregistration_review.md`) : **AUTORISER AVEC CORRECTIONS BLOQUANTES**,
+huit corrections C1 à C8, toutes exigibles **avant la première ligne de code**. Deuxième revue
+d'affilée sans rien à rejeter ; son arithmétique et ses affirmations sur le code ont été
+revérifiées avant intégration.
+
+**Le mécanisme n'est pas autorisé.** Ce qu'elle exige d'abord : un **diagnostic** sur une
+centaine de pièces neuves de développement — 40 de réglage, 60 de mesure — pour établir s'il
+existe encore un manque mesurable une fois les politiques simples correctement spécifiées.
+Puis sept corrections : intervalle de type martingale au lieu du BCa des lignes, dont la
+couverture n'est pas justifiée pour une politique apprenante ; porte 3 mesurée et gelée au lieu
+d'estimée ; utilité des marges justifiée séparément de leur atteignabilité ; sens des issues
+corrigé ; interface à liste blanche et contrat d'actions fermé ; contrat d'état initial et
+étude de puissance ; ablations pré-enregistrées.
+
+**Trois de mes affirmations sont corrigées** : le placement après brassage n'est uniforme qu'au
+tirage et non en loi finale ; la détection du changement n'est pas « résolue », ce sont des
+taux de vérification ; et « B1 survit puisque 3,52 > 3 » ne peut pas certifier une politique
+jamais jouée, B1 exigeant une borne basse et non un coût idéal.
+
+**La contrainte qui peut fermer la campagne** : sur l'axe du coût, le candidat doit satisfaire
+`C_M ≤ min_j C_j − 1,5`, soit une fenêtre praticable de **[1,00 ; 3,02]** avec une porte 3
+estimée à 4,52. **Si la porte 3 mesurée tombe sous 2,50, la supériorité en coût devient
+impossible par construction.** Si le diagnostic ne montre aucun manque compatible, C1-M1
+s'arrête avant construction — sans que B1 soit annulée ni le substrat déclaré épuisé.
 
 La baseline adaptative **égale le balayage exhaustif pour la moitié du prix** — 90,0 % de
 succès pour 8,02 mouvements contre 15,93. Le coin laissé à un mécanisme n'est donc pas le

@@ -83,9 +83,22 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
   résoudre seul — l'hypothèse pourrait n'avoir plus d'objet une fois les bornes que j'ai
   moi-même établies prises au sérieux, et l'apprentissage en ligne casse peut-être la validité
   des intervalles BCa. Revue attendue dans `docs/research/c1_preregistration_review.md`.
-- **Rien ne t'attend d'ici son retour.** Aucun mécanisme n'est construit ; je reviendrai vers
-  toi seulement si la revue refuse, auquel cas la piste C1 se referme et l'arbitrage
-  redeviendra le tien.
+- **Revue rendue le 2026-09-12 : AUTORISER AVEC CORRECTIONS BLOQUANTES**, huit corrections
+  toutes exigibles avant la première ligne de code. Elle ne refuse pas, donc l'arbitrage ne
+  te revient pas — mais **le mécanisme n'est pas autorisé** et le calendrier change : un
+  diagnostic d'une centaine de pièces neuves passe d'abord, pour établir s'il reste un objet
+  expérimental. Rien à rejeter de nouveau ; j'ai revérifié son arithmétique et ses
+  affirmations sur le code avant d'intégrer.
+- **Ce qu'elle me reprend, et que je t'avais dit trop vite** : le placement après brassage
+  n'est uniforme qu'au tirage, pas en loi finale ; la détection du changement n'est pas
+  « résolue », ce sont des taux de vérification ; et « B1 survit puisque 3,52 > 3 » ne peut
+  pas certifier une politique jamais jouée, puisque B1 exigeait une borne basse d'intervalle
+  et non un coût idéal moyen.
+- **L'issue qui te reviendrait** : si le diagnostic ne montre aucun manque mesurable
+  compatible avec les marges, C1-M1 s'arrête avant construction. B1 resterait valide et le
+  substrat ne serait pas épuisé — le résultat serait que la marge de C1 est réelle mais déjà
+  prise par des politiques simples. Je te le signalerai, et l'arbitrage sur la suite —
+  chercher ailleurs sur C1, ou passer à C2 — serait le tien.
 
 ## En sommeil — matériel
 

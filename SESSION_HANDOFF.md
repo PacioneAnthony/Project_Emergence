@@ -261,8 +261,34 @@ Deux bornes mesurées, écrites avant de concevoir : le placement après brassag
 résolue** par une règle à un seuil, 90,9 % contre 4,4 %. Ce qui reste exploitable est la seule
 conduite de la recherche après réfutation.
 
-**Reprendre par la revue contradictoire de ce pré-enregistrement** (D-062), puis seulement par
-le mécanisme. Aucun code de mécanisme avant son retour.
+### Revue du pré-enregistrement — rendue le 12 septembre 2026, **mécanisme non autorisé**
+
+`docs/research/c1_preregistration_review.md`, commit `184612a` : **AUTORISER AVEC CORRECTIONS
+BLOQUANTES**, huit corrections C1 à C8, toutes avant la première ligne de code. Rien n'y est
+rejeté ; son arithmétique, ses affirmations sur le code et ses chiffres ont été revérifiés
+d'abord.
+
+**Reprendre par le diagnostic, et par rien d'autre.** 40 pièces de réglage puis 60 de mesure,
+indices disjoints, espace de graines neuf, une seule collecte chacune, grille de seuils fixée
+avant les chiffres. Il compare à **arrêt égal** différents ordres de recherche, puis à **ordre
+égal** différentes règles d'arrêt, pour séparer un manque d'ordonnancement d'un manque de
+calibration. Plafond de dix minutes de simulation. Son protocole se commite avant la première
+mesure.
+
+Ce qu'il décide : **s'il existe encore un objet expérimental**. Sur l'axe du coût, le candidat
+doit satisfaire `C_M ≤ min_j C_j − 1,5` ; avec une porte 3 estimée à 4,52 la fenêtre vaut
+[1,00 ; 3,02], et **une porte 3 mesurée sous 2,50 rend la supériorité en coût impossible par
+construction**. Sans manque mesurable compatible, C1-M1 s'arrête avant construction — B1 reste
+valide, la tâche n'est pas modifiée, et le résultat est que la marge de C1 est réelle mais déjà
+prise par des politiques simples.
+
+Les sept autres corrections suivent : intervalle de type martingale sur la trajectoire au lieu
+du BCa des lignes (la couverture du BCa n'est pas justifiée pour une politique apprenante) ;
+porte 3 mesurée et gelée ; utilité des marges justifiée séparément de leur atteignabilité ;
+sens des issues corrigé ; interface à liste blanche et contrat d'actions fermé — `_notify`
+transmet aujourd'hui la cible, le placement et le résultat noté ; contrat d'état initial,
+d'ordre et de rejets avec étude de puissance ; ablations pré-enregistrées, l'attribution ne
+découlant pas du lecteur gelé.
 
 La marge en succès, elle, est **perceptive** : le balayage perd 33 pièces en retenant un faux
 ami plus ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les
