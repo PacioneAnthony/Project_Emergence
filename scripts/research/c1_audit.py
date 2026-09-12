@@ -68,8 +68,20 @@ FROZEN = (
 )
 
 # Fixed by the second commit, after the forty tuning rooms and before the freeze.
-SURVIVORS: tuple[str, ...] | None = None
-CALIBRATED_TABLE: dict[str, float | None] | None = None
+#
+# The tuning front, on 40 rooms: raster|a100 at 85.0 % for 5.42 moves,
+# raster|a150 at 82.5 % for 4.15, and memoire|a150 at 77.5 % for 3.95. Everything
+# else is dominated. The two table variants join them out of sample, since the
+# same forty rooms calibrated the table.
+SURVIVORS: tuple[str, ...] | None = (
+    "comparaison|raster|a100",
+    "comparaison|raster|a150",
+    "comparaison|memoire|a150",
+)
+CALIBRATED_TABLE: dict[str, float | None] | None = {
+    "0": 1.0, "3": 0.25, "6": 1.5, "9": 0.25,
+    "12": 1.25, "15": 0.25, "18": 0.5, "20": 1.25,
+}
 
 
 def _sha(relative: str) -> str:

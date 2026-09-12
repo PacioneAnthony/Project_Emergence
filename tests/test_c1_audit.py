@@ -229,6 +229,33 @@ def test_an_episode_replays_identically():
 # ------------------------------------------------------------- domination
 
 
+def test_the_mean_rank_ignores_episodes_that_never_searched():
+    """Accepted episodes carry rank 0; counting them halves the mean.
+
+    The first tuning report showed ranks near 3.3 for both orders, which would
+    have looked like a large ordering effect against the exchangeable prediction
+    of 7.5. It was this bug: more than half the episodes accepted and never
+    searched at all.
+    """
+
+    from learning.c1_audit import summarise
+
+    variant = Variant("comparaison", "raster", "sans_arret")
+
+    def row(rank, accepted):
+        return {"seed": 0, "moved": False, "apparent_class": 0, "target_index": 0,
+                "variants": {variant.name: {
+                    "cell": [90.0, 0.0], "success": True, "cost": 1 if accepted else 8,
+                    "accepted": accepted, "false_acceptance": False,
+                    "target_rejected": False, "rank": rank,
+                    "ideal_cost": 1 if accepted else 1 + rank, "stopped": accepted}}}
+
+    rows = [row(0, True), row(0, True), row(7, False), row(9, False)]
+    block = summarise(rows, [variant])[variant.name]
+    assert block["rank_mean"] == pytest.approx(8.0)   # not 4.0
+    assert block["fallback_rate"] == pytest.approx(0.5)
+
+
 def test_domination_keeps_the_front():
     summary = {
         "a": {"success_rate": 0.90, "cost_mean": 9.0},

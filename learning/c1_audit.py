@@ -262,7 +262,12 @@ def summarise(rows, variants) -> dict:
     for variant in variants:
         name = variant.name
         played = [r["variants"][name] for r in rows]
-        ranks = [p["rank"] for p in played if p["rank"] is not None]
+        # `rank` is 0 when the verification accepted and no search ever happened.
+        # Letting those zeros into the mean halves it and makes every order look
+        # far better than the exchangeable prediction of 7.5 -- which is exactly
+        # what the first tuning report showed before this was caught. The mean
+        # rank is over episodes that actually searched.
+        ranks = [p["rank"] for p in played if p["rank"]]
         block = {
             "success_rate": float(np.mean([p["success"] for p in played])),
             "cost_mean": float(np.mean([p["cost"] for p in played])),
