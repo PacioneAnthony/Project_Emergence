@@ -204,16 +204,34 @@ Lecture par objet à travers les trois versions : 83,8 % → 91,2 % → **98,8 %
 de 86,3 % à **10,9 %** quand les objets bougent ; le balayage reste stable, 86,3 % puis
 90,5 %. La marge vient du mécanisme que la tâche prétend isoler.
 
-Reprendre par le **pré-enregistrement de C1** — ce que le verdict autorise et rien de plus.
-Le balayage exhaustif résout 88,3 % des pièces sans mémoire ni apprentissage, pour quinze
-mouvements : le coin à prendre est « juste **et** économe », et il est étroit. La marge en
-succès, elle, est perceptive : le balayage perd 33 pièces en retenant un faux ami plus
-ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les pixels
-exacts d'un objet.
+**Revue contradictoire rendue** le 12 septembre par GPT Astra (`docs/research/c1_margin_review.md`),
+verdict **AUTORISER AVEC CORRECTIONS BLOQUANTES**. Elle a revérifié l'ordre des commits, les
+quinze empreintes et tous les chiffres depuis le résultat brut. Rien n'y est rejeté.
 
-**Avant de construire, une revue contradictoire est due** (D-062) : ouvrir la phase des
-mécanismes engage le reste du programme sur ce substrat. Dossier : `docs/research/c1_journal.md`,
-entrées 1 à 9, et les trois résultats publiés.
+**Reprendre par B1, et par rien d'autre.** Le témoin simple le plus fort disponible n'a jamais
+été joué : « mémoriser, vérifier la seule cellule mémorisée, ne balayer qu'après réfutation ».
+Il occupe exactement le compromis que la marge revendique, et D-060 exige le témoin le plus
+fort disponible — c'est de baselines trop faibles que REF-001 est mort. Sonde complémentaire
+de 100 pièces neuves, espace `c1-margin-hybrid/v1`, sur `C1EpisodeV3` **strictement
+inchangé** ; la règle de vérification se choisit sur graines de développement et se gèle avant
+la banque, et **toutes les variantes non dominées** partent dans la même banque — sans quoi il
+suffirait de choisir une règle stricte pour garder la porte verte. Si cette baseline
+n'établit de marge sur aucun axe, D-060 s'applique et le substrat est refusé pour C1.
+
+Caractéristique calculée avant de jouer, comme l'exige la leçon de la v1 : avec la règle de
+coût durcie par B1 — borne basse à 95 % de l'écart de coût ≥ 3 — la marge en coût cesse
+d'être établie au-delà de **70,4 %** d'acceptation. La mémoire ayant raison dans 49,3 % des
+pièces, une vérification honnête se situe loin sous cette bascule, donc le dispositif peut
+passer à sa propre cible.
+
+La marge en succès, elle, est **perceptive** : le balayage perd 33 pièces en retenant un faux
+ami plus ressemblant que la cible, parce qu'il lit une cellule entière là où l'oracle lit les
+pixels exacts d'un objet. L'écart oracle–balayage ne mesure donc pas la place d'un mécanisme
+mnésique.
+
+Portée resserrée (B2) : le résultat vaut pour C1 v3 à `p(brassage) = 0,5`, palette v3, lecteur
+à 24 classes, moteur gelé. Un écart perceptif de 12,4 points subsiste dans les pièces stables.
+Changer `p`, la palette, le lecteur, le garde ou le rendu exige une nouvelle sonde de marge.
 
 Un défaut connu et non corrigé, sans conséquence sur la marge : espacer huit teintes à `k/8`
 avec 24 classes les place toutes exactement sur une frontière de classe. Les deux seuls

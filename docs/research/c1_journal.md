@@ -920,3 +920,135 @@ Sous D-062, une décision à fort impact est contredite par un agent qui n'a pas
 travail, dans une session distincte. Ouvrir la phase des mécanismes sur C1 en est une : elle
 engage le reste du programme sur ce substrat. Le dossier de revue est ce journal, entrées 1
 à 9, et les trois résultats publiés.
+
+## Entrée 10 — la revue contradictoire, et les seuils de la sonde complémentaire
+
+2026-09-12. Revue rendue par GPT Astra, qui n'a pas produit ce travail, à la demande
+d'Anthony. Dossier : `docs/research/c1_margin_review_request.md`, revue :
+`docs/research/c1_margin_review.md`, commit `0bdb686`. **Verdict : AUTORISER AVEC CORRECTIONS
+BLOQUANTES.** Cette entrée est commitée avant la première ligne de code de la sonde
+complémentaire.
+
+### Ce que j'ai vérifié avant d'intégrer quoi que ce soit
+
+Une revue ne s'accepte pas sur sa signature. J'ai recalculé ses chiffres contre le résultat
+brut de la banque v3 : oracle 298/300, mémoire 148/300, balayage 265/300, 147 pièces brassées ;
+stable 151 et 132 sur 153, brassé 147 et 16 sur 147 ; 131 des 150 discordances favorables à
+l'oracle se trouvent après brassage ; le commutateur privilégié qu'elle décrit récupère bien
+118 des 152 erreurs de mémoire, soit 266/300. Son estimation de coût, 8,58 à 9,08 mouvements,
+est cohérente avec la comptabilité enregistrée. Tout concorde. Son fichier est en UTF-8 sans
+BOM ni CRLF, conforme à D-061.
+
+**Aucune de ses recommandations n'est rejetée.** Je le note sans confort particulier : B1 vise
+exactement l'angle que j'avais moi-même inscrit au dossier comme point contradictoire n° 2, et
+la revue a raison de le faire passer de « à considérer » à « bloquant ». D-060 exige le témoin
+simple **le plus fort disponible**, pas deux témoins commodes ; REF-001 est mort de baselines
+mal posées, et une omission connue de son auteur reste une omission.
+
+### Correction B2 — portée du résultat, resserrée
+
+Intégrée telle quelle, et applicable dès maintenant. L'entrée 9 n'est pas réécrite : un
+registre daté ne se corrige pas après coup, il se complète.
+
+> La marge publiée est une propriété de **C1 v3 avec `p(brassage) = 0,5`**, la palette v3, le
+> lecteur à 24 classes et le moteur gelé. La comparaison brassé/stable est un contrôle de
+> manipulation ; elle ne prouve pas la robustesse à une autre fréquence de changement. Les
+> taux agrégés et les taux conditionnels `brassé` et `stable` sont toujours publiés ensemble.
+> Aucun résultat n'est extrapolé à une autre valeur de `p`. Changer `p`, la palette, le
+> lecteur, le garde ou le rendu exige une nouvelle sonde de marge avant construction.
+
+Ce que cela corrige dans mes propres mots : « la marge vient exactement du mécanisme que C1
+prétend isoler » était trop fort. Le témoin de mémoire échoue après un brassage **par
+construction**, et l'amplitude agrégée de l'écart est réglée par une probabilité que j'ai
+fixée à l'étape 2. Un écart perceptif de 12,4 points subsiste d'ailleurs dans les pièces
+stables. Le fait non tautologique est ailleurs : le balayage, lui, ne bouge pas (86,3 % puis
+90,5 %), donc l'implémentation produit bien la dissociation annoncée.
+
+### Correction B1 — la sonde complémentaire, pré-enregistrée ici
+
+Un seul témoin manque, et c'est celui qui occupe le compromis revendiqué : **mémoriser,
+vérifier la seule cellule mémorisée, ne balayer qu'après réfutation.**
+
+**Tâche.** `C1EpisodeV3` strictement inchangé, `p(brassage) = 0,5`, palette v3, lecteur gelé.
+Le manifeste recalcule les quinze empreintes de la v3 et refuse toute dérive.
+
+**Politique admissible.** Elle mémorise les quinze vues d'exploration, choisit avec le lecteur
+gelé la cellule dont l'image mémorisée est la plus proche de la référence, revisite cette
+cellule, puis applique une règle de vérification déterministe. Si la vérification accepte,
+elle répond dans cette cellule — un mouvement. Si elle rejette, elle visite chacune des
+quatorze autres cellules au plus une fois dans l'ordre de balayage, inclut la vue de
+vérification parmi ses candidats frais, et pointe la meilleure cellule selon le même lecteur.
+Aucun accès à `moved_between_visits`, `target_cell`, `oracle_object_views`, au masque d'objet,
+aux rendus nus ni à la graine.
+
+**Famille de règles de vérification, fixée ici, avant tout chiffre.** Deux formes, toutes deux
+calculées avec le lecteur gelé sur la fenêtre centrale, comme les témoins de la v2 :
+
+1. **seuil absolu** — accepter si la distance entre la référence et la vue fraîche de la
+   cellule mémorisée est ≤ τ, avec τ pris dans la grille fixe
+   `{0,25 ; 0,50 ; 0,75 ; 1,00 ; 1,25 ; 1,50}` ;
+2. **comparaison sans paramètre** — accepter si la vue fraîche de la cellule mémorisée est
+   plus proche de la référence que la meilleure image *mémorisée* des quatorze autres cellules.
+
+**Sélection.** Uniquement sur les dix graines de développement. **Toutes les variantes non
+dominées en succès et en coût sur le développement partent dans la même banque, et l'ouverture
+exige qu'aucune ne soit proche de l'oracle.** Cette clause de la revue n'est pas décorative :
+sans elle, il suffirait de choisir une règle stricte — qui coûte cher et conserve donc une
+marge en coût — pour garder la porte verte, en écartant la règle laxiste qui la ferait tomber.
+Une règle laxiste et une règle stricte ne se dominent pas l'une l'autre ; les deux passeront
+donc la banque.
+
+**Seuils.** Marge en succès inchangée : borne basse BCa à 95 % de l'écart apparié ≥ 0,10,
+10 000 rééchantillonnages, graine 0. Marge en coût **durcie par la revue** : le coût de cette
+politique varie d'un épisode à l'autre, donc la marge en coût n'est établie que si la **borne
+basse à 95 % de l'écart moyen de coût est ≥ 3**, et non plus la seule moyenne. Méthode et
+graine gelées avant la banque. Une incertitude compte comme absence de marge.
+
+**Caractéristique de fonctionnement, calculée avant de jouer.** C'est la leçon de la v1, dont
+le dispositif ne pouvait pas passer à sa propre cible. Avec un coût de 1 mouvement en cas
+d'acceptation et d'environ 15,5 en cas de repli, la marge en coût cesse d'être établie
+au-delà de **70,4 % d'acceptation** à 100 pièces. La mémoire ayant raison dans 49,3 % des
+pièces de la v3, une vérification honnête accepte autour de 50 à 60 % : la borne basse vaut
+alors 5 à 6 mouvements, loin au-dessus de 3. Le dispositif peut donc passer à sa propre cible,
+et il peut aussi échouer — ce qui est exactement ce qu'on attend d'une porte.
+
+**Graines.** Espace de noms `c1-margin-hybrid/v1`, même recette du projet. Développement :
+sous-espace `"dev"`, i de 0 à 9. Banque : sous-espace `"bank"`, i de 0 à 99, soit **100
+pièces**, jouées une seule fois après le gel. Vérifié à l'écriture : 110 graines distinctes,
+toutes supérieures à 100 000, minimum `8620304`, **aucune réutilisation des 570 graines déjà
+dépensées** par les trois sondes C1, et aucune collision avec les littéraux entiers du dépôt —
+ni avec les 1 697 413 de 6 664 fichiers, périmètre des entrées 1, 4 et 7, ni avec les 25 795
+des seules sources du projet. Première graine de développement `3874359381` ; première de
+banque `2159935764`, dernière `658077885`.
+
+*Note de méthode, contre moi-même :* mon premier script de vérification excluait `env_windows`
+et n'a scanné que 255 fichiers, là où ceux des entrées 1, 4 et 7 en scannaient 6 660. Les
+graines sont les mêmes, mais la revendication n'était plus comparable. Les deux périmètres
+sont donc rapportés ci-dessus.
+
+**Gel.** Sources hachées et archivées selon D-061 avant la partie, convention `source_v1`.
+Aucune banque de rattrapage.
+
+### Ce que chaque issue voudra dire
+
+- **La baseline adaptative n'établit de marge sur aucun axe** — elle est proche de l'oracle.
+  Le critère d'abandon de D-060 s'applique : le substrat est déclaré épuisé pour C1, la
+  décision devient **REFUSER**, et aucun mécanisme n'est construit. C'est l'issue que la revue
+  juge possible, et elle est écrite ici pour ne pas pouvoir être réinterprétée après coup.
+- **Elle laisse une marge établie sur au moins un axe, pour toutes les variantes conservées** —
+  B1 est levée, et le pré-enregistrement de C1 peut s'écrire, avec P1 à P4 intégrées.
+- **La faisabilité historique n'est pas reproduite sur ces 100 pièces neuves** — arrêt : la
+  porte v3 ne se transporte pas, et c'est la tâche qu'on réexamine.
+
+Les résultats de développement ne peuvent lever B1.
+
+### P1 à P4, à intégrer au pré-enregistrement de C1 après levée de B1
+
+Acceptées, non rejetées, et rappelées ici pour qu'elles ne se perdent pas : la baseline
+adaptative devient le **comparateur primaire** d'un futur mécanisme, l'oracle cessant de
+l'être ; l'information admissible, l'oracle et la notation sont séparés strictement, avec un
+test de dépendance qui remplace chaque champ privilégié par une valeur contradictoire et
+vérifie que la politique ne bouge pas ; le gain mnésique et le gain perceptif sont rapportés
+séparément sur les quatre cellules `candidat/baseline × stable/brassé` ; et le défaut de
+frontière de la palette v3 reste **gelé et déclaré**, une palette décalée définissant une
+nouvelle tâche qui redemanderait sa propre sonde de marge.

@@ -105,14 +105,24 @@ plus vite que lui.
 
 **VERDICT DE LA v3 : MARGE EXPLOITABLE** — le premier verdict vert du programme D-060.
 
-La vérification qui pouvait l'invalider tient : **le témoin de mémoire tombe de 86,3 % à
-10,9 % quand les objets ont bougé**, tandis que le balayage, qui n'a pas de mémoire à
-tromper, reste à 86,3 % puis 90,5 %. La marge vient donc du mécanisme que C1 prétend isoler
-et non d'un artefact. Dans les pièces stables, mémoire et balayage marquent exactement le
-même score, 132 sur 153.
+Le contrôle de manipulation tient : **le témoin de mémoire tombe de 86,3 % à 10,9 % quand les
+objets ont bougé**, tandis que le balayage, qui n'a pas de mémoire à tromper, reste à 86,3 %
+puis 90,5 %. Dans les pièces stables, mémoire et balayage marquent exactement le même score,
+132 sur 153.
 
-**Ce que ce verdict autorise** : le pré-enregistrement de C1. D-060 l'interdisait « avant que
-la marge existe » ; elle existe désormais, chiffrée et attribuée.
+**Portée exacte du résultat, resserrée par la revue (correction B2).** La marge publiée est
+une propriété de **C1 v3 avec `p(brassage) = 0,5`**, la palette v3, le lecteur à 24 classes et
+le moteur gelé. La dissociation brassé/stable est un contrôle de manipulation, pas une
+découverte indépendante : le témoin de mémoire échoue après brassage par construction, et
+l'amplitude agrégée de l'écart est pilotée par une probabilité que l'agent a lui-même fixée.
+Un écart perceptif de 12,4 points subsiste d'ailleurs dans les pièces stables. Les taux
+agrégés et les taux conditionnels sont toujours publiés ensemble ; rien n'est extrapolé à une
+autre valeur de `p`. Changer `p`, la palette, le lecteur, le garde ou le rendu exige une
+nouvelle sonde de marge avant construction.
+
+**Ce que ce verdict autorise, sous condition** : le pré-enregistrement de C1, **une fois B1
+levée**. D-060 l'interdisait « avant que la marge existe » ; elle existe, mais la revue
+constate qu'elle n'a pas été mesurée contre le témoin simple le plus fort disponible.
 
 **Ce qu'il n'autorise pas** : dire que C1 résiste aux politiques simples. Le balayage résout
 88,3 % des pièces sans mémoire ni apprentissage — il paie quinze mouvements au lieu d'un. Le
@@ -139,12 +149,26 @@ juin, `ANT-008` (kit AS5600) et `ANT-009` (banc v1.0), restent en sommeil et san
 D-008 et D-060, avec leur propre question : les fermer, ou les garder en sommeil en vue d'un
 retour au matériel ?
 
-**Revue contradictoire** — **ouverte le 12 septembre**, confiée par Anthony à GPT Astra, qui
-n'a pas produit ce travail. Elle porte sur une question unique : la marge mesurée sur C1
-autorise-t-elle l'ouverture de la phase des mécanismes ? Dossier :
-`docs/research/c1_margin_review_request.md`. Réponse attendue dans
-`docs/research/c1_margin_review.md`, verdict `AUTORISER`, `AUTORISER AVEC CORRECTIONS
-BLOQUANTES` ou `REFUSER`. **Aucun mécanisme n'est construit avant son retour.**
+**Revue contradictoire** — **rendue le 12 septembre** par GPT Astra, qui n'a pas produit ce
+travail. Verdict : **AUTORISER AVEC CORRECTIONS BLOQUANTES**
+(`docs/research/c1_margin_review.md`). Elle a reproduit l'ordre des commits, les quinze
+empreintes du manifeste v3 et tous les chiffres publiés à partir du résultat brut. Aucune de
+ses recommandations n'est rejetée ; son arithmétique a été revérifiée contre les données
+brutes avant intégration.
+
+- **B1, bloquante** — le témoin simple le plus fort disponible n'a jamais été joué :
+  « mémoriser, vérifier la seule cellule mémorisée, ne balayer qu'après réfutation ». Il
+  occupe précisément le compromis revendiqué. Une sonde complémentaire de 100 pièces neuves
+  est exigée sur `C1EpisodeV3` **strictement inchangé**, espace `c1-margin-hybrid/v1`, avant
+  tout pré-enregistrement. Si cette baseline n'établit de marge sur aucun axe, elle est proche
+  de l'oracle : le critère d'abandon de D-060 s'applique et la décision devient REFUSER.
+- **B2, bloquante** — resserrer explicitement la portée à C1 v3 à `p = 0,5`. Faite, ci-dessus.
+- **P1 à P4** — à intégrer dans le pré-enregistrement de C1 une fois B1 levée : baseline
+  adaptative comme comparateur primaire, séparation stricte information admissible / oracle /
+  notation, distinction entre gain mnésique et gain perceptif, et gel du défaut de frontière
+  de la palette plutôt que sa correction silencieuse.
+
+**Aucun mécanisme n'est construit tant que B1 n'est pas levée.**
 
 **Blocage** — aucun.
 

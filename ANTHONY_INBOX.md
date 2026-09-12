@@ -8,10 +8,10 @@ arbitrages dans `DECISIONS.md`.
 
 ## En attente aujourd'hui
 
-**Une décision t'attend, sans urgence** : `ANT-011`, juste en dessous. La sonde de marge de
-C1 est verte, ce qui ouvre la phase que D-060 interdisait jusqu'ici. Rien n'est bloqué en
-attendant : la porte est franchie et documentée, et aucun mécanisme ne sera construit avant
-ta réponse.
+**Rien ne t'attend dans l'immédiat.** `ANT-011` reste ouverte mais n'appelle plus de réponse
+de ta part pour l'instant : la revue de GPT Astra est rentrée et son verdict conditionne la
+suite à une mesure, pas à un arbitrage. Je l'exécute. Tu seras sollicité seulement si son
+résultat ferme la piste C1.
 
 Le travail lui-même se fait entièrement en simulation sous D-008 et ne demande ni achat, ni
 manipulation physique, ni information.
@@ -43,8 +43,23 @@ Deux demandes matérielles de juin restent en sommeil, avec leur propre question
 - Intégration : dossier de revue écrit dans `docs/research/c1_margin_review_request.md`,
   au format du protocole §6, avec sept points contradictoires obligatoires que j'ai dressés
   contre ma propre conclusion. Revue attendue dans `docs/research/c1_margin_review.md`.
-- **La question de fond reste ouverte** : ouvrir ou non la phase des mécanismes. Elle se
-  tranchera après la revue. Aucun mécanisme n'est construit d'ici là.
+- Revue rendue le 2026-09-12 par GPT Astra : **AUTORISER AVEC CORRECTIONS BLOQUANTES**
+  (`docs/research/c1_margin_review.md`, commit `0bdb686`). Elle a refait l'ordre des commits,
+  les quinze empreintes du manifeste v3 et tous les chiffres depuis le résultat brut. J'ai
+  revérifié son arithmétique contre mes données avant d'intégrer : tout concorde. **Aucune de
+  ses recommandations n'est rejetée.**
+- Ce qu'elle bloque, et qu'elle a raison de bloquer : le témoin simple le plus fort disponible
+  n'a jamais été joué — « mémoriser, vérifier la seule cellule mémorisée, ne balayer qu'après
+  réfutation ». Il occupe exactement le compromis que la marge revendique. C'était le point
+  que j'avais moi-même inscrit au dossier ; la revue le fait passer de « à considérer » à
+  « bloquant », et D-060 exige bien le témoin le plus fort *disponible*.
+- **La question de fond reste ouverte, mais elle ne t'attend plus** : elle se tranche
+  désormais par une mesure. Une sonde complémentaire de 100 pièces neuves est
+  pré-enregistrée (journal, entrée 10) et je l'exécute. Si cette baseline n'établit de marge
+  sur aucun axe, le critère d'abandon de D-060 s'applique, C1 est refusée et **je reviendrai
+  vers toi** — c'est la seule issue qui redemande ton avis. Si elle laisse une marge, j'écris
+  le pré-enregistrement de C1 sous D-004 et je te le signale.
+- Aucun mécanisme n'est construit tant que cette sonde n'a pas parlé.
 
 ## En sommeil — matériel
 
